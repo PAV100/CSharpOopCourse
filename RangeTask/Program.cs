@@ -6,7 +6,7 @@ namespace RangeTask
     {
         static void Main()
         {
-            Console.WriteLine("Hello World 5!");
+            Console.WriteLine("Hello World 6!");
         }
     }
 }
