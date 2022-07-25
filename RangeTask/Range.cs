@@ -8,8 +8,6 @@ namespace RangeTask
 {
     internal class Range
     {
-        private const double Epsilon = 1.0e-10;
-
         public double From { get; set; }
 
         public double To { get; set; }
@@ -27,7 +25,7 @@ namespace RangeTask
 
         public bool IsInside(double number)
         {
-            return (number - From >= -Epsilon) && (number - To <= Epsilon); // (number >= from) && (number <= to)
+            return (number >= From) && (number <= To); // (number >= from) && (number <= to)
         }
     }
 }

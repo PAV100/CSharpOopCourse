@@ -6,7 +6,7 @@ namespace RangeTask
     {
         static void Main()
         {
-            Console.WriteLine("The program demonstrates initialisation and modification of Range1 class instances");
+            Console.WriteLine("The program demonstrates initialisation and modification of Range class instances");
             Console.WriteLine();
 
             double from = -5; // 1. normal limits order 
@@ -50,27 +50,6 @@ namespace RangeTask
 
             Console.WriteLine("from = {0}, to = {1}, class instance: [{2}, {3}], length = {4}, test point {5} {6}",
                 from, to, range3.From, range3.To, length, testPoint, isInsideText);
-            Console.WriteLine();
-
-            from = 10; // 4. limits difference is less than epsilon
-            to = 10.00000000001;
-            testPoint = 0;
-
-            Range range4 = new Range(from, to);
-            length = range4.GetLength();
-            isInside = range4.IsInside(testPoint);
-            isInsideText = isInside ? "is inside" : "is not inside";
-
-            Console.WriteLine("from = {0}, to = {1}, class instance: [{2}, {3}], length = {4}, test point {5} {6}",
-                from, to, range4.From, range4.To, length, testPoint, isInsideText);
-
-            range4.To = 10.00000000009; // set new "to" value with difference less than epsilon, 
-            length = range4.GetLength();
-            isInside = range4.IsInside(testPoint);
-            isInsideText = isInside ? "is inside" : "is not inside";
-
-            Console.WriteLine("from = {0}, to = {1}, class instance: [{2}, {3}], length = {4}, test point {5} {6}",
-                from, to, range4.From, range4.To, length, testPoint, isInsideText);
             Console.WriteLine();
         }
     }
