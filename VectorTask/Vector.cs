@@ -2,10 +2,12 @@
 
 namespace VectorTask
 {
-    /// <summary>Provides vectors of dimention n with real-number components and static and non-static methods for operations with vectors</summary>
+    /// <summary>
+    /// Provides vectors of dimention n with real-number components and static and non-static methods for operations with vectors
+    /// </summary>
     internal class Vector
     {
-        public double[] Components { get; set; }
+        private double[] components;
 
         public Vector(int n)
         {
@@ -14,16 +16,16 @@ namespace VectorTask
                 throw new ArgumentException("Number of components must be > 0", nameof(n));
             }
 
-            Components = new double[n];
+            components = new double[n];
         }
 
         public Vector(Vector vector)
         {
-            Components = new double[vector.Components.Length];
+            components = new double[vector.components.Length];
 
-            for (int i = 0; i < vector.Components.Length; i++)
+            for (int i = 0; i < vector.components.Length; i++)
             {
-                Components[i] = vector.Components[i];
+                components[i] = vector.components[i];
             }
         }
 
@@ -34,11 +36,11 @@ namespace VectorTask
                 throw new ArgumentException("Array length must be > 0", nameof(components));
             }
 
-            Components = new double[components.Length];
+            this.components = new double[components.Length];
 
             for (int i = 0; i < components.Length; i++)
             {
-                Components[i] = components[i];
+                this.components[i] = components[i];
             }
         }
 
@@ -54,152 +56,210 @@ namespace VectorTask
                 throw new ArgumentException("Array length must be > 0", nameof(components));
             }
 
-            Components = (n <= components.Length) ? new double[components.Length] : new double[n];
+            this.components = (n <= components.Length) ? new double[components.Length] : new double[n];
 
             for (int i = 0; i < components.Length; i++)
             {
-                Components[i] = components[i];
+                this.components[i] = components[i];
             }
         }
 
-        /// <summary>Gets vector dimention</summary>        
+        /// <summary>
+        /// Gets vector dimention
+        /// </summary>        
         public int GetSize()
         {
-            return this.Components.Length;
+            return this.components.Length;
         }
 
         public override string ToString()
         {
-            return "{" + String.Join(", ", this.Components) + "}";
+            return "{" + String.Join(", ", this.components) + "}";
         }
 
-        /// <summary>Adds a vector to a current vector. Returns modified vector</summary>
+        /// <summary>
+        /// Adds a vector to a current vector. Returns modified vector
+        /// </summary>
         public Vector AddVector(Vector vector)
         {
-            if (this.Components.Length >= vector.Components.Length)
+            if (this.components.Length >= vector.components.Length)
             {
-                for (int i = 0; i < vector.Components.Length; i++)
+                for (int i = 0; i < vector.components.Length; i++)
                 {
-                    this.Components[i] += vector.Components[i];
+                    this.components[i] += vector.components[i];
                 }
             }
             else
             {
                 Vector vectorsSum = new Vector(vector);
 
-                for (int i = 0; i < this.Components.Length; i++)
+                for (int i = 0; i < this.components.Length; i++)
                 {
-                    vectorsSum.Components[i] += this.Components[i];
+                    vectorsSum.components[i] += this.components[i];
                 }
 
-                this.Components = vectorsSum.Components;
+                this.components = vectorsSum.components;
             }
 
             return this;
         }
 
-        /// <summary>Subtracts a vector from a current vector. Returns modified vector</summary>
+        /// <summary>
+        /// Subtracts a vector from a current vector. Returns modified vector
+        /// </summary>
         public Vector SubtractVector(Vector vector)
         {
-            if (this.Components.Length >= vector.Components.Length)
+            if (this.components.Length >= vector.components.Length)
             {
-                for (int i = 0; i < vector.Components.Length; i++)
+                for (int i = 0; i < vector.components.Length; i++)
                 {
-                    this.Components[i] -= vector.Components[i];
+                    this.components[i] -= vector.components[i];
                 }
             }
             else
             {
                 Vector vectorsDifference = new Vector(vector.ReverseVector());
 
-                for (int i = 0; i < this.Components.Length; i++)
+                for (int i = 0; i < this.components.Length; i++)
                 {
-                    vectorsDifference.Components[i] += this.Components[i];
+                    vectorsDifference.components[i] += this.components[i];
                 }
 
-                this.Components = vectorsDifference.Components;
+                this.components = vectorsDifference.components;
             }
 
             return this;
         }
 
-        /// <summary>Multiplies a current vector by a scalar. Returns modified vector</summary>
+        /// <summary>
+        /// Multiplies a current vector by a scalar. Returns modified vector
+        /// </summary>
         public Vector MultiplyByScalar(double value)
         {
-            for (int i = 0; i < this.Components.Length; i++)
+            for (int i = 0; i < this.components.Length; i++)
             {
-                this.Components[i] *= value;
+                this.components[i] *= value;
             }
 
             return this;
         }
 
-        /// <summary>Multiplies a current vector by -1. Returns modified vector</summary>
+        /// <summary>
+        /// Multiplies a current vector by -1. Returns modified vector
+        /// </summary>
         public Vector ReverseVector()
         {
-            for (int i = 0; i < this.Components.Length; i++)
+            for (int i = 0; i < this.components.Length; i++)
             {
-                this.Components[i] *= -1;
+                this.components[i] *= -1;
             }
 
             return this;
         }
 
+        /// <summary>
+        /// Gets current vector length
+        /// </summary>
         public double GetLength()
         {
             double squaresSum = 0;
 
-            for (int i = 0; i < this.Components.Length; i++)
+            for (int i = 0; i < this.components.Length; i++)
             {
-                squaresSum += this.Components[i] * this.Components[i];
+                squaresSum += this.components[i] * this.components[i];
             }
 
             return Math.Sqrt(squaresSum);
         }
 
+        /// <summary>
+        /// Gets a value of a current vector Nth component by index
+        /// </summary>
         public double GetComponent(int componentIndex)
         {
-            int componentsLength = this.Components.Length;
+            int componentsLength = this.components.Length;
 
             if (componentIndex < 0 || componentIndex >= componentsLength)
             {
                 throw new ArgumentException("componentIndex must be between 0 and vector size", nameof(componentIndex));
             }
 
-            return this.Components[componentIndex];
+            return this.components[componentIndex];
         }
 
+        /// <summary>
+        /// Sets a value of a current vector Nth component by index
+        /// </summary>
         public void SetComponent(int componentIndex, double component)
         {
-            int componentsLength = this.Components.Length;
+            int componentsLength = this.components.Length;
 
             if (componentIndex < 0 || componentIndex >= componentsLength)
             {
                 throw new ArgumentException("componentIndex must be between 0 and vector size", nameof(componentIndex));
             }
 
-            this.Components[componentIndex] = component;
+            this.components[componentIndex] = component;
         }
 
-        /*public override bool Equals(object obj)
+        /// <summary>
+        /// Returns a value indicating whether the current Vector class instance is equal to specified Vector class instance
+        /// </summary>
+        public override bool Equals(object obj)
         {
-            if (obj is Vector vector)
-            { 
-
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
             }
 
-                return Name == person.Name;
-            
+            if (ReferenceEquals(obj, null) || this.GetType() != obj.GetType())
+            {
+                return false;
+            }
 
-            return false;
-        }*/
+            Vector vector = (Vector)obj;
 
+            if (this.components.Length != vector.components.Length)
+            {
+                return false;
+            }
+
+            bool equalVectors = true;
+
+            for (int i = 0; i < this.components.Length; i++)
+            {
+                if (this.components[i]==vector.components[i])
+                {
+                    continue;
+                }
+
+                equalVectors = false;
+                break;
+            }
+
+            return equalVectors;
+        }
+
+        /// <summary>
+        /// Returns the hash code for a Vector class instance
+        /// </summary>
+        public override int GetHashCode()
+        {
+            int prime = 37;
+            int hash = 1;
+
+            return prime * hash + this.components.GetHashCode();
+        }
+
+        /// <summary>
+        /// Adds two vectors and returnes the result as a vector object
+        /// </summary>
         public static Vector AddVectors(Vector vector1, Vector vector2)
         {
             Vector majorVector;
             Vector minorVector;
 
-            if (vector1.Components.Length >= vector2.Components.Length)
+            if (vector1.components.Length >= vector2.components.Length)
             {
                 majorVector = vector1;
                 minorVector = vector2;
@@ -212,21 +272,24 @@ namespace VectorTask
 
             Vector vectorsSum = new Vector(majorVector);
 
-            for (int i = 0; i < minorVector.Components.Length; i++)
+            for (int i = 0; i < minorVector.components.Length; i++)
             {
-                vectorsSum.Components[i] += minorVector.Components[i];
+                vectorsSum.components[i] += minorVector.components[i];
             }
 
             return vectorsSum;
         }
 
+        /// <summary>
+        /// Subtracts vectors (vector1 - vector2) and returnes the result as a vector object
+        /// </summary>
         public static Vector SubtractVectors(Vector vector1, Vector vector2)
         {
             Vector minorVector;
             Vector vectorsDifference;
             int negationMultiplier;
 
-            if (vector1.Components.Length >= vector2.Components.Length)
+            if (vector1.components.Length >= vector2.components.Length)
             {
                 minorVector = vector2;
                 vectorsDifference = new Vector(vector1);
@@ -235,27 +298,30 @@ namespace VectorTask
             else
             {
                 minorVector = vector1;
-                vectorsDifference = new Vector(vector2.ReverseVector());
+                (vectorsDifference = new Vector(vector2)).ReverseVector();
                 negationMultiplier = 1;
             }
 
-            for (int i = 0; i < minorVector.Components.Length; i++)
+            for (int i = 0; i < minorVector.components.Length; i++)
             {
-                vectorsDifference.Components[i] += minorVector.Components[i] * negationMultiplier;
+                vectorsDifference.components[i] += minorVector.components[i] * negationMultiplier;
             }
 
             return vectorsDifference;
         }
 
+        /// <summary>
+        /// Gets a value of scalar product of 2 vectors
+        /// </summary>
         public static double GetScalarProduct(Vector vector1, Vector vector2)
         {
-            int maxIndex = Math.Min(vector1.Components.Length, vector2.Components.Length);
+            int maxIndex = Math.Min(vector1.components.Length, vector2.components.Length);
 
             double scalarProduct = 0;
 
             for (int i = 0; i < maxIndex; i++)
             {
-                scalarProduct += vector1.Components[i] * vector2.Components[i];
+                scalarProduct += vector1.components[i] * vector2.components[i];
             }
 
             return scalarProduct;
