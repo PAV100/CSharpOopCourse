@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 namespace RangeTask
 {
@@ -46,19 +47,19 @@ namespace RangeTask
                 return new Range[] { new Range(range.From, range.To), new Range(From, To) };
             }
 
-            return new Range[] { new Range(Math.Min(From, range.From), Math.Max(To, range.To)), null };
+            return new Range[] { new Range(Math.Min(From, range.From), Math.Max(To, range.To)) };
         }
 
         public Range[] GetDifference(Range range)
         {
             if (range.From <= From && range.To >= To)
             {
-                return null;
+                return new Range[] { };
             }
 
             if (range.From >= To || range.To <= From)
             {
-                return new Range[] { new Range(From, To), null };
+                return new Range[] { new Range(From, To) };
             }
 
             if (range.From > From && range.To < To)
@@ -68,21 +69,22 @@ namespace RangeTask
 
             if (range.From > From)
             {
-                return new Range[] { new Range(From, range.From), null };
+                return new Range[] { new Range(From, range.From) };
             }
 
-            return new Range[] { new Range(range.To, To), null };
+            return new Range[] { new Range(range.To, To) };
         }
 
-        public static string ToString(Range range)
+        public override string ToString()
         {
-            if (range is null)
+            if (this is null)
             {
                 return "null";
             }
 
-            return string.Format("({0}, {1})", range.From, range.To);
+            return $"({From}; {To})";
         }
+
         public static string ToString(Range[] rangesArray)
         {
             if (rangesArray is null)
@@ -90,12 +92,25 @@ namespace RangeTask
                 return "null";
             }
 
-            if (rangesArray[1] is null)
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append('[');
+
+            int rangesArrayLength = rangesArray.Length;
+
+            for (int i = 0; i < rangesArrayLength; i++)
             {
-                return Range.ToString(rangesArray[0]);
+                if (i != 0)
+                {
+                    sb.Append(", ");
+                }
+
+                sb.Append(rangesArray[i].ToString());
             }
 
-            return Range.ToString(rangesArray[0]) + "U" + Range.ToString(rangesArray[1]);
+            sb.Append(']');
+
+            return sb.ToString();                        
         }
     }
 }
