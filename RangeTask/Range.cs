@@ -77,11 +77,6 @@ namespace RangeTask
 
         public override string ToString()
         {
-            if (this is null)
-            {
-                return "null";
-            }
-
             return $"({From}; {To})";
         }
 
@@ -96,21 +91,19 @@ namespace RangeTask
 
             sb.Append('[');
 
-            int rangesArrayLength = rangesArray.Length;
-
-            for (int i = 0; i < rangesArrayLength; i++)
+            for (int i = 0; i < rangesArray.Length; i++)
             {
                 if (i != 0)
                 {
                     sb.Append(", ");
                 }
 
-                sb.Append(rangesArray[i].ToString());
+                sb.Append(rangesArray[i]);
             }
 
             sb.Append(']');
 
-            return sb.ToString();                        
+            return sb.ToString();
         }
     }
 }

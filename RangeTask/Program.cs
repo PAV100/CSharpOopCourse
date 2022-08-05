@@ -10,7 +10,7 @@ namespace RangeTask
             Console.WriteLine();
 
             Range range1 = new Range(10, 30);
-            Range[] range2 = new Range[]
+            Range[] rangesArray =
             {
                 new Range(0, 5),     // 1. range2 does not overlap range1
                 new Range(0, 10),    // 2. range2 touches range1 in left endpoint
@@ -31,17 +31,15 @@ namespace RangeTask
 
             Console.WriteLine(formatString, "range1", "range2", "Intersection", "Union", "Difference");
 
-            foreach (Range e in range2)
+            foreach (Range range2 in rangesArray)
             {
-                Range rangesIntersection = range1.GetIntersection(e);
-                
-                string range1Text = range1.ToString();
-                string range2Text = e.ToString();
-                string rangesIntersectionText = (rangesIntersection is null) ? "null" : rangesIntersection.ToString();
-                string rangesUnionText= Range.ToString(range1.GetUnion(e));
-                string rangesDifferenceText= Range.ToString(range1.GetDifference(e));
+                Range rangesIntersection = range1.GetIntersection(range2);
 
-                Console.WriteLine(formatString, range1Text, range2Text, rangesIntersectionText, rangesUnionText, rangesDifferenceText);
+                string rangesIntersectionString = (rangesIntersection is null) ? "null" : rangesIntersection.ToString();
+                string rangesUnionString = Range.ToString(range1.GetUnion(range2));
+                string rangesDifferenceString = Range.ToString(range1.GetDifference(range2));
+
+                Console.WriteLine(formatString, range1, range2, rangesIntersectionString, rangesUnionString, rangesDifferenceString);
             }
         }
     }
