@@ -9,85 +9,60 @@ namespace VectorTask
     {
         private double[] components;
 
-        public Vector(int n)
+        public Vector(int Dimention)
         {
-            if (n <= 0)
+            if (Dimention <= 0)
             {
-                throw new ArgumentException("Number of components must be > 0", nameof(n));
+                throw new ArgumentException($"Number of components = {Dimention}, but it must be > 0", nameof(Dimention));
             }
 
-            components = new double[n];
+            components = new double[Dimention];
         }
 
         public Vector(Vector vector)
         {
             if (vector is null)
             {
-                throw new ArgumentException("vector must not be null", nameof(vector));
+                throw new ArgumentNullException("vector must not be null", nameof(vector));
             }
 
-            int vectorComponentsLength = vector.components.Length;
+            components = new double[vector.components.Length];
 
-            if (vectorComponentsLength <= 0)
-            {
-                throw new ArgumentException("vector dimention must be > 0", nameof(vector));
-            }
-
-            this.components = new double[vectorComponentsLength];
-
-            for (int i = 0; i < vectorComponentsLength; i++)
-            {
-                this.components[i] = vector.components[i];
-            }
+            Array.Copy(vector.components, components, vector.components.Length);
         }
 
         public Vector(double[] components)
         {
             if (components is null)
             {
-                throw new ArgumentException("Array must not be null", nameof(components));
+                throw new ArgumentNullException("Array must not be null", nameof(components));
             }
 
-            int componentsLength = components.Length;
-
-            if (componentsLength <= 0)
+            if (components.Length == 0)
             {
-                throw new ArgumentException("Array length must be > 0", nameof(components));
+                throw new ArgumentException("Array length = 0, but it must be > 0", nameof(components));
             }
 
-            this.components = new double[componentsLength];
+            this.components = new double[components.Length];
 
-            for (int i = 0; i < componentsLength; i++)
-            {
-                this.components[i] = components[i];
-            }
+            Array.Copy(components, this.components, components.Length);
         }
 
-        public Vector(int n, double[] components)
+        public Vector(int dimention, double[] components)
         {
-            if (n <= 0)
+            if (dimention <= 0)
             {
-                throw new ArgumentException("Number of components must be > 0", nameof(n));
+                throw new ArgumentException($"Number of components = {dimention}, but it must be > 0", nameof(dimention));
             }
 
             if (components is null)
             {
-                throw new ArgumentException("Array must not be null", nameof(components));
+                throw new ArgumentNullException("Array must not be null", nameof(components));
             }
 
-            int componentsLength = components.Length;
+            this.components = new double[dimention];
 
-            if (componentsLength <= 0)
-            {
-                throw new ArgumentException("Array length must be > 0", nameof(components));
-            }
-
-            this.components = (n <= componentsLength) ? new double[componentsLength] : new double[n];
-
-            for (int i = 0; i < componentsLength; i++)
-            {
-                this.components[i] = components[i];
-            }
+            Array.Copy(components, this.components, Math.Min(dimention, components.Length));
         }
 
         /// <summary>
@@ -95,50 +70,34 @@ namespace VectorTask
         /// </summary>        
         public int GetSize()
         {
-            return this.components.Length;
+            return components.Length;
         }
 
         public override string ToString()
         {
-            return "{" + String.Join(", ", this.components) + "}";
+            return "{" + string.Join(", ", components) + "}";
         }
 
         /// <summary>
         /// Adds a vector to a current vector. Returns modified vector
         /// </summary>
-        public Vector AddVector(Vector vector)
+        public Vector Add(Vector vector)
         {
             if (vector is null)
             {
-                throw new ArgumentException("vector must not be null", nameof(vector));
+                throw new ArgumentNullException("vector must not be null", nameof(vector));
             }
 
-            int vectorComponentsLength = vector.components.Length;
-
-            if (vectorComponentsLength <= 0)
+            if (components.Length < vector.components.Length)
             {
-                throw new ArgumentException("vector dimention must be > 0", nameof(vector));
+                double[] newComponents = new double[vector.components.Length];
+                Array.Copy(components, newComponents, components.Length);
+                components = newComponents;
             }
 
-            int thisComponentsLength = this.components.Length;
-
-            if (thisComponentsLength >= vectorComponentsLength)
+            for (int i = 0; i < vector.components.Length; i++)
             {
-                for (int i = 0; i < vectorComponentsLength; i++)
-                {
-                    this.components[i] += vector.components[i];
-                }
-            }
-            else
-            {
-                Vector vectorsSum = new Vector(vector);
-
-                for (int i = 0; i < thisComponentsLength; i++)
-                {
-                    vectorsSum.components[i] += this.components[i];
-                }
-
-                this.components = vectorsSum.components;
+                components[i] += vector.components[i];
             }
 
             return this;
@@ -147,39 +106,23 @@ namespace VectorTask
         /// <summary>
         /// Subtracts a vector from a current vector. Returns modified vector
         /// </summary>
-        public Vector SubtractVector(Vector vector)
+        public Vector Subtract(Vector vector)
         {
             if (vector is null)
             {
-                throw new ArgumentException("vector must not be null", nameof(vector));
+                throw new ArgumentNullException("vector must not be null", nameof(vector));
             }
 
-            int vectorComponentsLength = vector.components.Length;
-
-            if (vectorComponentsLength <= 0)
+            if (components.Length < vector.components.Length)
             {
-                throw new ArgumentException("vector dimention must be > 0", nameof(vector));
+                double[] newComponents = new double[vector.components.Length];
+                Array.Copy(components, newComponents, components.Length);
+                components = newComponents;
             }
 
-            int thisComponentsLength = this.components.Length;
-
-            if (thisComponentsLength >= vectorComponentsLength)
+            for (int i = 0; i < vector.components.Length; i++)
             {
-                for (int i = 0; i < vectorComponentsLength; i++)
-                {
-                    this.components[i] -= vector.components[i];
-                }
-            }
-            else
-            {
-                Vector vectorsDifference = (new Vector(vector)).ReverseVector();
-
-                for (int i = 0; i < thisComponentsLength; i++)
-                {
-                    vectorsDifference.components[i] += this.components[i];
-                }
-
-                this.components = vectorsDifference.components;
+                components[i] -= vector.components[i];
             }
 
             return this;
@@ -190,9 +133,9 @@ namespace VectorTask
         /// </summary>
         public Vector MultiplyByScalar(double value)
         {
-            for (int i = 0; i < this.components.Length; i++)
+            for (int i = 0; i < components.Length; i++)
             {
-                this.components[i] *= value;
+                components[i] *= value;
             }
 
             return this;
@@ -201,14 +144,9 @@ namespace VectorTask
         /// <summary>
         /// Multiplies a current vector by -1. Returns modified vector
         /// </summary>
-        public Vector ReverseVector()
+        public Vector Reverse()
         {
-            for (int i = 0; i < this.components.Length; i++)
-            {
-                this.components[i] = -this.components[i];
-            }
-
-            return this;
+            return this.MultiplyByScalar(-1);
         }
 
         /// <summary>
@@ -218,9 +156,9 @@ namespace VectorTask
         {
             double squaresSum = 0;
 
-            for (int i = 0; i < this.components.Length; i++)
+            foreach (double component in components)
             {
-                squaresSum += this.components[i] * this.components[i];
+                squaresSum += component * component;
             }
 
             return Math.Sqrt(squaresSum);
@@ -231,12 +169,12 @@ namespace VectorTask
         /// </summary>
         public double GetComponent(int componentIndex)
         {
-            if (componentIndex < 0 || componentIndex >= this.components.Length)
+            if (componentIndex < 0 || componentIndex >= components.Length)
             {
-                throw new ArgumentException("componentIndex must be between 0 and vector size - 1", nameof(componentIndex));
+                throw new ArgumentOutOfRangeException($"componentIndex = {componentIndex}, but it must be in range [0; {components.Length - 1}]", nameof(componentIndex));
             }
 
-            return this.components[componentIndex];
+            return components[componentIndex];
         }
 
         /// <summary>
@@ -244,12 +182,12 @@ namespace VectorTask
         /// </summary>
         public void SetComponent(int componentIndex, double component)
         {
-            if (componentIndex < 0 || componentIndex >= this.components.Length)
+            if (componentIndex < 0 || componentIndex >= components.Length)
             {
-                throw new ArgumentException("componentIndex must be between 0 and vector size", nameof(componentIndex));
+                throw new ArgumentOutOfRangeException($"componentIndex = {componentIndex}, but it must be in range [0; {components.Length - 1}]", nameof(componentIndex));
             }
 
-            this.components[componentIndex] = component;
+            components[componentIndex] = component;
         }
 
         /// <summary>
@@ -269,25 +207,20 @@ namespace VectorTask
 
             Vector vector = (Vector)obj;
 
-            if (this.components.Length != vector.components.Length)
+            if (components.Length != vector.components.Length)
             {
                 return false;
             }
 
-            bool equalVectors = true;
-
-            for (int i = 0; i < this.components.Length; i++)
+            for (int i = 0; i < components.Length; i++)
             {
-                if (this.components[i] == vector.components[i])
+                if (components[i] != vector.components[i])
                 {
-                    continue;
+                    return false;
                 }
-
-                equalVectors = false;
-                break;
             }
 
-            return equalVectors;
+            return true;
         }
 
         /// <summary>
@@ -298,92 +231,48 @@ namespace VectorTask
             int prime = 37;
             int hash = 1;
 
-            for (int i = 0; i < this.components.Length; i++)
+            foreach (double component in components)
             {
-                hash = prime * hash + this.components[i].GetHashCode();
+                hash = prime * hash + component.GetHashCode();
             }
 
-            return prime * hash + this.components.Length;
+            return hash;
         }
 
         /// <summary>
         /// Adds two vectors and returnes the result as a vector object
         /// </summary>
-        public static Vector AddVectors(Vector vector1, Vector vector2)
+        public static Vector GetSum(Vector vector1, Vector vector2)
         {
-            if (vector1 is null || vector2 is null)
+            if (vector1 is null)
             {
-                throw new ArgumentException("vector1 and vector2 must not be null", nameof(vector1) + "and" + nameof(vector2));
+                throw new ArgumentNullException("vector1 must not be null", nameof(vector1));
             }
 
-            if (vector1.components.Length <= 0 || vector2.components.Length <= 0)
+            if (vector2 is null)
             {
-                throw new ArgumentException("vector1 and vector2 dimention must be > 0", nameof(vector1) + "and" + nameof(vector2));
+                throw new ArgumentNullException("vector2 must not be null", nameof(vector2));
             }
 
-            Vector majorVector;
-            Vector minorVector;
-
-            if (vector1.components.Length >= vector2.components.Length)
-            {
-                majorVector = vector1;
-                minorVector = vector2;
-            }
-            else
-            {
-                majorVector = vector2;
-                minorVector = vector1;
-            }
-
-            Vector vectorsSum = new Vector(majorVector);
-
-            for (int i = 0; i < minorVector.components.Length; i++)
-            {
-                vectorsSum.components[i] += minorVector.components[i];
-            }
-
-            return vectorsSum;
+            return (new Vector(vector1)).Add(vector2);
         }
 
         /// <summary>
         /// Subtracts vectors (vector1 - vector2) and returnes the result as a vector object
         /// </summary>
-        public static Vector SubtractVectors(Vector vector1, Vector vector2)
+        public static Vector GetDifference(Vector vector1, Vector vector2)
         {
-            if (vector1 is null || vector2 is null)
+            if (vector1 is null)
             {
-                throw new ArgumentException("vector1 and vector2 must not be null", nameof(vector1) + "and" + nameof(vector2));
+                throw new ArgumentNullException("vector1 must not be null", nameof(vector1));
             }
 
-            if (vector1.components.Length <= 0 || vector2.components.Length <= 0)
+            if (vector2 is null)
             {
-                throw new ArgumentException("vector1 and vector2 dimention must be > 0", nameof(vector1) + "and" + nameof(vector2));
+                throw new ArgumentNullException("vector2 must not be null", nameof(vector2));
             }
 
-            Vector minorVector;
-            Vector vectorsDifference;
-
-            int negationMultiplier;
-
-            if (vector1.components.Length >= vector2.components.Length)
-            {
-                minorVector = vector2;
-                vectorsDifference = new Vector(vector1);
-                negationMultiplier = -1;
-            }
-            else
-            {
-                minorVector = vector1;
-                (vectorsDifference = new Vector(vector2)).ReverseVector();
-                negationMultiplier = 1;
-            }
-
-            for (int i = 0; i < minorVector.components.Length; i++)
-            {
-                vectorsDifference.components[i] += minorVector.components[i] * negationMultiplier;
-            }
-
-            return vectorsDifference;
+            return (new Vector(vector1)).Subtract(vector2);
         }
 
         /// <summary>
@@ -391,21 +280,21 @@ namespace VectorTask
         /// </summary>
         public static double GetScalarProduct(Vector vector1, Vector vector2)
         {
-            if (vector1 is null || vector2 is null)
+            if (vector1 is null)
             {
-                throw new ArgumentException("vector1 and vector2 must not be null", nameof(vector1) + "and" + nameof(vector2));
+                throw new ArgumentNullException("vector1 must not be null", nameof(vector1));
             }
 
-            if (vector1.components.Length <= 0 || vector2.components.Length <= 0)
+            if (vector2 is null)
             {
-                throw new ArgumentException("vector1 and vector2 dimention must be > 0", nameof(vector1) + "and" + nameof(vector2));
+                throw new ArgumentNullException("vector2 must not be null", nameof(vector2));
             }
 
-            int maxIndex = Math.Min(vector1.components.Length, vector2.components.Length);
+            int lastIndex = Math.Min(vector1.components.Length, vector2.components.Length);
 
             double scalarProduct = 0;
 
-            for (int i = 0; i < maxIndex; i++)
+            for (int i = 0; i < lastIndex; i++)
             {
                 scalarProduct += vector1.components[i] * vector2.components[i];
             }
