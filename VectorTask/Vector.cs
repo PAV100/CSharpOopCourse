@@ -5,7 +5,7 @@ namespace VectorTask
     /// <summary>
     /// Provides vectors of dimention n with real-number components and static and non-static methods for operations with vectors
     /// </summary>
-    internal class Vector
+    public class Vector
     {
         private double[] components;
 
