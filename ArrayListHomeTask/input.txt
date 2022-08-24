@@ -1,0 +1,7 @@
+A file with lines of text for ArrayListHome task
+
+1. First string
+2. Second string
+3. Third string
+...
+n. Last string
