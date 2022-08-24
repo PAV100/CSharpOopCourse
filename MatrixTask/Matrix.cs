@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 using VectorTask;
 
@@ -10,25 +7,25 @@ namespace MatrixTask
 {
     internal class Matrix
     {
-        private Vector[] matrix;
+        private Vector[] matrixRows;
 
-        public Matrix(int height, int width)
+        public Matrix(int rowsCount, int columnsCount)
         {
-            if (height <= 0)
+            if (rowsCount <= 0)
             {
-                throw new ArgumentException($"Matrix height = {height}, but it must be > 0", nameof(height));
+                throw new ArgumentException($"Number of rows in Matrix is {rowsCount}, but it must be > 0", nameof(rowsCount));
             }
 
-            if (width <= 0)
+            if (columnsCount <= 0)
             {
-                throw new ArgumentException($"Matrix width = {width}, but it must be > 0", nameof(width));
+                throw new ArgumentException($"Number of columns in Matrix is {columnsCount}, but it must be > 0", nameof(columnsCount));
             }
 
-            matrix = new Vector[height];
+            matrixRows = new Vector[rowsCount];
 
-            for (int i = 0; i < height; i++)
+            for (int i = 0; i < rowsCount; i++)
             {
-                matrix[i] = new Vector(width);
+                matrixRows[i] = new Vector(columnsCount);
             }
         }
 
@@ -36,32 +33,35 @@ namespace MatrixTask
         {
             if (matrix is null)
             {
-                throw new ArgumentNullException("matrix must not be null", nameof(matrix));
+                throw new ArgumentNullException(nameof(matrix), "Matrix must not be null");
             }
 
-            this.matrix = new Vector[matrix.matrix.Length];
+            matrixRows = new Vector[matrix.matrixRows.Length];
 
-            Array.Copy(matrix.matrix, this.matrix, matrix.matrix.Length);
+            for (int i = 0; i < matrix.matrixRows.Length; i++)
+            {
+                matrixRows[i] = new Vector(matrix.matrixRows[i]);
+            }
         }
 
         public Matrix(double[,] array)
         {
             if (array is null)
             {
-                throw new ArgumentNullException("array must not be null", nameof(array));
+                throw new ArgumentNullException(nameof(array), "Array must not be null");
             }
 
             if (array.GetLength(0) == 0)
             {
-                throw new ArgumentException("array height must be > 0", nameof(array));
+                throw new ArgumentException("Number of rows in array must be > 0", nameof(array));
             }
 
             if (array.GetLength(1) == 0)
             {
-                throw new ArgumentException("array width must be > 0", nameof(array));
+                throw new ArgumentException("Number of columns in array must be > 0", nameof(array));
             }
 
-            matrix = new Vector[array.GetLength(0)];
+            matrixRows = new Vector[array.GetLength(0)];
 
             for (int i = 0; i < array.GetLength(0); i++)
             {
@@ -72,7 +72,7 @@ namespace MatrixTask
                     arrayRow[j] = array[i, j];
                 }
 
-                matrix[i] = new Vector(arrayRow);
+                matrixRows[i] = new Vector(arrayRow);
             }
         }
 
@@ -80,17 +80,17 @@ namespace MatrixTask
         {
             if (vectorsArray is null)
             {
-                throw new ArgumentNullException("vectorsArray must not be null", nameof(vectorsArray));
+                throw new ArgumentNullException(nameof(vectorsArray), "VectorsArray must not be null");
             }
 
             int vectorsArrayLength = vectorsArray.Length;
 
             if (vectorsArrayLength == 0)
             {
-                throw new ArgumentException("vectorsArray length must be > 0", nameof(vectorsArray));
+                throw new ArgumentException("VectorsArray length must be > 0", nameof(vectorsArray));
             }
 
-            matrix = new Vector[vectorsArrayLength];
+            matrixRows = new Vector[vectorsArrayLength];
 
             int maxVectorSize = 0;
 
@@ -106,95 +106,82 @@ namespace MatrixTask
 
             for (int i = 0; i < vectorsArrayLength; i++)
             {
-                int vectorSize = vectorsArray[i].GetSize();
-
-                if (vectorSize == maxVectorSize)
-                {
-                    matrix[i] = new Vector(vectorsArray[i]);
-                }
-                else
-                {
-                    matrix[i] = new Vector(maxVectorSize);
-
-                    for (int j = 0; j < vectorSize; j++)
-                    {
-                        matrix[i].SetComponent(j, vectorsArray[i].GetComponent(j));
-                    }
-                }
+                matrixRows[i] = new Vector(maxVectorSize).Add(vectorsArray[i]);
             }
         }
 
         /// <summary>
-        /// Gets matrix height (M nxm, size n)
+        /// Gets number of matrix rows (Matrix M rows x columns)
         /// </summary>        
-        public int GetHeight()
+        public int GetRowsCount()
         {
-            return matrix.Length;
+            return matrixRows.Length;
         }
 
         /// <summary>
-        /// Gets matrix width (M nxm, size m)
+        /// Gets number of matrix columns (Matrix M rows x columns)
         /// </summary>        
-        public int GetWidth()
+        public int GetColumnsCount()
         {
-            return matrix[0].GetSize();
+            return matrixRows[0].GetSize();
         }
 
         /// <summary>
         /// Gets a value of a current matrix Nth row (as vector) by index
         /// </summary>
-        public Vector GetRowVector(int rowVectorIndex)
+        public Vector GetRow(int rowIndex)
         {
-            if (rowVectorIndex < 0 || rowVectorIndex >= matrix.Length)
+            if (rowIndex < 0 || rowIndex >= matrixRows.Length)
             {
-                throw new ArgumentOutOfRangeException($"rowVectorIndex = {rowVectorIndex}, but it must be in range [0; {matrix.Length - 1}]", nameof(rowVectorIndex));
+                throw new ArgumentOutOfRangeException(nameof(rowIndex), $"RowIndex = {rowIndex}, but it must be in range [0; {matrixRows.Length - 1}]");
             }
 
-            return matrix[rowVectorIndex];
+            return new Vector(matrixRows[rowIndex]);
         }
 
         /// <summary>
         /// Sets a value of a current matrix Nth row (as vector) by index
         /// </summary>
-        public void SetRowVector(int rowVectorIndex, Vector vector)
+        public void SetRow(int rowIndex, Vector vector)
         {
-            if (rowVectorIndex < 0 || rowVectorIndex >= matrix.Length)
+            int rowsCount = matrixRows.Length;
+
+            if (rowIndex < 0 || rowIndex >= rowsCount)
             {
-                throw new ArgumentOutOfRangeException($"rowVectorIndex = {rowVectorIndex}, but it must be in range [0; {matrix.Length - 1}]", nameof(rowVectorIndex));
+                throw new ArgumentOutOfRangeException(nameof(rowIndex), $"RowIndex = {rowIndex}, but it must be in range [0; {rowsCount - 1}]");
             }
 
-            int matrixWidth = matrix[0].GetSize();
+            int columnsCount = GetColumnsCount();
             int vectorSize = vector.GetSize();
 
-            for (int i = 0; i < matrixWidth; i++)
+            if (columnsCount != vectorSize)
             {
-                if (i < vectorSize)
-                {
-                    matrix[rowVectorIndex].SetComponent(i, vector.GetComponent(i));
-                }
-                else
-                {
-                    matrix[rowVectorIndex].SetComponent(i, 0);
-                }
+                throw new ArgumentException($"Matrix has {columnsCount} column(s), vector size is {vectorSize}, but they must be equal", nameof(vector));
+            }
 
+            for (int i = 0; i < columnsCount; i++)
+            {
+                matrixRows[rowIndex].SetComponent(i, vector.GetComponent(i));
             }
         }
 
         /// <summary>
         /// Gets a value of a current matrix Nth column (as vector) by index
         /// </summary>
-        public Vector GetColumnVector(int columnVectorIndex)
+        public Vector GetColumn(int columnIndex)
         {
-            if (columnVectorIndex < 0 || columnVectorIndex >= matrix[0].GetSize())
+            int columnsCount = GetColumnsCount();
+
+            if (columnIndex < 0 || columnIndex >= columnsCount)
             {
-                throw new ArgumentOutOfRangeException($"columnVectorIndex = {columnVectorIndex}, but it must be in range [0; {matrix[0].GetSize() - 1}]", nameof(columnVectorIndex));
+                throw new ArgumentOutOfRangeException(nameof(columnIndex), $"ColumnIndex = {columnIndex}, but it must be in range [0; {columnsCount - 1}]");
             }
 
-            Vector columnVector = new Vector(matrix.Length);
+            Vector columnVector = new Vector(matrixRows.Length);
 
-            for (int i = 0; i < matrix.Length; i++)
+            for (int i = 0; i < matrixRows.Length; i++)
             {
-                columnVector.SetComponent(i, matrix[i].GetComponent(columnVectorIndex));
+                columnVector.SetComponent(i, matrixRows[i].GetComponent(columnIndex));
             }
 
             return columnVector;
@@ -205,29 +192,16 @@ namespace MatrixTask
         /// </summary>
         public Matrix Transpose()
         {
-            int matrixHeight = matrix.Length;
-            int matrixWidth = matrix[0].GetSize();
+            int columnsCount = GetColumnsCount();
 
-            double[][] tranposedArray = new double[matrixWidth][];
+            Vector[] transposedMatrixRows = new Vector[columnsCount];
 
-            for (int i = 0; i < matrixWidth; i++)
+            for (int i = 0; i < columnsCount; i++)
             {
-                tranposedArray[i] = new double[matrixHeight];
-
-                for (int j = 0; j < matrixHeight; j++)
-                {
-                    tranposedArray[i][j] = matrix[j].GetComponent(i);
-                }
+                transposedMatrixRows[i] = new Vector(GetColumn(i));
             }
 
-            Vector[] transposedMatrix = new Vector[matrixWidth];
-
-            for (int i = 0; i < matrixWidth; i++)
-            {
-                transposedMatrix[i] = new Vector(tranposedArray[i]);
-            }
-
-            matrix = transposedMatrix;
+            matrixRows = transposedMatrixRows;
 
             return this;
         }
@@ -237,9 +211,9 @@ namespace MatrixTask
         /// </summary>
         public Matrix MultiplyByScalar(double value)
         {
-            for (int i = 0; i < matrix.Length; i++)
+            foreach (Vector vector in matrixRows)
             {
-                matrix[i].MultiplyByScalar(value);
+                vector.MultiplyByScalar(value);
             }
 
             return this;
@@ -247,21 +221,21 @@ namespace MatrixTask
 
         public double GetDeterminant()
         {
-            int matrixHeight = this.matrix.Length;
-            int matrixWidth = this.matrix[0].GetSize();
+            int rowsCount = matrixRows.Length;
+            int columnsCount = GetColumnsCount();
 
-            if (matrixHeight != matrixWidth)
+            if (rowsCount != columnsCount)
             {
-                throw new ArgumentException($"matrix dimensions are {matrixHeight}x{matrixWidth}, but matrix must be square");
+                throw new InvalidOperationException($"Matrix dimensions are {rowsCount}x{columnsCount}, but matrix must be square");
             }
 
-            double[,] matrix = new double[matrixHeight, matrixHeight];
+            double[,] matrix = new double[rowsCount, rowsCount];
 
-            for (int i = 0; i < matrixHeight; i++)
+            for (int i = 0; i < rowsCount; i++)
             {
-                for (int j = 0; j < matrixHeight; j++)
+                for (int j = 0; j < rowsCount; j++)
                 {
-                    matrix[i, j] = this.matrix[i].GetComponent(j);
+                    matrix[i, j] = matrixRows[i].GetComponent(j);
                 }
             }
 
@@ -269,12 +243,12 @@ namespace MatrixTask
             double determinant = 1;
             int swapRowsCount = 0;
 
-            for (int i = 0; i < matrixHeight - 1; i++)
+            for (int i = 0; i < rowsCount - 1; i++)
             {
                 int maxMatrixElementIndex = i;
                 double maxMatrixElement = Math.Abs(matrix[i, i]);
 
-                for (int j = i + 1; j < matrixHeight; j++)
+                for (int j = i + 1; j < rowsCount; j++)
                 {
                     double temp1MatrixElement = Math.Abs(matrix[j, i]);
 
@@ -300,12 +274,12 @@ namespace MatrixTask
 
                 double temp2MatrixElement = matrix[i, i];
 
-                for (int j = i + 1; j < matrixHeight; j++)
+                for (int j = i + 1; j < rowsCount; j++)
                 {
                     double temp3MatrixElement = matrix[j, i];
                     matrix[j, i] = 0;
 
-                    for (int k = i + 1; k < matrixHeight; k++)
+                    for (int k = i + 1; k < rowsCount; k++)
                     {
                         matrix[j, k] = (matrix[j, k] * temp2MatrixElement - matrix[i, k] * temp3MatrixElement) / determinant;
                     }
@@ -316,12 +290,10 @@ namespace MatrixTask
 
             if (swapRowsCount % 2 != 0)
             {
-                return -matrix[matrixHeight - 1, matrixHeight - 1];
+                return -matrix[rowsCount - 1, rowsCount - 1];
             }
-            else
-            {
-                return matrix[matrixHeight - 1, matrixHeight - 1];
-            }
+
+            return matrix[rowsCount - 1, rowsCount - 1];
         }
 
         /// <summary>
@@ -329,13 +301,11 @@ namespace MatrixTask
         /// </summary>        
         private static void SwapRows(double[,] array, int row1Index, int row2Index)
         {
-            double temp;
-
-            for (int k = 0; k < array.GetLength(1); k++)
+            for (int i = 0; i < array.GetLength(1); i++)
             {
-                temp = array[row1Index, k];
-                array[row1Index, k] = array[row2Index, k];
-                array[row2Index, k] = temp;
+                double temp = array[row1Index, i];
+                array[row1Index, i] = array[row2Index, i];
+                array[row2Index, i] = temp;
             }
         }
 
@@ -348,101 +318,45 @@ namespace MatrixTask
 
             sb.Append('{');
 
-            for (int i = 0; i < matrix.Length; i++)
+            foreach (Vector vector in matrixRows)
             {
-                if (i != 0)
-                {
-                    sb.Append(',');
-                }
-
-                sb.Append(matrix[i].ToString());
+                sb.Append(vector).Append(", ");
             }
 
+            sb.Remove(sb.Length - 2, 2);
             sb.Append('}');
 
             return sb.ToString();
         }
 
         /// <summary>
-        /// Multiplies current matrix by column-vector
+        /// Multiplies current matrix by column-vector. Returnes new vector
         /// </summary>        
-        public Matrix MultiplyByColumnVector(Vector vector)
+        public Vector MultiplyByColumnVector(Vector vector)
         {
             if (vector is null)
             {
-                throw new ArgumentNullException("vector must not be null", nameof(vector));
+                throw new ArgumentNullException(nameof(vector), "Vector must not be null");
             }
 
-            int matrixWidth = matrix[0].GetSize();
+            int columnsCount = GetColumnsCount();
             int vectorSize = vector.GetSize();
 
-            if (matrixWidth != vectorSize)
+            if (columnsCount != vectorSize)
             {
-                throw new ArgumentException($"matrix width = {matrixWidth}, and vector size = {vectorSize} but they must be equal", nameof(vector));
+                throw new ArgumentException($"Matrix has {columnsCount} column(s), vector size is {vectorSize}, but they must be equal", nameof(vector));
             }
 
-            int matrixHeight = matrix.Length;
+            int rowsCount = matrixRows.Length;
 
-            double[][] array = new double[matrixHeight][];
+            double[] vectorComponentsArray = new double[rowsCount];
 
-            Vector[] newMatrix = new Vector[matrixHeight];
-
-            for (int i = 0; i < matrixHeight; i++)
+            for (int i = 0; i < rowsCount; i++)
             {
-                array[i] = new double[1];
-
-                for (int j = 0; j < matrixWidth; j++)
-                {
-                    array[i][0] += matrix[i].GetComponent(j) * vector.GetComponent(j);
-                }
-
-                newMatrix[i] = new Vector(array[i]);
+                vectorComponentsArray[i] = Vector.GetScalarProduct(matrixRows[i], vector);
             }
 
-            matrix = newMatrix;
-
-            return this;
-        }
-
-        /// <summary>
-        /// Multiplies current matrix by row-vector
-        /// </summary>        
-        public Matrix MultiplyByRowVector(Vector vector)
-        {
-            if (vector is null)
-            {
-                throw new ArgumentNullException("vector must not be null", nameof(vector));
-            }
-
-            int matrixWidth = matrix[0].GetSize();
-
-            if (matrixWidth != 1)
-            {
-                throw new ArgumentException($"matrix width = {matrixWidth}, but it must be = 1", nameof(vector));
-            }
-
-            int matrixHeight = matrix.Length;
-            int vectorSize = vector.GetSize();
-
-            double[][] array = new double[matrixHeight][];
-
-            Vector[] newMatrix = new Vector[matrixHeight];
-
-            for (int i = 0; i < matrixHeight; i++)
-            {
-                array[i] = new double[vectorSize];
-
-                for (int j = 0; j < vectorSize; j++)
-                {
-                    array[i][j] += matrix[i].GetComponent(0) * vector.GetComponent(j);
-                }
-
-                newMatrix[i] = new Vector(array[i]);
-            }
-
-            matrix = newMatrix;
-
-            return this;
+            return new Vector(vectorComponentsArray);
         }
 
         /// <summary>
@@ -452,26 +366,16 @@ namespace MatrixTask
         {
             if (matrix is null)
             {
-                throw new ArgumentNullException("matrix must not be null", nameof(matrix));
+                throw new ArgumentNullException(nameof(matrix), "Matrix must not be null");
             }
 
-            int matrix1Height = this.GetHeight();
-            int matrix1Width = this.GetWidth();
+            CheckMatrixSizesEqual(this, matrix);
 
-            int matrix2Height = matrix.GetHeight();
-            int matrix2Width = matrix.GetWidth();
+            int thisMatrixRowsCount = GetRowsCount();
 
-            if (matrix1Height != matrix2Height || matrix1Width != matrix2Width)
+            for (int i = 0; i < thisMatrixRowsCount; i++)
             {
-                throw new ArgumentException($"matrix1 is {matrix1Height}x{matrix1Width}, matrix2 is {matrix2Height}x{matrix2Width} but they must be equal", nameof(matrix));
-            }
-
-            for (int i = 0; i < matrix1Height; i++)
-            {
-                for (int j = 0; j < matrix1Width; j++)
-                {
-                    this.matrix[i].SetComponent(j, this.matrix[i].GetComponent(j) + matrix.matrix[i].GetComponent(j));
-                }
+                matrixRows[i].Add(matrix.matrixRows[i]);
             }
 
             return this;
@@ -484,26 +388,16 @@ namespace MatrixTask
         {
             if (matrix is null)
             {
-                throw new ArgumentNullException("matrix must not be null", nameof(matrix));
+                throw new ArgumentNullException(nameof(matrix), "Matrix must not be null");
             }
 
-            int matrix1Height = this.GetHeight();
-            int matrix1Width = this.GetWidth();
+            CheckMatrixSizesEqual(this, matrix);
 
-            int matrix2Height = matrix.GetHeight();
-            int matrix2Width = matrix.GetWidth();
+            int thisMatrixRowsCount = GetRowsCount();
 
-            if (matrix1Height != matrix2Height || matrix1Width != matrix2Width)
+            for (int i = 0; i < thisMatrixRowsCount; i++)
             {
-                throw new ArgumentException($"matrix1 is {matrix1Height}x{matrix1Width}, matrix2 is {matrix2Height}x{matrix2Width} but they must be equal", nameof(matrix));
-            }
-
-            for (int i = 0; i < matrix1Height; i++)
-            {
-                for (int j = 0; j < matrix1Width; j++)
-                {
-                    this.matrix[i].SetComponent(j, this.matrix[i].GetComponent(j) - matrix.matrix[i].GetComponent(j));
-                }
+                matrixRows[i].Subtract(matrix.matrixRows[i]);
             }
 
             return this;
@@ -516,15 +410,17 @@ namespace MatrixTask
         {
             if (matrix1 is null)
             {
-                throw new ArgumentNullException("matrix1 must not be null", nameof(matrix1));
+                throw new ArgumentNullException(nameof(matrix1), "Matrix1 must not be null");
             }
 
             if (matrix2 is null)
             {
-                throw new ArgumentNullException("matrix2 must not be null", nameof(matrix2));
+                throw new ArgumentNullException(nameof(matrix2), "Matrix2 must not be null");
             }
 
-            return (new Matrix(matrix1)).Add(matrix2);
+            CheckMatrixSizesEqual(matrix1, matrix2);
+
+            return new Matrix(matrix1).Add(matrix2);
         }
 
         /// <summary>
@@ -534,52 +430,73 @@ namespace MatrixTask
         {
             if (matrix1 is null)
             {
-                throw new ArgumentNullException("matrix1 must not be null", nameof(matrix1));
+                throw new ArgumentNullException(nameof(matrix1), "Matrix1 must not be null");
             }
 
             if (matrix2 is null)
             {
-                throw new ArgumentNullException("matrix2 must not be null", nameof(matrix2));
+                throw new ArgumentNullException(nameof(matrix2), "Matrix2 must not be null");
             }
 
-            return (new Matrix(matrix1)).Subtract(matrix2);
+            CheckMatrixSizesEqual(matrix1, matrix2);
+
+            return new Matrix(matrix1).Subtract(matrix2);
+        }
+
+        /// <summary>
+        /// Checks if two matrices have the same sizes and can be added (subtracted). If no - throws an exception
+        /// </summary>
+        private static void CheckMatrixSizesEqual(Matrix matrix1, Matrix matrix2)
+        {
+            int matrix1RowsCount = matrix1.GetRowsCount();
+            int matrix1ColumnsCount = matrix1.GetColumnsCount();
+
+            int matrix2RowsCount = matrix2.GetRowsCount();
+            int matrix2ColumnsCount = matrix2.GetColumnsCount();
+
+            if (matrix1RowsCount != matrix2RowsCount || matrix1ColumnsCount != matrix2ColumnsCount)
+            {
+                throw new ArgumentException($"Matrix1 is {matrix1RowsCount}x{matrix1ColumnsCount}, matrix2 is {matrix2RowsCount}x{matrix2ColumnsCount}, but they must be equal",
+                    nameof(matrix1) + ", " + nameof(matrix2));
+            }
         }
 
         /// <summary>
         /// Multiplies two matrices and returnes the result as a matrix object
         /// </summary>
-        public static Matrix GetMultiplicationProduct(Matrix matrix1, Matrix matrix2)
+        public static Matrix GetProduct(Matrix matrix1, Matrix matrix2)
         {
             if (matrix1 is null)
             {
-                throw new ArgumentNullException("matrix1 must not be null", nameof(matrix1));
+                throw new ArgumentNullException(nameof(matrix1), "Matrix1 must not be null");
             }
 
             if (matrix2 is null)
             {
-                throw new ArgumentNullException("matrix2 must not be null", nameof(matrix2));
+                throw new ArgumentNullException(nameof(matrix2), "Matrix2 must not be null");
             }
 
-            int matrix1Width = matrix1.GetWidth();
-            int matrix2Height = matrix2.GetHeight();
+            int matrix1ColumnsCount = matrix1.GetColumnsCount();
+            int matrix2RowsCount = matrix2.GetRowsCount();
 
-            if (matrix1Width != matrix2Height)
+            if (matrix1ColumnsCount != matrix2RowsCount)
             {
-                throw new ArgumentException($"matrix1 width is {matrix1Width}, matrix2 height is {matrix2Height}, but they must be equal", nameof(matrix1) + ", " + nameof(matrix2));
+                throw new ArgumentException($"Matrix1 has {matrix1ColumnsCount} column(s), matrix2 has {matrix2RowsCount} row(s), but they must have equal",
+                    nameof(matrix1) + ", " + nameof(matrix2));
             }
 
-            int matrix1Height = matrix1.GetHeight();
-            int matrix2Width = matrix2.GetWidth();
+            int matrix1RowsCount = matrix1.GetRowsCount();
+            int matrix2ColumnsCount = matrix2.GetColumnsCount();
 
-            double[,] array = new double[matrix1Height, matrix2Width];
+            double[,] array = new double[matrix1RowsCount, matrix2ColumnsCount];
 
-            for (int i = 0; i < matrix1Height; i++)
+            for (int i = 0; i < matrix1RowsCount; i++)
             {
-                for (int j = 0; j < matrix2Width; j++)
+                for (int j = 0; j < matrix2ColumnsCount; j++)
                 {
-                    for (int k = 0; k < matrix1Width; k++)
+                    for (int k = 0; k < matrix1ColumnsCount; k++)
                     {
-                        array[i, j] += matrix1.matrix[i].GetComponent(k) * matrix2.matrix[k].GetComponent(j);
+                        array[i, j] += matrix1.matrixRows[i].GetComponent(k) * matrix2.matrixRows[k].GetComponent(j);
                     }
                 }
             }
