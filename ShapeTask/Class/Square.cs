@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ShapeTask
 {
@@ -10,13 +6,18 @@ namespace ShapeTask
     {
         private readonly double sideLength;
 
-        private readonly double Epsilon = 1.0e-10;
+        private const double Epsilon = 1.0e-10;
+
+        public double SideLength
+        {
+            get { return sideLength; }
+        }
 
         public Square(double sideLength)
         {
             if (sideLength <= Epsilon)
             {
-                throw new ArgumentException($"side length = {sideLength}, but it must be > 0", nameof(sideLength));
+                throw new ArgumentException($"Side length = {sideLength}, but it must be > 0", nameof(sideLength));
             }
 
             this.sideLength = sideLength;
@@ -58,10 +59,7 @@ namespace ShapeTask
             int prime = 37;
             int hash = 1;
 
-            hash = prime * hash + "Square".GetHashCode();
-            hash = prime * hash + sideLength.GetHashCode();
-
-            return hash;
+            return prime * hash + sideLength.GetHashCode();
         }
 
         /// <summary>
@@ -81,7 +79,7 @@ namespace ShapeTask
 
             Square square = (Square)obj;
 
-            return this.sideLength == square.sideLength;            
+            return sideLength == square.sideLength;
         }
     }
 }

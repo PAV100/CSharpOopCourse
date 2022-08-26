@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ShapeTask
 {
@@ -10,13 +6,18 @@ namespace ShapeTask
     {
         private readonly double radius;
 
-        private readonly double Epsilon = 1.0e-10;
+        private const double Epsilon = 1.0e-10;
+
+        public double Radius
+        {
+            get { return radius; }
+        }
 
         public Circle(double radius)
         {
             if (radius <= Epsilon)
             {
-                throw new ArgumentException($"radius = {radius}, but it must be > 0", nameof(radius));
+                throw new ArgumentException($"Radius = {radius}, but it must be > 0", nameof(radius));
             }
 
             this.radius = radius;
@@ -58,10 +59,7 @@ namespace ShapeTask
             int prime = 37;
             int hash = 1;
 
-            hash = prime * hash + "Circle".GetHashCode();
-            hash = prime * hash + radius.GetHashCode();
-
-            return hash;
+            return prime * hash + radius.GetHashCode();
         }
 
         /// <summary>
@@ -81,7 +79,7 @@ namespace ShapeTask
 
             Circle circle = (Circle)obj;
 
-            return this.radius == circle.radius;
+            return radius == circle.radius;
         }
     }
 }

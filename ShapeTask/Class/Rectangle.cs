@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ShapeTask
 {
@@ -11,18 +7,27 @@ namespace ShapeTask
         private readonly double height;
         private readonly double width;
 
-        private readonly double Epsilon = 1.0e-10;
+        private const double Epsilon = 1.0e-10;
+
+        public double Height
+        {
+            get { return height; }
+        }
+        public double Width
+        {
+            get { return width; }
+        }
 
         public Rectangle(double height, double width)
         {
             if (height <= Epsilon)
             {
-                throw new ArgumentException($"height = {height}, but it must be > 0", nameof(height));
+                throw new ArgumentException($"Height = {height}, but it must be > 0", nameof(height));
             }
 
             if (width <= Epsilon)
             {
-                throw new ArgumentException($"width = {width}, but it must be > 0", nameof(width));
+                throw new ArgumentException($"Width = {width}, but it must be > 0", nameof(width));
             }
 
             this.height = height;
@@ -64,8 +69,7 @@ namespace ShapeTask
         {
             int prime = 37;
             int hash = 1;
-
-            hash = prime * hash + "Rectangle".GetHashCode();
+                        
             hash = prime * hash + height.GetHashCode();
             hash = prime * hash + width.GetHashCode();
 
@@ -89,7 +93,7 @@ namespace ShapeTask
 
             Rectangle rectangle = (Rectangle)obj;
 
-            return this.width == rectangle.width && this.height == rectangle.height;
+            return width == rectangle.width && height == rectangle.height;
         }
     }
 }

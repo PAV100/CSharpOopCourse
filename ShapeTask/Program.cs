@@ -14,7 +14,8 @@ namespace ShapeTask
             Console.WriteLine("Let's create an array of several shapes:");
             Console.WriteLine(formatString, "TYPE", "WIDTH", "HEIGHT", "AREA", "PERIMETER");
 
-            IShape[] shapes = {
+            IShape[] shapes =
+            {
                 new Square(4),
                 new Triangle(0, 0, 6, 0, 0, 10),
                 new Rectangle(2, 3),
@@ -22,7 +23,8 @@ namespace ShapeTask
                 new Square(5),
                 new Triangle(1, 2, 5, 7, 15, 15),
                 new Rectangle(1.5, 3.5),
-                new Circle(3) };
+                new Circle(3)
+            };
 
             foreach (IShape e in shapes)
             {
@@ -39,13 +41,15 @@ namespace ShapeTask
 
             Console.WriteLine("Let's create one more array, print it out with overrided ToString(), test overrided GetHashCode() and Equals():");
 
-            IShape[] shapes2 = {
+            IShape[] shapes2 =
+            {
                 new Square(4),
                 new Circle(4),
                 new Square(5),
                 new Square(4),
                 new Triangle(1, 1, 4, 1, 4, 5),
-                new Rectangle(5, 6),};
+                new Rectangle(5, 6)
+            };
 
             foreach (IShape e in shapes2)
             {
@@ -53,16 +57,16 @@ namespace ShapeTask
             }
         }
 
-        static IShape GetMaxAreaShape(IShape[] shapes, int nthMaxNumber)
+        public static IShape GetMaxAreaShape(IShape[] shapes, int nthMaxNumber)
         {
             if (shapes is null)
             {
-                throw new ArgumentNullException(nameof(shapes), "shapes array must not be null");
+                throw new ArgumentNullException(nameof(shapes), "Shapes array must not be null");
             }
 
-            if (nthMaxNumber < 1 || nthMaxNumber >= shapes.Length)
+            if (nthMaxNumber < 1 || nthMaxNumber > shapes.Length)
             {
-                throw new ArgumentOutOfRangeException(nameof(nthMaxNumber), $"nthMaxNumber = {nthMaxNumber}, but it must be in range [1; {shapes.Length - 1}]");
+                throw new ArgumentOutOfRangeException(nameof(nthMaxNumber), $"NthMaxNumber = {nthMaxNumber}, but it must be in range [1; {shapes.Length}]");
             }
 
             Array.Sort(shapes, new ShapeAreaComparer());
@@ -70,16 +74,16 @@ namespace ShapeTask
             return shapes[^nthMaxNumber];
         }
 
-        static IShape GetMaxPerimeterShape(IShape[] shapes, int nthMaxNumber)
+        public static IShape GetMaxPerimeterShape(IShape[] shapes, int nthMaxNumber)
         {
             if (shapes is null)
             {
-                throw new ArgumentNullException(nameof(shapes), "shapes array must not be null");
+                throw new ArgumentNullException(nameof(shapes), "Shapes array must not be null");
             }
 
-            if (nthMaxNumber < 1 || nthMaxNumber >= shapes.Length)
+            if (nthMaxNumber < 1 || nthMaxNumber > shapes.Length)
             {
-                throw new ArgumentOutOfRangeException(nameof(nthMaxNumber), $"nthMaxNumber = {nthMaxNumber}, but it must be in range [1; {shapes.Length - 1}]");
+                throw new ArgumentOutOfRangeException(nameof(nthMaxNumber), $"NthMaxNumber = {nthMaxNumber}, but it must be in range [1; {shapes.Length}]");
             }
 
             Array.Sort(shapes, new ShapePerimeterComparer());
