@@ -13,6 +13,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeTask", "ShapeTask\Shap
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArrayListHomeTask", "ArrayListHomeTask\ArrayListHomeTask.csproj", "{F6375E69-B45A-432B-BE23-C47A00629DBC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HashTableTask", "HashTableTask\HashTableTask.csproj", "{E85E2736-3D43-4983-A502-1225FA9C6B76}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ListTask", "ListTask\ListTask.csproj", "{E52AF1BC-4216-4B9B-8A17-527AF6B47802}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{F6375E69-B45A-432B-BE23-C47A00629DBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6375E69-B45A-432B-BE23-C47A00629DBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6375E69-B45A-432B-BE23-C47A00629DBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E85E2736-3D43-4983-A502-1225FA9C6B76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E85E2736-3D43-4983-A502-1225FA9C6B76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E85E2736-3D43-4983-A502-1225FA9C6B76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E85E2736-3D43-4983-A502-1225FA9C6B76}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E52AF1BC-4216-4B9B-8A17-527AF6B47802}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E52AF1BC-4216-4B9B-8A17-527AF6B47802}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E52AF1BC-4216-4B9B-8A17-527AF6B47802}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E52AF1BC-4216-4B9B-8A17-527AF6B47802}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
