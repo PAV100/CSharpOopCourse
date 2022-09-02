@@ -4,19 +4,11 @@ namespace ShapeTask
 {
     internal class Rectangle : IShape
     {
-        private readonly double height;
-        private readonly double width;
-
         private const double Epsilon = 1.0e-10;
 
-        public double Height
-        {
-            get { return height; }
-        }
-        public double Width
-        {
-            get { return width; }
-        }
+        public double Height { get; }
+
+        public double Width { get; }
 
         public Rectangle(double height, double width)
         {
@@ -30,28 +22,28 @@ namespace ShapeTask
                 throw new ArgumentException($"Width = {width}, but it must be > 0", nameof(width));
             }
 
-            this.height = height;
-            this.width = width;
+            Height = height;
+            Width = width;
         }
 
         public double GetArea()
         {
-            return height * width;
+            return Height * Width;
         }
 
         public double GetHeight()
         {
-            return height;
+            return Height;
         }
 
         public double GetPerimeter()
         {
-            return (height + width) * 2;
+            return (Height + Width) * 2;
         }
 
         public double GetWidth()
         {
-            return width;
+            return Width;
         }
 
         /// <summary>
@@ -59,7 +51,7 @@ namespace ShapeTask
         /// </summary>
         public override string ToString()
         {
-            return $"Rectangle, width = {width:f3}, height = {height:f3}";
+            return $"Rectangle, width = {Width:f3}, height = {Height:f3}";
         }
 
         /// <summary>
@@ -69,9 +61,9 @@ namespace ShapeTask
         {
             int prime = 37;
             int hash = 1;
-                        
-            hash = prime * hash + height.GetHashCode();
-            hash = prime * hash + width.GetHashCode();
+
+            hash = prime * hash + Height.GetHashCode();
+            hash = prime * hash + Width.GetHashCode();
 
             return hash;
         }
@@ -93,7 +85,7 @@ namespace ShapeTask
 
             Rectangle rectangle = (Rectangle)obj;
 
-            return width == rectangle.width && height == rectangle.height;
+            return Width == rectangle.Width && Height == rectangle.Height;
         }
     }
 }

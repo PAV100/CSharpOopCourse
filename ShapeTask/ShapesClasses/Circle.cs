@@ -4,14 +4,9 @@ namespace ShapeTask
 {
     internal class Circle : IShape
     {
-        private readonly double radius;
-
         private const double Epsilon = 1.0e-10;
 
-        public double Radius
-        {
-            get { return radius; }
-        }
+        public double Radius { get; }
 
         public Circle(double radius)
         {
@@ -20,27 +15,27 @@ namespace ShapeTask
                 throw new ArgumentException($"Radius = {radius}, but it must be > 0", nameof(radius));
             }
 
-            this.radius = radius;
+            Radius = radius;
         }
 
         public double GetArea()
         {
-            return Math.PI * radius * radius;
+            return Math.PI * Radius * Radius;
         }
 
         public double GetHeight()
         {
-            return radius * 2;
+            return Radius * 2;
         }
 
         public double GetPerimeter()
         {
-            return 2 * Math.PI * radius;
+            return 2 * Math.PI * Radius;
         }
 
         public double GetWidth()
         {
-            return radius * 2;
+            return Radius * 2;
         }
 
         /// <summary>
@@ -48,7 +43,7 @@ namespace ShapeTask
         /// </summary>
         public override string ToString()
         {
-            return $"Circle, radius = {radius:f3}";
+            return $"Circle, radius = {Radius:f3}";
         }
 
         /// <summary>
@@ -59,7 +54,7 @@ namespace ShapeTask
             int prime = 37;
             int hash = 1;
 
-            return prime * hash + radius.GetHashCode();
+            return prime * hash + Radius.GetHashCode();
         }
 
         /// <summary>
@@ -79,7 +74,7 @@ namespace ShapeTask
 
             Circle circle = (Circle)obj;
 
-            return radius == circle.radius;
+            return Radius == circle.Radius;
         }
     }
 }

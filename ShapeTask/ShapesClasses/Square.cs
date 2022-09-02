@@ -4,14 +4,9 @@ namespace ShapeTask
 {
     internal class Square : IShape
     {
-        private readonly double sideLength;
-
         private const double Epsilon = 1.0e-10;
 
-        public double SideLength
-        {
-            get { return sideLength; }
-        }
+        public double SideLength { get; }
 
         public Square(double sideLength)
         {
@@ -20,27 +15,27 @@ namespace ShapeTask
                 throw new ArgumentException($"Side length = {sideLength}, but it must be > 0", nameof(sideLength));
             }
 
-            this.sideLength = sideLength;
+            SideLength = sideLength;
         }
 
         public double GetArea()
         {
-            return sideLength * sideLength;
+            return SideLength * SideLength;
         }
 
         public double GetHeight()
         {
-            return sideLength;
+            return SideLength;
         }
 
         public double GetPerimeter()
         {
-            return sideLength * 4;
+            return SideLength * 4;
         }
 
         public double GetWidth()
         {
-            return sideLength;
+            return SideLength;
         }
 
         /// <summary>
@@ -48,7 +43,7 @@ namespace ShapeTask
         /// </summary>
         public override string ToString()
         {
-            return $"Square, side = {sideLength:f3}";
+            return $"Square, side = {SideLength:f3}";
         }
 
         /// <summary>
@@ -59,7 +54,7 @@ namespace ShapeTask
             int prime = 37;
             int hash = 1;
 
-            return prime * hash + sideLength.GetHashCode();
+            return prime * hash + SideLength.GetHashCode();
         }
 
         /// <summary>
@@ -79,7 +74,7 @@ namespace ShapeTask
 
             Square square = (Square)obj;
 
-            return sideLength == square.sideLength;
+            return SideLength == square.SideLength;
         }
     }
 }
