@@ -1,4 +1,7 @@
-﻿using System;
+﻿using ShapeTask.Comparers;
+using ShapeTask.Interfaces;
+using ShapeTask.ShapesClasses;
+using System;
 
 namespace ShapeTask
 {

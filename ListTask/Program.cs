@@ -9,21 +9,29 @@ namespace ListTask
         {
             Console.WriteLine("The program demonstrates functionality of SinglyLinkedList class");
 
-            //ListItem<int> item = new ListItem<int>();
-            //ListItem<int> item2 = new ListItem<int>(100);
-            //ListItem<int> item3 = new ListItem<int>(200, item);
-
-            //Console.WriteLine(item2.Data);
-
             SinglyLinkedList<int> list = new SinglyLinkedList<int>();
             Console.WriteLine(list.Count);
 
-            ListItem<int> item = new ListItem<int>();
-            list.Head = item;
-            Console.WriteLine(item.Data);
+            list.AddFirst(10);
+            list.AddFirst(9);
+            list.AddFirst(8);
 
-            //LinkedList<int> ll = new LinkedList<int>();
-            //LinkedListNode<int> ll2 = new LinkedListNode<int>(5);
+            Console.WriteLine(list.Get(0));
+            Console.WriteLine(list.Get(1));
+            Console.WriteLine(list.Get(2));
+
+            Console.WriteLine(list.Set(0, 18));
+            Console.WriteLine(list.Get(0));
+
+
+            Console.WriteLine($"First: {list.Head.Data.ToString()}, Count: {list.Count}");
+
+            Console.WriteLine(list.GetFirst());
+
+
+            //List<int> pp = new List<int>() { 1, 5, 6 };
+            //pp.Add(15);
+            //Console.WriteLine(pp[0]);
         }
     }
 }

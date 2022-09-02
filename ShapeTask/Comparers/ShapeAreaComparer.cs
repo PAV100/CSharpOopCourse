@@ -1,7 +1,8 @@
-﻿using System;
+﻿using ShapeTask.Interfaces;
+using System;
 using System.Collections.Generic;
 
-namespace ShapeTask
+namespace ShapeTask.Comparers
 {
     internal class ShapeAreaComparer : IComparer<IShape>
     {

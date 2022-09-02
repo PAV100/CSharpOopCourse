@@ -1,6 +1,7 @@
-﻿using System;
+﻿using ShapeTask.Interfaces;
+using System;
 
-namespace ShapeTask
+namespace ShapeTask.ShapesClasses
 {
     internal class Circle : IShape
     {

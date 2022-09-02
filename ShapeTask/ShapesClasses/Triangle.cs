@@ -1,6 +1,7 @@
-﻿using System;
+﻿using ShapeTask.Interfaces;
+using System;
 
-namespace ShapeTask
+namespace ShapeTask.ShapesClasses
 {
     internal class Triangle : IShape
     {
@@ -47,10 +48,10 @@ namespace ShapeTask
 
         public double GetPerimeter()
         {
-            return GetSide(X1, Y1, X2, Y2) + GetSide(X2, Y2, X3, Y3) + GetSide(X3, Y3, X1, Y1);
+            return GetSideLength(X1, Y1, X2, Y2) + GetSideLength(X2, Y2, X3, Y3) + GetSideLength(X3, Y3, X1, Y1);
         }
 
-        private static double GetSide(double x1, double y1, double x2, double y2)
+        private static double GetSideLength(double x1, double y1, double x2, double y2)
         {
             return Math.Sqrt(Math.Pow(x1 - x2, 2) + Math.Pow(y1 - y2, 2));
         }

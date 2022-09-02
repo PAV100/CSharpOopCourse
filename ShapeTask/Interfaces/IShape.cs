@@ -1,4 +1,4 @@
-﻿namespace ShapeTask
+﻿namespace ShapeTask.Interfaces
 {
     internal interface IShape
     {
