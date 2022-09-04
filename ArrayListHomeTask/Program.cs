@@ -15,25 +15,33 @@ namespace ArrayListHomeTask
             List<string> fileLinesList = new List<string>();
 
             string inputFilePath = "..\\..\\..\\input.txt";
-            using StreamReader reader = new StreamReader(inputFilePath);
+
+            try
             {
-                string currentLine;
-
-                while ((currentLine = reader.ReadLine()) != null)
+                using StreamReader reader = new StreamReader(inputFilePath);
                 {
-                    fileLinesList.Add(currentLine);
-                }
-            }
+                    string currentLine;
 
-            Console.WriteLine($"Here are list items that consist of file {inputFilePath} lines:");
-            Console.WriteLine(string.Join("\n", fileLinesList.ToArray()));
+                    while ((currentLine = reader.ReadLine()) != null)
+                    {
+                        fileLinesList.Add(currentLine);
+                    }
+                }
+
+                Console.WriteLine($"Here are list items that consist of file {inputFilePath} lines:");
+                Console.WriteLine(string.Join(Environment.NewLine, fileLinesList));
+            }
+            catch (Exception)
+            {
+                Console.WriteLine($"Directory or file {inputFilePath} open or read error!");
+            }
 
             // Part2: delete all even numbers from a list
             List<int> integerNumbersList1 = new List<int> { 0, 0, 1, 1, 2, 2, 3, 4, 5, 6, 7, 8, 999, 10, 11, 122, 13, 14, 1515, 16, 17, 180, 19 };
 
             Console.WriteLine();
-            Console.WriteLine($"Here are unprocessed list:");
-            Console.WriteLine(string.Join(", ", integerNumbersList1.ToArray()));
+            Console.WriteLine("Here is unprocessed list:");
+            Console.WriteLine(string.Join(", ", integerNumbersList1));
 
             for (int i = integerNumbersList1.Count - 1; i >= 0; i--)
             {
@@ -43,26 +51,27 @@ namespace ArrayListHomeTask
                 }
             }
 
-            Console.WriteLine($"Here are list without even numbers:");
-            Console.WriteLine(string.Join(", ", integerNumbersList1.ToArray()));
+            Console.WriteLine("Here is list without even numbers:");
+            Console.WriteLine(string.Join(", ", integerNumbersList1));
 
-            // Part3: delete repeating numbers from a list
+            // Part3: create new list, containing numbers from given one but without repeating numbers
             List<int> integerNumbersList2 = new List<int> { 1, 5, 2, 1, 3, 5, 1, 10, 4, 1, 1, 0, 2, 3, 10, 0 };
-            
-            Console.WriteLine();
-            Console.WriteLine($"Here are unprocessed list:");
-            Console.WriteLine(string.Join(", ", integerNumbersList2.ToArray()));
+            List<int> integerNumbersList3 = new List<int>();
 
-            for (int i = 0; i < integerNumbersList2.Count; i++)
+            Console.WriteLine();
+            Console.WriteLine("Here is unprocessed list:");
+            Console.WriteLine(string.Join(", ", integerNumbersList2));
+
+            foreach (int e in integerNumbersList2)
             {
-                while (i != integerNumbersList2.LastIndexOf(integerNumbersList2[i]))
+                if (!integerNumbersList3.Contains(e))
                 {
-                    integerNumbersList2.RemoveAt(integerNumbersList2.LastIndexOf(integerNumbersList2[i]));
+                    integerNumbersList3.Add(e);
                 }
             }
 
-            Console.WriteLine($"Here are list without repeating numbers:");
-            Console.WriteLine(string.Join(", ", integerNumbersList2.ToArray()));
+            Console.WriteLine($"Here is new list without repeating numbers:");
+            Console.WriteLine(string.Join(", ", integerNumbersList3));
         }
     }
 }
