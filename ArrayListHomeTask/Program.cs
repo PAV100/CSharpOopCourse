@@ -56,7 +56,7 @@ namespace ArrayListHomeTask
 
             // Part3: create new list, containing numbers from given one but without repeating numbers
             List<int> integerNumbersList2 = new List<int> { 1, 5, 2, 1, 3, 5, 1, 10, 4, 1, 1, 0, 2, 3, 10, 0 };
-            List<int> integerNumbersList3 = new List<int>();
+            List<int> distinctIntegerNumbersList2 = new List<int>(integerNumbersList2.Count);
 
             Console.WriteLine();
             Console.WriteLine("Here is unprocessed list:");
@@ -64,14 +64,14 @@ namespace ArrayListHomeTask
 
             foreach (int e in integerNumbersList2)
             {
-                if (!integerNumbersList3.Contains(e))
+                if (!distinctIntegerNumbersList2.Contains(e))
                 {
-                    integerNumbersList3.Add(e);
+                    distinctIntegerNumbersList2.Add(e);
                 }
             }
 
-            Console.WriteLine($"Here is new list without repeating numbers:");
-            Console.WriteLine(string.Join(", ", integerNumbersList3));
+            Console.WriteLine("Here is new list without repeating numbers:");
+            Console.WriteLine(string.Join(", ", distinctIntegerNumbersList2));
         }
     }
 }
