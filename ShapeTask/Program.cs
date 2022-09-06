@@ -1,6 +1,6 @@
 ﻿using ShapeTask.Comparers;
 using ShapeTask.Interfaces;
-using ShapeTask.ShapesClasses;
+using ShapeTask.Shapes;
 using System;
 
 namespace ShapeTask
