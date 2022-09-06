@@ -18,7 +18,7 @@ namespace ArrayListHomeTask
 
             try
             {
-                using StreamReader reader = new StreamReader(inputFilePath);
+                using (StreamReader reader = new StreamReader(inputFilePath))
                 {
                     string currentLine;
 

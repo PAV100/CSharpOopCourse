@@ -12,21 +12,21 @@ namespace ListTask
             SinglyLinkedList<int> list = new SinglyLinkedList<int>();
             Console.WriteLine(list.Count);
 
-            list.AddFirst(10);
-            list.AddFirst(9);
-            list.AddFirst(8);
+            list.AddFirstItem(10);
+            list.AddFirstItem(9);
+            list.AddFirstItem(8);
 
-            Console.WriteLine(list.Get(0));
-            Console.WriteLine(list.Get(1));
-            Console.WriteLine(list.Get(2));
+            Console.WriteLine(list.GetItem(0));
+            Console.WriteLine(list.GetItem(1));
+            Console.WriteLine(list.GetItem(2));
 
-            Console.WriteLine(list.Set(0, 18));
-            Console.WriteLine(list.Get(0));
+            Console.WriteLine(list.SetItem(0, 18));
+            Console.WriteLine(list.GetItem(0));
 
 
             Console.WriteLine($"First: {list.Head.Data.ToString()}, Count: {list.Count}");
 
-            Console.WriteLine(list.GetFirst());
+            Console.WriteLine(list.GetFirstItem());
 
 
             //List<int> pp = new List<int>() { 1, 5, 6 };

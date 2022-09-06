@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ListTask
 {
@@ -32,7 +28,7 @@ namespace ListTask
                 ListItem<T> p = new ListItem<T>();
                 Head = p;
                 Count++;
-                                
+
             }
 
             Head = default;
@@ -42,7 +38,7 @@ namespace ListTask
         /// <summary>
         /// Gets a value of first list item Data autoproperty
         /// </summary>        
-        public T GetFirst()
+        public T GetFirstItem()
         {
             return Head.Data;
         }
@@ -50,7 +46,7 @@ namespace ListTask
         /// <summary>
         /// Gets a value of Data autoproperty of list item addressed by item index = [0 ... Count - 1]
         /// </summary>        
-        public T Get(int itemIndex)
+        public T GetItem(int itemIndex)
         {
             if (itemIndex < 0)
             {
@@ -84,11 +80,11 @@ namespace ListTask
         /// Sets a value into Data autoproperty of list item addressed by item index = [0 ... Count - 1]
         /// Returns previous Data autoproperty value
         /// </summary>        
-        public T Set(int itemIndex, T value)
+        public T SetItem(int index, T data)
         {
-            if (itemIndex < 0)
+            if (index < 0)
             {
-                throw new ArgumentException($"Item index = {itemIndex}, but it must be >= 0", nameof(itemIndex));
+                throw new ArgumentException($"Item index = {index}, but it must be >= 0", nameof(index));
             }
 
             if (Count == 0)
@@ -96,24 +92,24 @@ namespace ListTask
                 throw new InvalidOperationException("List is empty. Can not set any item");
             }
 
-            if (itemIndex >= Count)
+            if (index >= Count)
             {
-                throw new ArgumentOutOfRangeException(nameof(itemIndex), $"Item index = {itemIndex}, but it must be in range [0; {Count - 1}]");
+                throw new ArgumentOutOfRangeException(nameof(index), $"Item index = {index}, but it must be in range [0; {Count - 1}]");
             }
 
-            if (value is null)
+            if (data is null)
             {
-                throw new ArgumentNullException(nameof(value), "Value must not be null");
+                throw new ArgumentNullException(nameof(data), "Data must not be null");
             }
 
             int i = 0;
 
             for (ListItem<T> p = Head; p != null; p = p.Next, i++)
             {
-                if (i == itemIndex)
+                if (i == index)
                 {
                     T tempData = p.Data;
-                    p.Data = value;
+                    p.Data = data;
                     return tempData;
                 }
             }
@@ -121,11 +117,10 @@ namespace ListTask
             return default;
         }
 
-
-        public void AddFirst(T item)
+        public void AddFirstItem(T data)
         {
-            ListItem<T> p = new ListItem<T>(item, Head);
-            Head = p;
+            ListItem<T> firstItem = new ListItem<T>(data, Head);
+            Head = firstItem;
             Count++;
         }
     }
