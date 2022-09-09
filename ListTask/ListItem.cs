@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ListTask
+﻿namespace ListTask
 {
     internal class ListItem<T>
     {
@@ -14,12 +8,13 @@ namespace ListTask
 
         public ListItem()
         {
-            Next = null;
+            Next = default;
             Data = default;
         }
 
         public ListItem(T data)
         {
+            Next = default;
             Data = data;
         }
 

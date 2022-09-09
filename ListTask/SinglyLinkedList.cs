@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 namespace ListTask
 {
@@ -14,33 +15,52 @@ namespace ListTask
             Count = default;
         }
 
-        public SinglyLinkedList(int capacity)
+        public SinglyLinkedList(T data)
         {
-            if (capacity < 0)
+            ListItem<T> listItem = new ListItem<T>(data);
+            Head = listItem;
+            Count = 1;
+        }
+
+        public SinglyLinkedList(SinglyLinkedList<T> list)
+        {
+            Count = list.Count;
+
+            ListItem<T> prevItemCopy = default;
+
+            int i = 0;
+
+            for (ListItem<T> curr = list.Head; curr != null; curr = curr.Next, i++)
             {
-                throw new ArgumentException($"Capacity = {capacity}, but it must be >= 0", nameof(capacity));
+                ListItem<T> itemCopy = new ListItem<T>(curr.Data);
+
+                if (i == 0)
+                {
+                    Head = itemCopy;
+                }
+                else
+                {
+                    prevItemCopy.Next = itemCopy;
+                }
+
+                prevItemCopy = itemCopy;
             }
-
-            ListItem<T> pp = default;
-
-            for (int i = 0; i < capacity; i++)
-            {
-                ListItem<T> p = new ListItem<T>();
-                Head = p;
-                Count++;
-
-            }
-
-            Head = default;
-            Count = default;
         }
 
         /// <summary>
-        /// Gets a value of first list item Data autoproperty
+        /// Gets number of list items 
+        /// </summary>        
+        public int GetCount()
+        {
+            return Count;
+        }
+
+        /// <summary>
+        /// Gets a value of Data autoproperty of first list item 
         /// </summary>        
         public T GetFirstItem()
         {
-            return Head.Data;
+            return GetItem(0);
         }
 
         /// <summary>
@@ -65,11 +85,11 @@ namespace ListTask
 
             int i = 0;
 
-            for (ListItem<T> p = Head; p != null; p = p.Next, i++)
+            for (ListItem<T> curr = Head; curr != null; curr = curr.Next, i++)
             {
                 if (i == itemIndex)
                 {
-                    return p.Data;
+                    return curr.Data;
                 }
             }
 
@@ -104,12 +124,12 @@ namespace ListTask
 
             int i = 0;
 
-            for (ListItem<T> p = Head; p != null; p = p.Next, i++)
+            for (ListItem<T> curr = Head; curr != null; curr = curr.Next, i++)
             {
                 if (i == index)
                 {
-                    T tempData = p.Data;
-                    p.Data = data;
+                    T tempData = curr.Data;
+                    curr.Data = data;
                     return tempData;
                 }
             }
@@ -117,11 +137,224 @@ namespace ListTask
             return default;
         }
 
-        public void AddFirstItem(T data)
+        /// <summary>
+        /// Adds a list item in beginning of a list
+        /// </summary>        
+        public void InsertFirstItem(T data)
         {
-            ListItem<T> firstItem = new ListItem<T>(data, Head);
-            Head = firstItem;
-            Count++;
+            InsertItem(0, data);
+        }
+
+        /// <summary>
+        /// Adds a new list item addressed by index = [0 ... Count - 1]
+        /// Previous item at given index and all other items with greater indexes are shifted right
+        /// </summary>        
+        public void InsertItem(int index, T data)
+        {
+            if (index < 0)
+            {
+                throw new ArgumentException($"Item index = {index}, but it must be >= 0", nameof(index));
+            }
+
+            if (index > Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index), $"Item index = {index}, but it must be in range [0; {Count}]");
+            }
+
+            if (data is null)
+            {
+                throw new ArgumentNullException(nameof(data), "Data must not be null");
+            }
+
+            if (Count == 0 || index == 0)
+            {
+                ListItem<T> firstItem = new ListItem<T>(data, Head);
+                Head = firstItem;
+                Count++;
+                return;
+            }
+
+            int i = 0;
+
+            for (ListItem<T> curr = Head, prev = null; curr != null; prev = curr, curr = curr.Next, i++)
+            {
+                if (i == index)
+                {
+                    ListItem<T> listItem = new ListItem<T>(data, curr);
+                    prev.Next = listItem;
+                    Count++;
+                    return;
+                }
+
+                if (i == Count - 1)
+                {
+                    ListItem<T> listItem = new ListItem<T>(data, null);
+                    curr.Next = listItem;
+                    Count++;
+                    return;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Deletes first item of list
+        /// Returns deleted item Data autoproperty value
+        /// </summary>        
+        public T DeleteFirstItem()
+        {
+            return DeleteItem(0);
+        }
+
+        /// <summary>
+        /// Deletes an item of list addressed by item index = [0 ... Count - 1]
+        /// Returns deleted item Data autoproperty value
+        /// </summary>        
+        public T DeleteItem(int index)
+        {
+            if (index < 0)
+            {
+                throw new ArgumentException($"Item index = {index}, but it must be >= 0", nameof(index));
+            }
+
+            if (Count == 0)
+            {
+                throw new InvalidOperationException("List is empty. Can not delete any item");
+            }
+
+            if (index >= Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index), $"Item index = {index}, but it must be in range [0; {Count - 1}]");
+            }
+
+            int i = 0;
+
+            for (ListItem<T> curr = Head, prev = null; curr != null; prev = curr, curr = curr.Next, i++)
+            {
+                if (index == 0)
+                {
+                    Head = curr.Next;
+                    Count--;
+                    return curr.Data;
+                }
+
+                if (i == Count - 1)
+                {
+                    prev.Next = null;
+                    Count--;
+                    return curr.Data;
+                }
+
+                if (i == index)
+                {
+                    prev.Next = curr.Next;
+                    Count--;
+                    return curr.Data;
+                }
+            }
+
+            return default;
+        }
+
+        /// <summary>
+        /// Deletes first sutable item of list if its Data value equals to given value
+        /// Returns true if an item has been deleted
+        /// </summary>        
+        public bool DeleteItemByData(T data)
+        {
+            if (Count == 0)
+            {
+                throw new InvalidOperationException("List is empty. Can not delete any item");
+            }
+
+            if (data is null)
+            {
+                throw new ArgumentNullException(nameof(data), "Data must not be null");
+            }
+
+            int i = 0;
+
+            for (ListItem<T> curr = Head, prev = null; curr != null; prev = curr, curr = curr.Next, i++)
+            {
+                if (curr.Data.Equals(data))
+                {
+                    if (i == 0)
+                    {
+                        Head = curr.Next;
+                    }
+                    else if (i == Count - 1)
+                    {
+                        prev.Next = null;
+                    }
+                    else
+                    {
+                        prev.Next = curr.Next;
+                    }
+
+                    Count--;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Reverses list
+        /// </summary>        
+        public SinglyLinkedList<T> Reverse()
+        {
+            if (Count < 2)
+            {
+                return this;
+            }
+
+            int i = 0;
+
+            for (ListItem<T> curr = Head, prev = null, next;
+                curr != null;
+                prev = curr, curr = next, i++)
+            {
+                next = curr.Next;
+                curr.Next = prev;
+
+                if (i == Count - 1)
+                {
+                    Head = curr;
+                }
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Creates new list and copies Data to it
+        /// </summary>        
+        public SinglyLinkedList<T> Copy()
+        {
+            return new SinglyLinkedList<T>(this);
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            //sb.Append($"Head = {Head}, ");
+            sb.Append($"Count = {Count}, items = [");
+
+            if (Count == 0)
+            {
+                sb.Append("  ");
+            }
+
+            for (ListItem<T> p = Head; p != null; p = p.Next)
+            {
+                sb.Append(p.Data).Append(", ");
+            }
+
+            sb.Remove(sb.Length - 2, 2);
+            sb.Append(']');
+
+            return sb.ToString();
         }
     }
 }
