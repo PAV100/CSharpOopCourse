@@ -18,5 +18,12 @@
             Next = next;
             Data = data;
         }
+
+        public List2Item(T data, List2Item<T> next, List2Item<T> random)
+        {
+            Next = next;
+            Random = random;
+            Data = data;
+        }
     }
 }

@@ -28,27 +28,34 @@ namespace List2Task
                 return;
             }
 
-            Head = new List2Item<T>(list.Head.Data);
-
-            List2Item<T> previousItemCopy = Head;
-
-            for (List2Item<T> current = list.Head.Next; current != null; current = current.Next)
+            for (List2Item<T> current = list.Head; current != null; current = current.Next.Next)
             {
-                List2Item<T> itemCopy = new List2Item<T>(current.Data);
-
-                previousItemCopy.Next = itemCopy;
-                previousItemCopy = itemCopy;
+                List2Item<T> currentCopy = new List2Item<T>(current.Data, current.Next, current.Random);
+                current.Next = currentCopy;
             }
 
-            ItemReferences[] sourceListItemsReferences = GetListStructure(list);
+            Head = list.Head.Next;
 
-            ItemReferences[] createdListItemsReferences = GetListStructure(this);
-
-            int i = 1;
-
-            for (List2Item<T> current = this.Head; current != null; current = current.Next, i++)
+            for (List2Item<T> current = list.Head; current != null; current = current.Next.Next)
             {
-                current.Random = createdListItemsReferences[sourceListItemsReferences[i].randomItemNumber].currentItem;                
+                if (current.Next.Random is not null)
+                {
+                    current.Next.Random = current.Random.Next;
+                }                
+            }
+
+            for (List2Item<T> current = list.Head, currentCopy = Head;
+            currentCopy != null;
+            current = current.Next, currentCopy = currentCopy.Next)
+            {
+                if (currentCopy.Next is null)
+                {
+                    current.Next = null;
+                    break;
+                }
+
+                current.Next = current.Next.Next;
+                currentCopy.Next = currentCopy.Next.Next;
             }
         }
 

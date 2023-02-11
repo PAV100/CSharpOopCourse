@@ -29,7 +29,6 @@ namespace List2Task
             Console.WriteLine("[Re]generating random references of a list...");
             Console.WriteLine();
             SinglyAndRandomlyLinkedList<int>.RegenerateRandomReferences(list1);
-
             SinglyAndRandomlyLinkedList<int>.Print(list1);
             Console.WriteLine();
 
@@ -38,17 +37,16 @@ namespace List2Task
 
             Console.WriteLine($"name: {nameof(list2)}, {list2}");
             Console.WriteLine();
-
             SinglyAndRandomlyLinkedList<int>.Print(list2);
             Console.WriteLine();
 
-            Console.WriteLine("Copying a list to a new list...");
-            SinglyAndRandomlyLinkedList<int> list3 = list2.Copy();
+            //Console.WriteLine("[Re]generating random references of a list...");
+            //SinglyAndRandomlyLinkedList<int>.RegenerateRandomReferences(list1);
+            //Console.WriteLine($"name: {nameof(list1)}, {list1}");
+            //Console.WriteLine();
+            //SinglyAndRandomlyLinkedList<int>.Print(list1);
+            //Console.WriteLine();
 
-            Console.WriteLine($"name: {nameof(list3)}, {list3}");
-            Console.WriteLine();
-
-            SinglyAndRandomlyLinkedList<int>.Print(list3);
         }
     }
 }

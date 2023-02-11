@@ -1,19 +1,37 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+//using System.Linq;
+//using System.Text;
+//using System.Threading.Tasks;
 
 namespace ArrayListTask
 {
     internal class ArrayList<T> : IList<T>
     {
-        public T this[int index] { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        private T[] items = new T[8];
+
+        public T this[int index]
+        {
+            get { return items[index]; }
+            set { items[index] = value; }
+        }
 
         public int Count => throw new NotImplementedException();
 
         public bool IsReadOnly => throw new NotImplementedException();
+
+        public ArrayList()
+        {
+        }
+
+        public ArrayList(T item)
+        {
+        }
+
+        public ArrayList(int capacity)
+        {
+        }
 
         public void Add(T item)
         {
@@ -61,6 +79,11 @@ namespace ArrayListTask
         }
 
         IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void TrimExcess(T list)
         {
             throw new NotImplementedException();
         }
