@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ArrayListTask
 {
-    internal class ArrayList<T> : IList<T>
+    public class ArrayList<T> : IList<T>
     {
         private const int InitialCapacity = 4;
 
