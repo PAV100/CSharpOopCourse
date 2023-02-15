@@ -80,7 +80,7 @@ namespace ArrayListTask
             }
         }
 
-        int ICollection<T>.Count
+        public int Count
         {
             get { return count; }
         }
@@ -143,6 +143,11 @@ namespace ArrayListTask
         {
             foreach (T e in items)
             {
+                if (e is null)
+                {
+                    return false;
+                }
+
                 if (e.Equals(item))
                 {
                     return true;
@@ -268,7 +273,7 @@ namespace ArrayListTask
                 throw new ArgumentOutOfRangeException(nameof(index), $"Item index = {index}, but it must be >= 0 and < {count}");
             }
 
-            for (int i = index; i < count; i++)
+            for (int i = index; i < count - 1; i++)
             {
                 items[i] = items[i + 1];
             }
