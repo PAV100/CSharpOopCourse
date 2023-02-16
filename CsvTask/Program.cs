@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace CsvTask
@@ -8,35 +11,16 @@ namespace CsvTask
     {
         static void Main()
         {
-            Console.WriteLine("Program demonstrates...");
+            Console.WriteLine("Program demonstrates CsvParser class functionality");
+            Console.WriteLine();            
 
-            string csvFilePath = "..\\..\\..\\input2.csv";
-            string htmlFilePath = "..\\..\\..\\output.html";
+            string inputFilePath = "..\\..\\..\\input2.csv";
+            string outputFilePath = "..\\..\\..\\output2.html";
 
-            CsvToHtmlConvert(csvFilePath, htmlFilePath);
-        }
+            CsvParser csvParser = new(inputFilePath, outputFilePath);
 
-        static void CsvToHtmlConvert(string csvFilePath, string htmlFilePath)
-        {
-            Regex regex = new Regex(@"0123");
-            
-            //regex
-
-            using (StreamReader reader = new StreamReader(csvFilePath))
-            {
-                using StreamWriter writer = new StreamWriter(htmlFilePath);
-
-                string currentLine;
-
-                while ((currentLine = reader.ReadLine()) != null)
-                {
-
-
-                    Console.WriteLine(currentLine);
-
-                    writer.WriteLine(currentLine.ToUpper());
-                }
-            }
+            string htmlTableRowDetails = csvParser.TryParseAsHtmlTable();
+            //Console.WriteLine("{0}", htmlTableRowDetails);            
         }
     }
 }
