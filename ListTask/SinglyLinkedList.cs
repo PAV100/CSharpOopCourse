@@ -5,7 +5,7 @@ namespace ListTask
 {
     internal class SinglyLinkedList<T>
     {
-        public ListItem<T> Head { get; private set; }
+        private ListItem<T> head;
 
         public int Count { get; private set; }
 
@@ -15,7 +15,7 @@ namespace ListTask
 
         public SinglyLinkedList(T data)
         {
-            Head = new ListItem<T>(data);
+            head = new ListItem<T>(data);
             Count = 1;
         }
 
@@ -28,18 +28,14 @@ namespace ListTask
                 return;
             }
 
-            Head = new ListItem<T>(list.Head.Data);
+            head = new ListItem<T>(list.head.Data);
 
-            ListItem<T> previousItemCopy = Head;
+            ListItem<T> previousItemCopy = head;
 
-            int i = 0;
-
-            for (ListItem<T> current = list.Head.Next; current != null; current = current.Next, i++)
+            for (ListItem<T> currentItem = list.head.Next; currentItem != null; currentItem = currentItem.Next)
             {
-                ListItem<T> itemCopy = new ListItem<T>(current.Data);
-
-                previousItemCopy.Next = itemCopy;
-                previousItemCopy = itemCopy;
+                previousItemCopy.Next = new ListItem<T>(currentItem.Data);
+                previousItemCopy = previousItemCopy.Next;
             }
         }
 
@@ -53,7 +49,7 @@ namespace ListTask
                 throw new InvalidOperationException("List is empty. Can not get an item");
             }
 
-            return Get(0);
+            return head.Data;
         }
 
         /// <summary>
@@ -61,7 +57,7 @@ namespace ListTask
         /// </summary>        
         public T Get(int index)
         {
-            if (index < 0 || index >= Count)
+            if (IsIndexLtZeroOrGeCount(index))
             {
                 throw new ArgumentOutOfRangeException(nameof(index), $"Item index = {index}, but it must be >= 0 and < {Count}");
             }
@@ -75,17 +71,17 @@ namespace ListTask
         /// </summary>        
         public T Set(int index, T data)
         {
-            if (index < 0 || index >= Count)
+            if (IsIndexLtZeroOrGeCount(index))
             {
                 throw new ArgumentOutOfRangeException(nameof(index), $"Item index = {index}, but it must be >= 0 and < {Count}");
             }
 
-            ListItem<T> current = GetItem(index);
+            ListItem<T> currentItem = GetItem(index);
 
-            T tempData = current.Data;
-            current.Data = data;
+            T previousData = currentItem.Data;
+            currentItem.Data = data;
 
-            return tempData;
+            return previousData;
         }
 
         /// <summary>
@@ -93,7 +89,8 @@ namespace ListTask
         /// </summary>        
         public void InsertFirst(T data)
         {
-            Insert(0, data);
+            head = new ListItem<T>(data, head);
+            Count++;
         }
 
         /// <summary>
@@ -102,21 +99,19 @@ namespace ListTask
         /// </summary>        
         public void Insert(int index, T data)
         {
-            if (index < 0 || index > Count)
+            if (IsIndexLtZeroOrGtCount(index))
             {
                 throw new ArgumentOutOfRangeException(nameof(index), $"Item index = {index}, but it must be >= 0 and <= {Count}");
             }
 
             if (index == 0)
             {
-                Head = new ListItem<T>(data, Head);
-            }
-            else
-            {
-                ListItem<T> previousItem = GetItem(index - 1);
-                previousItem.Next = new ListItem<T>(data, previousItem.Next);
+                InsertFirst(data);
+                return;
             }
 
+            ListItem<T> previousItem = GetItem(index - 1);
+            previousItem.Next = new ListItem<T>(data, previousItem.Next);
             Count++;
         }
 
@@ -131,7 +126,10 @@ namespace ListTask
                 throw new InvalidOperationException("List is empty. Can not delete an item");
             }
 
-            return Delete(0);
+            T deletedData = head.Data;
+            head = head.Next;
+            Count--;
+            return deletedData;
         }
 
         /// <summary>
@@ -140,31 +138,25 @@ namespace ListTask
         /// </summary>        
         public T Delete(int index)
         {
-            if (index < 0 || index >= Count)
+            if (IsIndexLtZeroOrGeCount(index))
             {
                 throw new ArgumentOutOfRangeException(nameof(index), $"Item index = {index}, but it must be >= 0 and < {Count}");
             }
 
-            T deletedData;
-
             if (index == 0)
             {
-                deletedData = Head.Data;
-                Head = Head.Next;
-            }
-            else
-            {
-                ListItem<T> previousItem = GetItem(index - 1);
-                deletedData = previousItem.Next.Data;
-                previousItem.Next = previousItem.Next.Next;
+                return DeleteFirst();
             }
 
+            ListItem<T> previousItem = GetItem(index - 1);
+            T deletedData = previousItem.Next.Data;
+            previousItem.Next = previousItem.Next.Next;
             Count--;
             return deletedData;
         }
 
         /// <summary>
-        /// Deletes first sutable item of list if its Data value equals to given value
+        /// Deletes first suitable item of list if its Data value equals to given value
         /// Returns true if an item has been deleted
         /// </summary>        
         public bool DeleteByData(T data)
@@ -174,18 +166,18 @@ namespace ListTask
                 return false;
             }
 
-            if (Head.Data.Equals(data))
+            if (head.Data is null && data is null || head.Data is not null && head.Data.Equals(data))
             {
-                Head = Head.Next;
+                head = head.Next;
                 Count--;
                 return true;
             }
 
-            for (ListItem<T> previous = Head; previous.Next != null; previous = previous.Next)
+            for (ListItem<T> previousItem = head; previousItem.Next != null; previousItem = previousItem.Next)
             {
-                if (previous.Next.Data.Equals(data))
+                if (previousItem.Next.Data is null && data is null || previousItem.Next.Data is not null && previousItem.Next.Data.Equals(data))
                 {
-                    previous.Next = previous.Next.Next;
+                    previousItem.Next = previousItem.Next.Next;
                     Count--;
                     return true;
                 }
@@ -206,16 +198,16 @@ namespace ListTask
 
             int i = 0;
 
-            for (ListItem<T> current = Head, previous = null, next;
-                current != null;
-                previous = current, current = next, i++)
+            for (ListItem<T> currentItem = head, previous = null, next;
+                currentItem != null;
+                previous = currentItem, currentItem = next, i++)
             {
-                next = current.Next;
-                current.Next = previous;
+                next = currentItem.Next;
+                currentItem.Next = previous;
 
                 if (i == Count - 1)
                 {
-                    Head = current;
+                    head = currentItem;
                 }
             }
 
@@ -232,24 +224,23 @@ namespace ListTask
 
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder();
-
-            //sb.Append($"Head = {Head}, ");
-            //sb.Append($"Count = {Count}, items = [");
-            sb.Append("items = [");
-
             if (Count == 0)
             {
-                sb.Append("  ");
+                return "[]";
             }
 
-            for (ListItem<T> p = Head; p != null; p = p.Next)
+            StringBuilder sb = new StringBuilder();
+                        
+            sb.Append("[");
+            
+            for (ListItem<T> p = head; p != null; p = p.Next)
             {
-                sb.Append(p.Data).Append(", ");
+                sb.Append(p.Data is null ? "<null>" : p.Data).Append(", ");
             }
 
             sb.Remove(sb.Length - 2, 2);
             sb.Append(']');
+            sb.Append($" Count = {Count}");
 
             return sb.ToString();
         }
@@ -258,15 +249,25 @@ namespace ListTask
         {
             int i = 0;
 
-            for (ListItem<T> current = Head; current != null; current = current.Next, i++)
+            for (ListItem<T> currentItem = head; currentItem != null; currentItem = currentItem.Next, i++)
             {
                 if (i == index)
                 {
-                    return current;
+                    return currentItem;
                 }
             }
 
             return null;
+        }
+
+        private bool IsIndexLtZeroOrGeCount(int index)
+        {
+            return index < 0 || index >= Count;
+        }
+
+        private bool IsIndexLtZeroOrGtCount(int index)
+        {
+            return index < 0 || index > Count;
         }
     }
 }

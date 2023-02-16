@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace ListTask
 {
@@ -17,6 +16,7 @@ namespace ListTask
 
             Console.WriteLine("Constructor, creating list with one item");
             SinglyLinkedList<string> list2 = new SinglyLinkedList<string>("first");
+            list2.InsertFirst(null);
             Console.WriteLine($"Name: {nameof(list2)}, {list2}");
             Console.WriteLine();
 
@@ -33,7 +33,7 @@ namespace ListTask
 
             list1.InsertFirst(15);
             list1.InsertFirst(10);
-            list1.InsertFirst(5);
+            list1.InsertFirst(5);            
             Console.WriteLine("Methods: list1.InsertFirst(15), list1.InsertFirst(10), list1.InsertFirst(5)");
             Console.WriteLine($"Name: {nameof(list1)}, {list1}");
             Console.WriteLine();
@@ -88,12 +88,12 @@ namespace ListTask
             list2.InsertFirst("dddd");
             list2.InsertFirst("eeeee");
             Console.WriteLine($"Name: {nameof(list2)}, {list2}");
-            Console.WriteLine($"Method: list2.Reverse().");
+            Console.WriteLine("Method: list2.Reverse()");
             list2.Reverse();
             Console.WriteLine($"Name: {nameof(list2)}, {list2}");
             Console.WriteLine();
 
-            Console.WriteLine($"Method: list4 = list2.Copy()");
+            Console.WriteLine("Method: list4 = list2.Copy()");
             SinglyLinkedList<string> list4 = list2.Copy();
             Console.WriteLine($"Name: {nameof(list4)}, {list4}");
         }
