@@ -19,9 +19,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ListTask", "ListTask\ListTa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArrayListTask", "ArrayListTask\ArrayListTask.csproj", "{1E58C5A0-39D2-4667-A537-E3F9B094DAE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "List2Task", "List2Task\List2Task.csproj", "{4D93010D-5A39-46F7-9F23-B0DFA1D2D3B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "List2Task", "List2Task\List2Task.csproj", "{4D93010D-5A39-46F7-9F23-B0DFA1D2D3B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsvTask", "CsvTask\CsvTask.csproj", "{C2B66856-3D60-454B-8B52-1E174C5D14BB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvTask", "CsvTask\CsvTask.csproj", "{C2B66856-3D60-454B-8B52-1E174C5D14BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TreeTask", "TreeTask\TreeTask.csproj", "{0C00E227-7298-4F3C-9F45-DEEAE41B7EC3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +71,10 @@ Global
 		{C2B66856-3D60-454B-8B52-1E174C5D14BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2B66856-3D60-454B-8B52-1E174C5D14BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2B66856-3D60-454B-8B52-1E174C5D14BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C00E227-7298-4F3C-9F45-DEEAE41B7EC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C00E227-7298-4F3C-9F45-DEEAE41B7EC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C00E227-7298-4F3C-9F45-DEEAE41B7EC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C00E227-7298-4F3C-9F45-DEEAE41B7EC3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

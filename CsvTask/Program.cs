@@ -14,8 +14,8 @@ namespace CsvTask
             Console.WriteLine("Program demonstrates CsvParser class functionality");
             Console.WriteLine();            
 
-            string inputFilePath = "..\\..\\..\\input2.csv";
-            string outputFilePath = "..\\..\\..\\output2.html";
+            string inputFilePath = "..\\..\\..\\input4.csv";
+            string outputFilePath = "..\\..\\..\\output4.html";
 
             CsvParser csvParser = new(inputFilePath, outputFilePath);
 
