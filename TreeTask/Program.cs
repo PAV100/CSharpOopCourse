@@ -10,13 +10,13 @@ namespace TreeTask
 
             //BinaryTree<string> bt = new("qwerty");
             BinaryTree<string> bt = new();
-            bt.Insert("1");
-            bt.Insert("2200");
-            bt.Insert("24000");
-            bt.Insert("330000");
-            bt.Insert("3600000");
-            bt.Insert("45000000");
-            bt.Insert("470000000");
+            bt.Insert("100000000");
+            bt.Insert("200000000");
+            bt.Insert("3");
+            bt.Insert("4");
+            bt.Insert("5");
+            bt.Insert("6");
+            bt.Insert("70000");
 
             Console.WriteLine(bt.ToString());
 
