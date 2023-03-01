@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
 namespace TreeTask
 {
-    internal class TreeNode<T>
+    public class TreeNode<T> where T : IComparable<T>
     {
         public TreeNode<T> left;
 
@@ -12,12 +13,9 @@ namespace TreeTask
 
         public T data;
 
-        //public bool IsLeaf { get; }
-
         public TreeNode(T data)
         {
             this.data = data;
-            //IsLeaf = true;
         }
 
         public TreeNode(TreeNode<T> left, TreeNode<T> right, T data)
@@ -25,8 +23,6 @@ namespace TreeTask
             this.left = left;
             this.right = right;
             this.data = data;
-
-            //IsLeaf = this.left is null && this.right is null;
         }
     }
 }

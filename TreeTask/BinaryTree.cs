@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TreeTask
 {
-    public class BinaryTree<T>
+    public class BinaryTree<T> where T : IComparable<T>
     {
         private TreeNode<T> root;
 
@@ -27,73 +27,39 @@ namespace TreeTask
 
         public void Insert(T data)
         {
-            if (count == 0)
+            TreeNode<T> currentNode = root;
+
+            while (true)
             {
-                root = new TreeNode<T>(data);
-                count++;
-                return;
+                if (currentNode.data.CompareTo(data) > 0)
+                {
+                    if (currentNode.left is not null)
+                    {
+                        currentNode = currentNode.left;
+                        continue;
+                    }
+
+                    currentNode.left = new TreeNode<T>(data);
+                    break;
+                }
+                else
+                {
+                    if (currentNode.right is not null)
+                    {
+                        currentNode = currentNode.right;
+                        continue;
+                    }
+
+                    currentNode.right = new TreeNode<T>(data);
+                    break;
+                }
             }
 
-            if (count == 1)
-            {
-                root.left = new TreeNode<T>(data);
-                count++;
-                return;
-            }
-
-            if (count == 2)
-            {
-                root.right = new TreeNode<T>(data);
-                count++;
-                return;
-            }
-
-            if (count == 3)
-            {
-                root.left.left = new TreeNode<T>(data);
-                count++;
-                return;
-            }
-
-            if (count == 4)
-            {
-                root.left.right = new TreeNode<T>(data);
-                count++;
-                return;
-            }
-
-            if (count == 5)
-            {
-                root.right.left = new TreeNode<T>(data);
-                count++;
-                return;
-            }
-
-            if (count == 6)
-            {
-                root.right.right = new TreeNode<T>(data);
-                count++;
-                return;
-            }
+            count++;
         }
 
         public int Contain(T data)
         {
-            string s = "1";
-            Console.WriteLine($"{s} c={GetCentralSymbolIndex(s)} l={GetSymbolsCountToLeftFromCentralSymbol(s)} r={GetSymbolsCountToRightFromCentralSymbol(s)}");
-            s = "10";
-            Console.WriteLine($"{s} c={GetCentralSymbolIndex(s)} l={GetSymbolsCountToLeftFromCentralSymbol(s)} r={GetSymbolsCountToRightFromCentralSymbol(s)}");
-            s = "100";
-            Console.WriteLine($"{s} c={GetCentralSymbolIndex(s)} l={GetSymbolsCountToLeftFromCentralSymbol(s)} r={GetSymbolsCountToRightFromCentralSymbol(s)}");
-            s = "1000";
-            Console.WriteLine($"{s} c={GetCentralSymbolIndex(s)} l={GetSymbolsCountToLeftFromCentralSymbol(s)} r={GetSymbolsCountToRightFromCentralSymbol(s)}");
-            s = "(1000 ";
-            Console.WriteLine($"{s} c={GetCentralSymbolIndex(s)} l={GetSymbolsCountToLeftFromCentralSymbol(s)} r={GetSymbolsCountToRightFromCentralSymbol(s)}");
-            s = " 1000)";
-            Console.WriteLine($"{s} c={GetCentralSymbolIndex(s)} l={GetSymbolsCountToLeftFromCentralSymbol(s)} r={GetSymbolsCountToRightFromCentralSymbol(s)}");
-            s = " 10000)";
-            Console.WriteLine($"{s} c={GetCentralSymbolIndex(s)} l={GetSymbolsCountToLeftFromCentralSymbol(s)} r={GetSymbolsCountToRightFromCentralSymbol(s)}");
-
             return 0;
         }
 
@@ -124,7 +90,12 @@ namespace TreeTask
                 return "";
             }
 
-            List<string> treePrintout = new();
+            List<string> treePrintout = new(GetTreeHeight() + 1);
+
+            for (int i = 0; i < treePrintout.Capacity; i++)
+            {
+                treePrintout.Insert(0, "");
+            }
 
             GetTreeLevelPrintout(treePrintout, root);
 
@@ -138,208 +109,89 @@ namespace TreeTask
             return sb.ToString();
         }
 
-        private string GetTreeLevelPrintout(List<string> treePrintout, TreeNode<T> node, int nodeLevel, out int symbolsCountToLeftFromCentralSymbol, out int symbolsCountToRightFromCentralSymbol)
+        private string GetTreeLevelPrintout(List<string> treePrintout, TreeNode<T> node, int nodeLevel, out int centralSymbolIndex)
         {
             if (node is null)
             {
-                symbolsCountToLeftFromCentralSymbol = 0;
-                symbolsCountToRightFromCentralSymbol = 0;
+                centralSymbolIndex = 0;
                 return "";
             }
 
-            string leftChildCap = "┌";
-            string childCapPlaceholder = "─";
-            string rightChildCap = "┐";
-
-            string childrenDelimiter = " ";
-
-            // TODO: check all arguments for null                       
-
-            // Check and create an empty string for level nodeLevel
-            if (treePrintout.Count <= nodeLevel)
-            {
-                treePrintout.Insert(nodeLevel, "");
-            }
-
-            string thisNodeData = node.data.ToString() == "" ? "<empty>" : node.data.ToString();
-
-            if (node.left is null && node.right is null) // If no children - stop recursion
-            {
-                if (nodeLevel == 0)
-                {
-                    treePrintout[0] = thisNodeData;
-                }
-
-                symbolsCountToLeftFromCentralSymbol = GetSymbolsCountToLeftFromCentralSymbol(thisNodeData);
-                symbolsCountToRightFromCentralSymbol = GetSymbolsCountToRightFromCentralSymbol(thisNodeData);
-                return thisNodeData;
-            }
-
-            if (treePrintout.Count == nodeLevel)
-            {
-                treePrintout.Insert(nodeLevel + 1, ""); // If there are children - create an empty string for level nodeLevel + 1
-            }
-
-            int leftChildSymbolsCountToLeftFromCentralSymbol = 0;
-            int leftChildSymbolsCountToRightFromCentralSymbol = 0;
-            int rightChildSymbolsCountToLeftFromCentralSymbol = 0;
-            int rightChildSymbolsCountToRightFromCentralSymbol = 0;
-
-            string leftChildData = "";
+            string leftChildData = null;
+            int leftChildCenteralSymbolIndex = 0;
 
             if (node.left is not null)
             {
-                //leftChildData = GetTreeLevelPrintout(treePrintout, node.left, nodeLevel + 1);
-                leftChildData = GetTreeLevelPrintout(treePrintout, node.left, nodeLevel + 1, out leftChildSymbolsCountToLeftFromCentralSymbol, out leftChildSymbolsCountToRightFromCentralSymbol);
+                leftChildData = GetTreeLevelPrintout(treePrintout, node.left, nodeLevel + 1, out leftChildCenteralSymbolIndex);
             }
-
-            string rightChildData = "";
 
             if (node.right is not null)
             {
-                rightChildData = GetTreeLevelPrintout(treePrintout, node.right, nodeLevel + 1, out rightChildSymbolsCountToLeftFromCentralSymbol, out rightChildSymbolsCountToRightFromCentralSymbol);
+                AppendLowerLevelLines(treePrintout, nodeLevel + 2);
             }
 
-            // Control stream will be here when method(s) return(s) a child (or children) data
+            string rightChildData = null;
+            int rightChildCentralSymbolIndex = 0;
 
-            string childrenLine = "";
-            int childrenLineLength;
-
-            string parentLine = "";
-            int parentLineLength;
-            int childCapPlaceholdersCount;
-            int childCapPlaceholdersCountToLeftFromParent;
-            int childCapPlaceholdersCountToRightFromParent;
-
-            symbolsCountToLeftFromCentralSymbol = 0;
-            symbolsCountToRightFromCentralSymbol = 0;
-
-            if (node.left is not null && node.right is not null)
+            if (node.right is not null)
             {
-                childrenLine = leftChildData + childrenDelimiter + rightChildData;
-                childrenLineLength = childrenLine.Length;
-
-                parentLineLength = leftChildSymbolsCountToLeftFromCentralSymbol + leftChildCap.Length
-                    + thisNodeData.Length
-                    + rightChildCap.Length + rightChildSymbolsCountToRightFromCentralSymbol;
-
-                childCapPlaceholdersCount = Math.Max(parentLineLength, childrenLineLength)
-                    - (leftChildSymbolsCountToLeftFromCentralSymbol + leftChildCap.Length
-                    + thisNodeData.Length
-                    + rightChildCap.Length + rightChildSymbolsCountToRightFromCentralSymbol);
-                childCapPlaceholdersCountToLeftFromParent = childCapPlaceholdersCount / 2;
-                childCapPlaceholdersCountToRightFromParent = childCapPlaceholdersCount - childCapPlaceholdersCountToLeftFromParent;
-
-                if (childrenLineLength >= parentLineLength)
-                {
-                    parentLine = new string(' ', leftChildSymbolsCountToLeftFromCentralSymbol) + leftChildCap + new string(childCapPlaceholder[0], childCapPlaceholdersCountToLeftFromParent)
-                   + thisNodeData
-                   + new string(childCapPlaceholder[0], childCapPlaceholdersCountToRightFromParent) + rightChildCap + new string(' ', rightChildSymbolsCountToRightFromCentralSymbol);
-
-                    symbolsCountToLeftFromCentralSymbol = leftChildSymbolsCountToLeftFromCentralSymbol + leftChildCap.Length + childCapPlaceholdersCountToLeftFromParent
-                        + GetSymbolsCountToLeftFromCentralSymbol(thisNodeData);
-
-                    symbolsCountToRightFromCentralSymbol = GetSymbolsCountToRightFromCentralSymbol(thisNodeData)
-                        + childCapPlaceholdersCountToRightFromParent + rightChildCap.Length + rightChildSymbolsCountToRightFromCentralSymbol;
-                }
-                else  // if (childrenLineLength < parentLineLength)
-                {
-                    parentLine = new string(' ', leftChildSymbolsCountToLeftFromCentralSymbol) + leftChildCap + thisNodeData + rightChildCap + new string(' ', rightChildSymbolsCountToRightFromCentralSymbol);
-
-                    int childrenDelimitersCount = parentLineLength - leftChildData.Length - rightChildData.Length;
-                    childrenLine = leftChildData + new string(childrenDelimiter[0], childrenDelimitersCount) + rightChildData;
-
-                    symbolsCountToLeftFromCentralSymbol = leftChildSymbolsCountToLeftFromCentralSymbol + leftChildCap.Length + GetSymbolsCountToLeftFromCentralSymbol(thisNodeData);
-
-                    symbolsCountToRightFromCentralSymbol = GetSymbolsCountToLeftFromCentralSymbol(thisNodeData) + rightChildCap.Length + rightChildSymbolsCountToRightFromCentralSymbol;
-
-                    for (int i = nodeLevel + 2; i < treePrintout.Count; i++)
-                    {
-                        treePrintout[i] = treePrintout[i].Insert(leftChildData.Length, new string(childrenDelimiter[0], childrenDelimitersCount - 1));
-                    }
-                }
+                rightChildData = GetTreeLevelPrintout(treePrintout, node.right, nodeLevel + 1, out rightChildCentralSymbolIndex);
             }
 
-            if (node.left is not null && node.right is null)
-            {
-                childrenLine = leftChildData;
-                childrenLineLength = childrenLine.Length;
+            string parentLine;
+            string childrenLine;
+            string thisNodeData = node.data is null ? "<null>" : node.data.ToString();
 
-                parentLineLength = leftChildSymbolsCountToLeftFromCentralSymbol + leftChildCap.Length + thisNodeData.Length;
-
-                childCapPlaceholdersCount = Math.Max(parentLineLength, childrenLineLength)
-                    - (leftChildSymbolsCountToLeftFromCentralSymbol + leftChildCap.Length + thisNodeData.Length);
-                childCapPlaceholdersCountToLeftFromParent = childCapPlaceholdersCount;
-
-                if (childrenLineLength >= parentLineLength)
-                {
-                    parentLine = new string(' ', leftChildSymbolsCountToLeftFromCentralSymbol) + leftChildCap + new string(childCapPlaceholder[0], childCapPlaceholdersCountToLeftFromParent)
-             + thisNodeData;
-
-                    symbolsCountToLeftFromCentralSymbol = leftChildSymbolsCountToLeftFromCentralSymbol + leftChildCap.Length + childCapPlaceholdersCountToLeftFromParent
-                        + GetSymbolsCountToLeftFromCentralSymbol(thisNodeData);
-                    symbolsCountToRightFromCentralSymbol = GetSymbolsCountToRightFromCentralSymbol(thisNodeData);
-                }
-                else  // if (childrenLineLength < parentLineLength)
-                {
-                    parentLine = new string(' ', leftChildSymbolsCountToLeftFromCentralSymbol) + leftChildCap + thisNodeData;
-
-                    int childrenDelimitersCount = parentLineLength - leftChildData.Length;
-                    childrenLine = leftChildData + new string(childrenDelimiter[0], childrenDelimitersCount);
-
-                    symbolsCountToLeftFromCentralSymbol = leftChildSymbolsCountToLeftFromCentralSymbol + leftChildCap.Length + GetSymbolsCountToLeftFromCentralSymbol(thisNodeData);
-
-                    for (int i = nodeLevel + 2; i < treePrintout.Count; i++)
-                    {
-                        treePrintout[i] = treePrintout[i].Insert(leftChildData.Length, new string(childrenDelimiter[0], childrenDelimitersCount - 1));
-                    }
-                }
-            }
-
-            if (node.left is null && node.right is not null)
-            {
-                childrenLine = rightChildData;
-                childrenLineLength = childrenLine.Length;
-
-                parentLineLength = thisNodeData.Length + rightChildCap.Length + rightChildSymbolsCountToRightFromCentralSymbol;
-
-                childCapPlaceholdersCount = Math.Max(parentLineLength, childrenLineLength)
-                    - (thisNodeData.Length + rightChildCap.Length + rightChildSymbolsCountToRightFromCentralSymbol);
-                childCapPlaceholdersCountToRightFromParent = childCapPlaceholdersCount;
-
-                if (childrenLineLength >= parentLineLength)
-                {
-                    parentLine = thisNodeData
-                  + new string(childCapPlaceholder[0], childCapPlaceholdersCountToRightFromParent) + rightChildCap + new string(' ', rightChildSymbolsCountToRightFromCentralSymbol);
-
-                    symbolsCountToLeftFromCentralSymbol = GetSymbolsCountToLeftFromCentralSymbol(thisNodeData);
-                    symbolsCountToRightFromCentralSymbol = GetSymbolsCountToRightFromCentralSymbol(thisNodeData)
-                        + childCapPlaceholdersCountToRightFromParent + rightChildCap.Length + rightChildSymbolsCountToRightFromCentralSymbol;
-                }
-                else  // if (childrenLineLength < parentLineLength)
-                {
-                    parentLine = thisNodeData + rightChildCap + new string(' ', rightChildSymbolsCountToRightFromCentralSymbol);
-
-                    int childrenDelimitersCount = parentLineLength - rightChildData.Length;
-                    childrenLine = new string(childrenDelimiter[0], childrenDelimitersCount) + rightChildData;
-
-                    symbolsCountToRightFromCentralSymbol = GetSymbolsCountToLeftFromCentralSymbol(thisNodeData) + rightChildCap.Length + rightChildSymbolsCountToRightFromCentralSymbol;
-
-                    for (int i = nodeLevel + 2; i < treePrintout.Count; i++)
-                    {
-                        treePrintout[i] = treePrintout[i].Insert(0, new string(childrenDelimiter[0], childrenDelimitersCount - 1));
-                    }
-                }
-            }
+            FormParentAndChildrenLines(thisNodeData, leftChildData, leftChildCenteralSymbolIndex, rightChildData, rightChildCentralSymbolIndex, out parentLine, out centralSymbolIndex, out childrenLine);
 
             if (nodeLevel == 0)
             {
-                treePrintout[nodeLevel] = treePrintout[nodeLevel] + parentLine;
+                treePrintout[0] = parentLine + ".";
+                //treePrintout[0] = parentLine + Environment.NewLine;
             }
 
-            treePrintout[nodeLevel + 1] = treePrintout[nodeLevel + 1] + childrenLine + childrenDelimiter;
+            treePrintout[nodeLevel + 1] = treePrintout[nodeLevel + 1] + childrenLine + ".";
+
+            if (node.left is null && rightChildData is not null && childrenLine.IndexOf(rightChildData) != 0)
+            {
+                //ShiftLowerLevelLines(treePrintout, nodeLevel + 1);
+                MoveEndSymbols(treePrintout, nodeLevel + 1, rightChildData.Length+1, childrenLine.IndexOf(rightChildData));
+            }
+
+            //AppendLowerLevelLines(treePrintout, nodeLevel + 1);
+
+            //Console.ReadKey();
+            Console.WriteLine($"lvl={nodeLevel} par=\"{parentLine}\" chl=\"{childrenLine}\" chl.len={childrenLine.Length}");
+            //sConsole.WriteLine($"lvl={nodeLevel} chl=\"{childrenLine}\" chl.len={childrenLine.Length}");
+
+            //Console.WriteLine(GetTreeHeight(root, 0));
 
             return parentLine;
+        }
+
+        public int GetTreeHeight()
+        {
+            return GetTreeHeight(root, 0) + 1;
+        }
+
+        private int GetTreeHeight(TreeNode<T> node, int nodeLevel)
+        {
+
+            int leftChildHeight = 0;
+
+            if (node.left is not null)
+            {
+                leftChildHeight = GetTreeHeight(node.left, nodeLevel + 1);
+            }
+
+            int rightChildHeight = 0;
+
+            if (node.right is not null)
+            {
+                rightChildHeight = GetTreeHeight(node.right, nodeLevel + 1);
+            }
+
+            return Math.Max(nodeLevel, Math.Max(leftChildHeight, rightChildHeight));
         }
 
         private string GetTreeLevelPrintout(List<string> treePrintout, TreeNode<T> root)
@@ -356,24 +208,227 @@ namespace TreeTask
                 throw new ArgumentException();
             }
 
-            return GetTreeLevelPrintout(treePrintout, root, 0, out int l, out int r);
+            return GetTreeLevelPrintout(treePrintout, root, 0, out int i);
         }
 
-        public int GetCentralSymbolIndex(string data)
+        public static void FormParentAndChildrenLines(string thisNodeData, string leftChildData, int leftChildCentralSymbolIndex, string rightChildData, int rightChildCentralSymbolIndex, out string thisNodeLine, out int thisNodeCentralSymbolIndex, out string childrenLine)
+        {
+            thisNodeLine = "";
+            childrenLine = "";
+
+            string leftChildCap = "┌";
+            string childCapPlaceholder = "─";
+            string rightChildCap = "┐";
+            string childrenDelimiter = " ";
+
+            int childCapPlaceholdersCount;
+            int childCapPlaceholdersCountToLeftFromThis = 0;
+            int childCapPlaceholdersCountToRightFromThis;
+            int childrenDelimitersCount;
+            int childrenInternalSymbolsCount;
+
+            int leftChildSymbolsCountToLeftFromCentralSymbol = GetSymbolsCountToLeftFromIndex(leftChildData, leftChildCentralSymbolIndex);
+            int leftChildSymbolsCountToRightFromCentralSymbol = GetSymbolsCountToRightFromIndex(leftChildData, leftChildCentralSymbolIndex);
+            int rightChildSymbolsCountToLeftFromCentralSymbol = GetSymbolsCountToLeftFromIndex(rightChildData, rightChildCentralSymbolIndex);
+            int rightChildSymbolsCountToRightFromCentralSymbol = GetSymbolsCountToRightFromIndex(rightChildData, rightChildCentralSymbolIndex);
+
+            thisNodeCentralSymbolIndex = 0;
+
+            if (leftChildData is null && rightChildData is null)
+            {
+                thisNodeLine = thisNodeData;
+                thisNodeCentralSymbolIndex = GetCentralSymbolIndex(thisNodeData);
+                childrenLine = new string('+', thisNodeData.Length);
+                return;
+            }
+
+            if (leftChildData is not null && rightChildData is not null)
+            {
+                childrenInternalSymbolsCount = leftChildSymbolsCountToRightFromCentralSymbol + childrenDelimiter.Length + rightChildSymbolsCountToLeftFromCentralSymbol;
+
+                if (thisNodeData.Length >= childrenInternalSymbolsCount)
+                {
+                    thisNodeLine = new string(' ', leftChildSymbolsCountToLeftFromCentralSymbol)
+                        + leftChildCap
+                        + thisNodeData
+                        + rightChildCap
+                        + new string(' ', rightChildSymbolsCountToRightFromCentralSymbol);
+
+                    childrenDelimitersCount = thisNodeData.Length - leftChildSymbolsCountToRightFromCentralSymbol - rightChildSymbolsCountToLeftFromCentralSymbol;
+                    childrenLine = leftChildData + new string(childrenDelimiter[0], childrenDelimitersCount) + rightChildData;
+                }
+                else // thisNodeData.Length < [sum of children]
+                {
+                    childCapPlaceholdersCount = childrenInternalSymbolsCount - thisNodeData.Length;
+                    childCapPlaceholdersCountToRightFromThis = childCapPlaceholdersCount / 2;
+                    childCapPlaceholdersCountToLeftFromThis = childCapPlaceholdersCount - childCapPlaceholdersCountToRightFromThis;
+                    thisNodeLine = new string(' ', leftChildSymbolsCountToLeftFromCentralSymbol)
+                        + leftChildCap
+                        + new string(childCapPlaceholder[0], childCapPlaceholdersCountToLeftFromThis)
+                        + thisNodeData
+                        + new string(childCapPlaceholder[0], childCapPlaceholdersCountToRightFromThis)
+                        + rightChildCap
+                        + new string(' ', rightChildSymbolsCountToRightFromCentralSymbol);
+
+                    childrenLine = leftChildData + childrenDelimiter + rightChildData;
+                }
+
+                thisNodeCentralSymbolIndex = leftChildSymbolsCountToLeftFromCentralSymbol
+                    + leftChildCap.Length
+                    + childCapPlaceholdersCountToLeftFromThis
+                    + GetCentralSymbolIndex(thisNodeData);
+                return;
+            }
+
+            if (leftChildData is null && rightChildData is not null)
+            {
+                childrenInternalSymbolsCount = rightChildSymbolsCountToLeftFromCentralSymbol;
+
+                if (thisNodeData.Length >= childrenInternalSymbolsCount)
+                {
+                    thisNodeLine = thisNodeData
+                        + rightChildCap
+                        + new string(' ', rightChildSymbolsCountToRightFromCentralSymbol);
+
+                    childrenDelimitersCount = thisNodeData.Length - rightChildSymbolsCountToLeftFromCentralSymbol;
+                    childrenLine = new string(childrenDelimiter[0], childrenDelimitersCount) + rightChildData;
+                }
+                else // thisNodeData.Length < [sum of children]
+                {
+                    childCapPlaceholdersCountToRightFromThis = childrenInternalSymbolsCount - thisNodeData.Length;
+                    thisNodeLine = thisNodeData
+                        + new string(childCapPlaceholder[0], childCapPlaceholdersCountToRightFromThis)
+                        + rightChildCap
+                        + new string(' ', rightChildSymbolsCountToRightFromCentralSymbol);
+
+                    childrenLine = rightChildData;
+                }
+
+                thisNodeCentralSymbolIndex = GetCentralSymbolIndex(thisNodeData);
+                return;
+            }
+
+            if (leftChildData is not null && rightChildData is null)
+            {
+                childrenInternalSymbolsCount = leftChildSymbolsCountToRightFromCentralSymbol;
+
+                if (thisNodeData.Length >= childrenInternalSymbolsCount)
+                {
+                    thisNodeLine = new string(' ', leftChildSymbolsCountToLeftFromCentralSymbol)
+                        + leftChildCap
+                        + thisNodeData;
+
+                    childrenDelimitersCount = thisNodeData.Length - leftChildSymbolsCountToRightFromCentralSymbol;
+                    childrenLine = leftChildData + new string(childrenDelimiter[0], childrenDelimitersCount);
+                }
+                else // thisNodeData.Length < [sum of children]
+                {
+                    childCapPlaceholdersCountToLeftFromThis = childrenInternalSymbolsCount - thisNodeData.Length;
+                    thisNodeLine = new string(' ', leftChildSymbolsCountToLeftFromCentralSymbol)
+                        + leftChildCap
+                        + new string(childCapPlaceholder[0], childCapPlaceholdersCountToLeftFromThis)
+                        + thisNodeData;
+
+                    childrenLine = leftChildData + new string(' ', thisNodeLine.Length - leftChildData.Length);
+                }
+
+                thisNodeCentralSymbolIndex = leftChildSymbolsCountToLeftFromCentralSymbol
+                    + leftChildCap.Length
+                    + childCapPlaceholdersCountToLeftFromThis
+                    + GetCentralSymbolIndex(thisNodeData);
+                return;
+            }
+
+
+        }
+
+        private void AppendLowerLevelLines(List<string> treePrintout, int nodeLevel)
+        {
+            if (treePrintout.Count <= nodeLevel)
+            {
+                throw new NotImplementedException();
+            }
+
+            for (int i = nodeLevel + 1; i < treePrintout.Count; i++)
+            {
+                if (treePrintout[i].Length < treePrintout[nodeLevel].Length)
+                {
+                    treePrintout[i] = treePrintout[i] + new string('>', treePrintout[nodeLevel].Length - treePrintout[i].Length);
+                }
+            }
+        }
+
+        private void ShiftLowerLevelLines(List<string> treePrintout, int nodeLevel)
+        {
+            if (treePrintout.Count <= nodeLevel)
+            {
+                throw new NotImplementedException();
+            }
+
+            for (int i = nodeLevel + 1; i < treePrintout.Count; i++)
+            {
+                if (treePrintout[i].Length < treePrintout[nodeLevel].Length)
+                {
+                    treePrintout[i] = new string('<', treePrintout[nodeLevel].Length - treePrintout[i].Length) + treePrintout[i];
+                }
+            }
+        }
+
+        private void MoveEndSymbols(List<string> treePrintout, int nodeLevel, int endSymbolsCount, int movePositionsCount)
+        {
+            if (treePrintout.Count <= nodeLevel)
+            {
+                throw new NotImplementedException();
+            }
+
+            for (int i = nodeLevel + 1; i < treePrintout.Count; i++)
+            {
+                
+                treePrintout[i] = treePrintout[i].Insert(treePrintout[i].Length - endSymbolsCount, new string(' ', movePositionsCount));
+            }
+        }
+
+        private void AlignLowerLevelLines(List<string> treePrintout)
+        {
+            int maxLengthNodeIndex = 0;
+
+            for (int i = 0; i < treePrintout.Count; i++)
+            {
+                if (treePrintout[i].Length > treePrintout[maxLengthNodeIndex].Length)
+                {
+                    maxLengthNodeIndex = i;
+                }
+            }
+
+            for (int i = maxLengthNodeIndex + 1; i < treePrintout.Count; i++)
+            {
+                treePrintout[i] = treePrintout[i] + new string(' ', treePrintout[maxLengthNodeIndex].Length - treePrintout[i].Length);
+            }
+        }
+
+
+
+
+        private static int GetCentralSymbolIndex(string data)
         {
             int dataLength = data.Length;
             return dataLength < 1 ? 0 : (dataLength - 1) / 2;
         }
 
-        public int GetSymbolsCountToLeftFromCentralSymbol(string data)
+        private static int GetSymbolsCountToLeftFromIndex(string data, int index)
         {
-            return GetCentralSymbolIndex(data);
+            return index;
         }
 
-        public int GetSymbolsCountToRightFromCentralSymbol(string data)
+        private static int GetSymbolsCountToRightFromIndex(string data, int index)
         {
+            if (data is null)
+            {
+                return 0;
+            }
+
             int dataLength = data.Length;
-            return dataLength < 1 ? 0 : (dataLength - 1) - GetCentralSymbolIndex(data);
+            return dataLength < 1 ? 0 : (dataLength - 1) - index;
         }
     }
 }
