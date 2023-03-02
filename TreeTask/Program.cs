@@ -18,9 +18,9 @@ namespace TreeTask
                 bt.Insert(randomNumber);
             }
 
-            /*bt.Insert(230);
+            /*bt.Insert(240);
+            bt.Insert(230);
             bt.Insert(220);
-            bt.Insert(240);
             bt.Insert(250);
             bt.Insert(260);
             bt.Insert(270);
