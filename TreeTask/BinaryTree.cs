@@ -25,6 +25,10 @@ namespace TreeTask
             count = 1;
         }
 
+        /// <summary>
+        /// Inserts new node into the tree and fills it with "data" value
+        /// </summary>
+        /// <returns>nothing</returns>
         public void Insert(T data)
         {
             TreeNode<T> currentNode = root;
@@ -58,36 +62,387 @@ namespace TreeTask
             count++;
         }
 
-        public int Contain(T data)
+        /// <summary>
+        /// Checks if the treee contains a given "data" value
+        /// </summary>
+        /// <returns> true if contains</returns>
+        /// 
+        public bool Contains(T data)
         {
-            return 0;
+            return GetNodeAndParent(data, out var parent) is not null;
         }
 
-        public bool DeleteFirstOccurence(T data)
+        private TreeNode<T> GetNodeAndParent(T data, out TreeNode<T> parent)
         {
+            var treeEnumerator = GetDepthFirstTraversalEnumerator();
+
+            parent = null;
+            var currentNode = root;
+
+            while (currentNode is not null)
+            {
+                if (currentNode.data.Equals(data))
+                {
+                    return currentNode;
+                }
+
+                if (currentNode.data.CompareTo(data) > 0)
+                {
+                    if (currentNode.left is not null)
+                    {
+                        parent = currentNode;
+                        currentNode = currentNode.left;
+                        continue;
+                    }
+
+                    return default;
+                }
+
+                if (currentNode.right is not null)
+                {
+                    parent = currentNode;
+                    currentNode = currentNode.right;
+                    continue;
+                }
+
+                return default;
+            }
+
+            return default;
+        }
+
+        /// <summary>
+        /// Deletes a node with first occurrence of given "data" value from the tree
+        /// First occurrence is determined by ???
+        /// </summary>
+        /// <returns> true if a node was deleted from the tree</returns>
+        public bool DeleteFirstOccurrence(T data)
+        {
+            var nodeToDelete = GetNodeAndParent(data, out var nodeToDeleteParent);
+
+            if (nodeToDelete is null) // no occurrence
+            {
+                return false;
+            }
+
+            if (nodeToDeleteParent is null && nodeToDelete.left is null && nodeToDelete.right is null) // only root
+            {
+                root = null;
+                nodeToDelete = default;
+                count--;
+                return true;
+            }
+
+            if (nodeToDelete.left is null && nodeToDelete.right is null) // a leaf
+            {
+                if (nodeToDeleteParent.left is not null && nodeToDeleteParent.left.Equals(nodeToDelete))
+                {
+                    nodeToDeleteParent.left = null;
+                    nodeToDelete = default;
+                    count--;
+                    return true;
+                }
+
+                if (nodeToDeleteParent.right is not null && nodeToDeleteParent.right.Equals(nodeToDelete))
+                {
+                    nodeToDeleteParent.right = null;
+                    nodeToDelete = default;
+                    count--;
+                    return true;
+                }
+            }
+
+            if (nodeToDelete.left is not null && nodeToDelete.right is null) // single child (left)
+            {
+                if (nodeToDeleteParent.left is not null && nodeToDeleteParent.left.Equals(nodeToDelete))
+                {
+                    nodeToDeleteParent.left = nodeToDelete.left;
+                    nodeToDelete = default;
+                    count--;
+                    return true;
+                }
+
+                if (nodeToDeleteParent.right is not null && nodeToDeleteParent.right.Equals(nodeToDelete))
+                {
+                    nodeToDeleteParent.right = nodeToDelete.left;
+                    nodeToDelete = default;
+                    count--;
+                    return true;
+                }
+            }
+
+            if (nodeToDelete.left is null && nodeToDelete.right is not null) // single child (right)
+            {
+                if (nodeToDeleteParent.left is not null && nodeToDeleteParent.left.Equals(nodeToDelete))
+                {
+                    nodeToDeleteParent.left = nodeToDelete.right;
+                    nodeToDelete = default;
+                    count--;
+                    return true;
+                }
+
+                if (nodeToDeleteParent.right is not null && nodeToDeleteParent.right.Equals(nodeToDelete))
+                {
+                    nodeToDeleteParent.right = nodeToDelete.right;
+                    nodeToDelete = default;
+                    count--;
+                    return true;
+                }
+            }
+
+            if (nodeToDelete.left is not null && nodeToDelete.right is not null) // both children
+            {
+            }
+
+
+
             return false;
         }
 
+        /// <summary>
+        /// Returns an enumerator that iterates through binary tree nodes using breadth-first traversal
+        /// </summary>
+        /// <returns>tree node data field value</returns>
+        public IEnumerator<T> GetBreadthFirstTraversalEnumerator()
+        {
+            Queue<TreeNode<T>> queue = new();
+
+            queue.Enqueue(root);
+
+            while (queue.Count > 0)
+            {
+                TreeNode<T> currentNode = queue.Dequeue();
+
+                if (currentNode.left is not null)
+                {
+                    queue.Enqueue(currentNode.left);
+                }
+
+                if (currentNode.right is not null)
+                {
+                    queue.Enqueue(currentNode.right);
+                }
+
+                yield return currentNode.data;
+            }
+        }
+
+        /// <summary>
+        /// Returns an enumerator that iterates through binary tree nodes using depth-first traversal
+        /// </summary>
+        /// <returns>tree node data field value</returns>
+        public IEnumerator<T> GetDepthFirstTraversalEnumerator()
+        {
+            Stack<TreeNode<T>> stack = new();
+
+            stack.Push(root);
+
+            while (stack.Count > 0)
+            {
+                TreeNode<T> currentNode = stack.Pop();
+
+                if (currentNode.right is not null)
+                {
+                    stack.Push(currentNode.right);
+                }
+
+                if (currentNode.left is not null)
+                {
+                    stack.Push(currentNode.left);
+                }
+
+                yield return currentNode.data;
+            }
+        }
+
+        /// <summary>
+        /// Returns an enumerator that iterates through binary tree nodes using breadth-first recursive traversal
+        /// </summary>
+        /// <returns>tree node data field value</returns>
+        public IEnumerator<T> GetDepthFirstTraversalRecursiveEnumerator()
+        {
+            return GetDepthFirstTraversalRecursiveEnumerator(root);
+        }
+
+        /// <summary>
+        /// Returns an enumerator that iterates through binary tree nodes using breadth-first recursive traversal
+        /// </summary>
+        /// <returns>tree node data field value</returns>
+        public IEnumerator<T> GetDepthFirstTraversalRecursiveEnumerator(TreeNode<T> node)
+        {
+            yield return node.data;
+
+            if (node.left is not null)
+            {
+                var leftChildEnumerator = GetDepthFirstTraversalRecursiveEnumerator(node.left);
+
+                //foreach (var e in leftChildEnumerator) // does not work
+                //{
+                //    yield return leftChildEnumerator.Current;
+                //}
+
+                while (leftChildEnumerator.MoveNext())
+                {
+                    yield return leftChildEnumerator.Current;
+                }
+            }
+
+            if (node.right is not null)
+            {
+                var rightChildEnumerator = GetDepthFirstTraversalRecursiveEnumerator(node.right);
+
+                while (rightChildEnumerator.MoveNext())
+                {
+                    yield return rightChildEnumerator.Current;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns an array containing binary tree nodes using breadth-first traversal
+        /// </summary>
+        /// <returns>tree node data field values array</returns>
+        [Obsolete]
         public T[] BreadthFirstTraversal()
         {
-            return null;
+            if (count == 0)
+            {
+                return Array.Empty<T>();
+            }
+
+            if (count == 1)
+            {
+                return new T[] { root.data };
+            }
+
+            T[] treeNodes = new T[count];
+            int index = 0;
+
+            Queue<TreeNode<T>> queue = new();
+
+            queue.Enqueue(root);
+
+            while (queue.Count > 0)
+            {
+                TreeNode<T> currentNode = queue.Dequeue();
+
+                treeNodes[index] = currentNode.data;
+                index++;
+
+                if (currentNode.left is not null)
+                {
+                    queue.Enqueue(currentNode.left);
+                }
+
+                if (currentNode.right is not null)
+                {
+                    queue.Enqueue(currentNode.right);
+                }
+            }
+
+            return treeNodes;
         }
 
+        /// <summary>
+        /// Returns an array containing binary tree nodes using depth-first traversal
+        /// </summary>
+        /// <returns>tree node data field values array</returns>
+        [Obsolete]
         public T[] DepthFirstTraversal()
         {
-            return null;
+            if (count == 0)
+            {
+                return Array.Empty<T>();
+            }
+
+            if (count == 1)
+            {
+                return new T[] { root.data };
+            }
+
+            T[] treeNodes = new T[count];
+            int index = 0;
+
+            Stack<TreeNode<T>> stack = new();
+
+            stack.Push(root);
+
+            while (stack.Count > 0)
+            {
+                TreeNode<T> currentNode = stack.Pop();
+
+                treeNodes[index] = currentNode.data;
+                index++;
+
+                if (currentNode.right is not null)
+                {
+                    stack.Push(currentNode.right);
+                }
+
+                if (currentNode.left is not null)
+                {
+                    stack.Push(currentNode.left);
+                }
+            }
+
+            return treeNodes;
         }
 
+        /// <summary>
+        /// Returns an array containing binary tree nodes using depth-first recursive traversal
+        /// </summary>
+        /// <returns>tree node data field values array</returns>
+        [Obsolete]
         public T[] DepthFirstTraversalRecursive()
         {
-            return null;
+            if (count == 0)
+            {
+                return Array.Empty<T>();
+            }
+
+            if (count == 1)
+            {
+                return new T[] { root.data };
+            }
+
+            T[] treeNodes = new T[count];
+            int index = 0;
+
+            DepthFirstTraversalRecursive(treeNodes, root, ref index);
+
+            return treeNodes;
         }
 
+        private void DepthFirstTraversalRecursive(T[] treeNodes, TreeNode<T> node, ref int index)
+        {
+            treeNodes[index] = node.data;
+            index++;
+
+            if (node.left is not null)
+            {
+                DepthFirstTraversalRecursive(treeNodes, node.left, ref index);
+            }
+
+            if (node.right is not null)
+            {
+                DepthFirstTraversalRecursive(treeNodes, node.right, ref index);
+            }
+        }
+
+        /// <summary>
+        /// Returns a binary tree structure
+        /// </summary>
+        /// <returns>a string with line separators</returns>
         public override string ToString()
         {
             if (count == 0)
             {
-                return "";
+                return "<empty>";
+            }
+
+            if (count == 1)
+            {
+                return root.data.ToString();
             }
 
             List<string> treePrintout = new(GetTreeHeight() + 1);
@@ -97,7 +452,9 @@ namespace TreeTask
                 treePrintout.Insert(0, "");
             }
 
-            GetTreeLevelPrintout(treePrintout, root);
+            GetTreeLevelPrintout(treePrintout);
+
+            treePrintout.RemoveAt(treePrintout.Count - 1);
 
             StringBuilder sb = new StringBuilder();
 
@@ -106,7 +463,14 @@ namespace TreeTask
                 sb.Append(s).Append(Environment.NewLine);
             }
 
+            sb.Remove(sb.Length - Environment.NewLine.Length, Environment.NewLine.Length);
+
             return sb.ToString();
+        }
+
+        private string GetTreeLevelPrintout(List<string> treePrintout)
+        {
+            return GetTreeLevelPrintout(treePrintout, root, 0, out int centralSymbolIndex);
         }
 
         private string GetTreeLevelPrintout(List<string> treePrintout, TreeNode<T> node, int nodeLevel, out int centralSymbolIndex)
@@ -126,7 +490,7 @@ namespace TreeTask
 
                 if (node.right is not null)
                 {
-                    AppendLowerLevelLines(treePrintout, nodeLevel + 2);
+                    AppendSpacesToLowerLevelLines(treePrintout, nodeLevel + 2);
                 }
             }
 
@@ -138,32 +502,46 @@ namespace TreeTask
                 rightChildData = GetTreeLevelPrintout(treePrintout, node.right, nodeLevel + 1, out rightChildCentralSymbolIndex);
             }
 
-            string parentLine;
+            string thisLine;
             string childrenLine;
-            string thisNodeData = node.data is null ? "<null>" : node.data.ToString();
+            string thisNodeData;
 
-            FormParentAndChildrenLines(thisNodeData, leftChildData, leftChildCenteralSymbolIndex, rightChildData, rightChildCentralSymbolIndex, out parentLine, out centralSymbolIndex, out childrenLine);
+            if (node.data is null)
+            {
+                thisNodeData = "<null>";
+            }
+            else if (node.data.ToString().Equals(""))
+            {
+                thisNodeData = "<empty>";
+            }
+            else
+            {
+                thisNodeData = node.data.ToString();
+            }
+
+            FormThisAndChildrenLines(thisNodeData, leftChildData, leftChildCenteralSymbolIndex, rightChildData, rightChildCentralSymbolIndex, out thisLine, out centralSymbolIndex, out childrenLine);
 
             if (nodeLevel == 0)
             {
-                treePrintout[0] = parentLine;
+                treePrintout[0] = thisLine;
             }
 
             treePrintout[nodeLevel + 1] = treePrintout[nodeLevel + 1] + childrenLine;
 
-            int emptySymbolsCounty = rightChildData is null ? 0 : childrenLine.IndexOf(rightChildData);
+            int emptySymbolsCount = rightChildData is null ? 0 : childrenLine.IndexOf(rightChildData);
 
-            if (node.left is null && rightChildData is not null && emptySymbolsCounty != 0)
+            if (node.left is null && rightChildData is not null && emptySymbolsCount != 0)
             {
-                // TODO: check here
-                MoveEndSymbols(treePrintout, nodeLevel + 1, rightChildData.Length + 1, emptySymbolsCounty);
+                InsertSpacesToLowerLevelLines(treePrintout, nodeLevel + 1, rightChildData.Length + 1, emptySymbolsCount);
             }
 
-            //Console.WriteLine($"lvl={nodeLevel} par=\"{parentLine}\" chl=\"{childrenLine}\" chl.len={childrenLine.Length}");            
-
-            return parentLine;
+            return thisLine;
         }
 
+        /// <summary>
+        /// Returns a number of tree levels (tree height)
+        /// </summary>
+        /// <returns>an integer number of tree levels </returns>
         public int GetTreeHeight()
         {
             return GetTreeHeight(root, 0) + 1;
@@ -187,27 +565,12 @@ namespace TreeTask
             }
 
             return Math.Max(nodeLevel, Math.Max(leftChildHeight, rightChildHeight));
-            //return Math.Max(leftChildHeight, rightChildHeight);
         }
 
-        private string GetTreeLevelPrintout(List<string> treePrintout, TreeNode<T> root)
-        {
-            if (root is null)
-            {
-                // TODO:
-                throw new ArgumentNullException();
-            }
-
-            if (!this.root.Equals(root))
-            {
-                // TODO:
-                throw new ArgumentException();
-            }
-
-            return GetTreeLevelPrintout(treePrintout, root, 0, out int i);
-        }
-
-        public static void FormParentAndChildrenLines(string thisNodeData, string leftChildData, int leftChildCentralSymbolIndex, string rightChildData, int rightChildCentralSymbolIndex, out string thisNodeLine, out int thisNodeCentralSymbolIndex, out string childrenLine)
+        private static void FormThisAndChildrenLines(string thisNodeData,
+            string leftChildData, int leftChildCentralSymbolIndex,
+            string rightChildData, int rightChildCentralSymbolIndex,
+            out string thisNodeLine, out int thisNodeCentralSymbolIndex, out string childrenLine)
         {
             thisNodeLine = "";
             childrenLine = "";
@@ -336,11 +699,11 @@ namespace TreeTask
             }
         }
 
-        private void AppendLowerLevelLines(List<string> treePrintout, int nodeLevel)
+        private static void AppendSpacesToLowerLevelLines(List<string> treePrintout, int nodeLevel)
         {
             if (treePrintout.Count <= nodeLevel)
             {
-                throw new NotImplementedException();
+                throw new ArgumentOutOfRangeException(nameof(nodeLevel), $"nodeLevel = {nodeLevel}, but it must be >= 0 and < {treePrintout.Count}");
             }
 
             for (int i = nodeLevel + 1; i < treePrintout.Count; i++)
@@ -352,53 +715,18 @@ namespace TreeTask
             }
         }
 
-        private void ShiftLowerLevelLines(List<string> treePrintout, int nodeLevel)
+        private static void InsertSpacesToLowerLevelLines(List<string> treePrintout, int nodeLevel, int endSymbolsCount, int movePositionsCount)
         {
             if (treePrintout.Count <= nodeLevel)
             {
-                throw new NotImplementedException();
+                throw new ArgumentOutOfRangeException(nameof(nodeLevel), $"nodeLevel = {nodeLevel}, but it must be >= 0 and < {treePrintout.Count}");
             }
 
-            for (int i = nodeLevel + 1; i < treePrintout.Count; i++)
-            {
-                if (treePrintout[i].Length < treePrintout[nodeLevel].Length)
-                {
-                    treePrintout[i] = new string(' ', treePrintout[nodeLevel].Length - treePrintout[i].Length) + treePrintout[i];
-                }
-            }
-        }
-
-        // TODO: check here
-        private void MoveEndSymbols(List<string> treePrintout, int nodeLevel, int endSymbolsCount, int movePositionsCount)
-        {
-            if (treePrintout.Count <= nodeLevel)
-            {
-                throw new NotImplementedException();
-            }
-
-            int insertSymbolIndex = treePrintout[nodeLevel + 1].Length - 0 - endSymbolsCount;
+            int insertSymbolIndex = treePrintout[nodeLevel + 1].Length - endSymbolsCount;
 
             for (int i = nodeLevel + 1; i < treePrintout.Count; i++)
             {
                 treePrintout[i] = treePrintout[i].Insert(insertSymbolIndex, new string(' ', movePositionsCount));
-            }
-        }
-
-        private void AlignLowerLevelLines(List<string> treePrintout)
-        {
-            int maxLengthNodeIndex = 0;
-
-            for (int i = 0; i < treePrintout.Count; i++)
-            {
-                if (treePrintout[i].Length > treePrintout[maxLengthNodeIndex].Length)
-                {
-                    maxLengthNodeIndex = i;
-                }
-            }
-
-            for (int i = maxLengthNodeIndex + 1; i < treePrintout.Count; i++)
-            {
-                treePrintout[i] = treePrintout[i] + new string(' ', treePrintout[maxLengthNodeIndex].Length - treePrintout[i].Length);
             }
         }
 
