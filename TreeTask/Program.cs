@@ -19,44 +19,7 @@ namespace TreeTask
             {
                 int randomNumber = randomNumberGenerator.Next(0, 100 + 1);
                 bt.Insert(randomNumber);
-            }
-
-            /*BinaryTree<string> bt = new("qwerty");
-            bt.Insert("b");
-            bt.Insert("a");
-            bt.Insert("c");
-            bt.Insert("d");
-            bt.Insert("e");
-            bt.Insert("f");
-            bt.Insert("g");
-            bt.Insert("i");
-            bt.Insert("j");
-            bt.Insert("k");
-            bt.Insert("r");*/
-
-            /*bt.Insert(240);
-            bt.Insert(230);
-            bt.Insert(220);
-            bt.Insert(250);
-            bt.Insert(260);
-            bt.Insert(270);
-            bt.Insert(280);
-            bt.Insert(290);*/
-
-            /*bt.Insert(13);
-            bt.Insert(40);
-            bt.Insert(2);
-            bt.Insert(53);
-            bt.Insert(70);
-            bt.Insert(8);
-            bt.Insert(181);
-            bt.Insert(327);
-            bt.Insert(422);
-            bt.Insert(654);
-            bt.Insert(718);
-            bt.Insert(113);
-            bt.Insert(156);
-            bt.Insert(413);*/
+            }            
 
             Console.WriteLine(bt.ToString());
             Console.WriteLine();
@@ -100,23 +63,53 @@ namespace TreeTask
             Console.WriteLine();
             Console.WriteLine();
 
-            Console.Write("6. Method Contains() checks the tree for given value. Enter a value: ");
-            int value = Convert.ToInt32(Console.ReadLine());
-            string messageString = bt.Contains(value) == false ? "does not contain" : "contains";
-            Console.WriteLine($"The tree {messageString} a value {value}.");
-            Console.WriteLine();
+            Console.Write("6. Method Contains() checks the tree for given value. Enter a value or press Enter to terminate: ");
+            int value;
+            string messageString;
 
-            Console.Write("7. Method DeleteFirstOccurrence() checks the tree for given value and deletes it if finds. Enter a value: ");
-            value = Convert.ToInt32(Console.ReadLine());
-            messageString = bt.DeleteFirstOccurrence(value) == false ? "is not found in" : "was deleted from";
-            Console.WriteLine($"A value {value} {messageString} the tree.");
+            try
+            {
+                value = Convert.ToInt32(Console.ReadLine());
+                messageString = bt.Contains(value) == false ? "does not contain" : "contains";
+                Console.WriteLine($"The tree {messageString} a value {value}.");
+                Console.WriteLine();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine();
+            }
+
+            Console.WriteLine("7. Method DeleteFirstOccurrence() checks the tree for given value and deletes it if finds.");
+            var cursorPositiont = Console.GetCursorPosition();
             Console.WriteLine(bt.ToString());
-            Console.WriteLine();
+            int treeHeight = bt.GetTreeHeight();
 
+            while (true)
+            {
+                try
+                {
+                    Console.Write("Enter a value to delete or press Enter to terminate: ");
+                    value = Convert.ToInt32(Console.ReadLine());
 
+                    Console.SetCursorPosition(cursorPositiont.Left, cursorPositiont.Top);
 
-            //var t = Console.GetCursorPosition();
-            //Console.SetCursorPosition(t.Left,t.Top);
+                    for (int i = 0; i < treeHeight + 2; i++)
+                    {
+                        Console.WriteLine(new string(' ', 80));
+                    }
+
+                    Console.SetCursorPosition(cursorPositiont.Left, cursorPositiont.Top);
+
+                    messageString = bt.DeleteFirstOccurrence(value) == false ? "is not found in" : "was deleted from";
+                    Console.WriteLine(bt.ToString());
+
+                    Console.WriteLine($"A value {value} {messageString} the tree.");
+                }
+                catch (Exception e)
+                {
+                    break;
+                }
+            }
         }
     }
 }

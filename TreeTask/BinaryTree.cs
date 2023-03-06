@@ -69,13 +69,11 @@ namespace TreeTask
         /// 
         public bool Contains(T data)
         {
-            return GetNodeAndParent(data, out var parent) is not null;
+            return GetNodeAndParentByData(data, out var parent) is not null;
         }
 
-        private TreeNode<T> GetNodeAndParent(T data, out TreeNode<T> parent)
+        private TreeNode<T> GetNodeAndParentByData(T data, out TreeNode<T> parent)
         {
-            var treeEnumerator = GetDepthFirstTraversalEnumerator();
-
             parent = null;
             var currentNode = root;
 
@@ -118,85 +116,124 @@ namespace TreeTask
         /// <returns> true if a node was deleted from the tree</returns>
         public bool DeleteFirstOccurrence(T data)
         {
-            var nodeToDelete = GetNodeAndParent(data, out var nodeToDeleteParent);
+            var nodeToDelete = GetNodeAndParentByData(data, out var nodeToDeleteParent);
 
             if (nodeToDelete is null) // no occurrence
             {
                 return false;
             }
 
-            if (nodeToDeleteParent is null && nodeToDelete.left is null && nodeToDelete.right is null) // only root
+            if (nodeToDelete.left is null && nodeToDelete.right is null) // a leaf (including only root)
             {
-                root = null;
-                nodeToDelete = default;
+                SetNewChild(nodeToDeleteParent, nodeToDelete, default);
                 count--;
                 return true;
             }
 
-            if (nodeToDelete.left is null && nodeToDelete.right is null) // a leaf
+            if (nodeToDelete.right is null) // node with left subtree
             {
-                if (nodeToDeleteParent.left is not null && nodeToDeleteParent.left.Equals(nodeToDelete))
-                {
-                    nodeToDeleteParent.left = null;
-                    nodeToDelete = default;
-                    count--;
-                    return true;
-                }
-
-                if (nodeToDeleteParent.right is not null && nodeToDeleteParent.right.Equals(nodeToDelete))
-                {
-                    nodeToDeleteParent.right = null;
-                    nodeToDelete = default;
-                    count--;
-                    return true;
-                }
+                SetNewChild(nodeToDeleteParent, nodeToDelete, nodeToDelete.left);
+                count--;
+                return true;
             }
 
-            if (nodeToDelete.left is not null && nodeToDelete.right is null) // single child (left)
+            if (nodeToDelete.left is null) // node with right subtree
             {
-                if (nodeToDeleteParent.left is not null && nodeToDeleteParent.left.Equals(nodeToDelete))
-                {
-                    nodeToDeleteParent.left = nodeToDelete.left;
-                    nodeToDelete = default;
-                    count--;
-                    return true;
-                }
-
-                if (nodeToDeleteParent.right is not null && nodeToDeleteParent.right.Equals(nodeToDelete))
-                {
-                    nodeToDeleteParent.right = nodeToDelete.left;
-                    nodeToDelete = default;
-                    count--;
-                    return true;
-                }
+                SetNewChild(nodeToDeleteParent, nodeToDelete, nodeToDelete.right);
+                count--;
+                return true;
             }
 
-            if (nodeToDelete.left is null && nodeToDelete.right is not null) // single child (right)
-            {
-                if (nodeToDeleteParent.left is not null && nodeToDeleteParent.left.Equals(nodeToDelete))
-                {
-                    nodeToDeleteParent.left = nodeToDelete.right;
-                    nodeToDelete = default;
-                    count--;
-                    return true;
-                }
+            // both children
+            var mostLeftNode = GetMostLeftNodeAndParentFromRightSubtree(nodeToDelete, out var mostLeftNodeParent);
 
-                if (nodeToDeleteParent.right is not null && nodeToDeleteParent.right.Equals(nodeToDelete))
-                {
-                    nodeToDeleteParent.right = nodeToDelete.right;
-                    nodeToDelete = default;
-                    count--;
-                    return true;
-                }
+            mostLeftNode.left = nodeToDelete.left;
+
+            SetNewChild(nodeToDeleteParent, nodeToDelete, mostLeftNode);
+
+            if (!nodeToDelete.right.Equals(mostLeftNode)) // If most left node is not right child of node to delete
+            {
+                var mostLeftNodeRightChild = mostLeftNode.right;
+                mostLeftNode.right = nodeToDelete.right;
+                SetNewChild(mostLeftNodeParent, mostLeftNode, mostLeftNodeRightChild);
+            }                       
+
+            count--;
+            return true;
+        }
+
+        private static bool IsLeftChild(TreeNode<T> nodeParent, TreeNode<T> node)
+        {
+            if (node is null || nodeParent is null)
+            {
+                return false;
             }
 
-            if (nodeToDelete.left is not null && nodeToDelete.right is not null) // both children
+            return node.Equals(nodeParent.left);
+        }
+
+        private static bool IsRightChild(TreeNode<T> nodeParent, TreeNode<T> node)
+        {
+            if (node is null || nodeParent is null)
             {
+                return false;
             }
 
+            return node.Equals(nodeParent.right);
+        }
 
+        private bool SetNewChild(TreeNode<T> parent, TreeNode<T> currentChild, TreeNode<T> newChild)
+        {
+            if (root is null)
+            {
+                return false;
+            }
+
+            if (parent is null && root.Equals(currentChild))
+            {
+                root = newChild;
+                return true;
+            }
+
+            if (IsLeftChild(parent, currentChild))
+            {
+                parent.left = newChild;
+                return true;
+            }
+
+            if (IsRightChild(parent, currentChild))
+            {
+                parent.right = newChild;
+                return true;
+            }
 
             return false;
+        }
+
+        private TreeNode<T> GetMostLeftNodeAndParentFromRightSubtree(TreeNode<T> node, out TreeNode<T> mostLeftNodeParent)
+        {
+            mostLeftNodeParent = null;
+
+            if (node is null)
+            {
+                return null;
+            }
+
+            if (node.right is null)
+            {
+                return null;
+            }
+
+            var currentNode = node.right;
+            mostLeftNodeParent = node;
+
+            while (currentNode.left is not null)
+            {
+                mostLeftNodeParent = currentNode;
+                currentNode = currentNode.left;
+            }
+
+            return currentNode;
         }
 
         /// <summary>
@@ -549,6 +586,10 @@ namespace TreeTask
 
         private int GetTreeHeight(TreeNode<T> node, int nodeLevel)
         {
+            if (node is null)
+            {
+                return 0;
+            }
 
             int leftChildHeight = 0;
 
