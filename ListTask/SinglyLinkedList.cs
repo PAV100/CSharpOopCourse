@@ -57,10 +57,7 @@ namespace ListTask
         /// </summary>        
         public T Get(int index)
         {
-            if (IsIndexLtZeroOrGeCount(index))
-            {
-                throw new ArgumentOutOfRangeException(nameof(index), $"Item index = {index}, but it must be >= 0 and < {Count}");
-            }
+            CheckIndex(index);
 
             return GetItem(index).Data;
         }
@@ -71,17 +68,14 @@ namespace ListTask
         /// </summary>        
         public T Set(int index, T data)
         {
-            if (IsIndexLtZeroOrGeCount(index))
-            {
-                throw new ArgumentOutOfRangeException(nameof(index), $"Item index = {index}, but it must be >= 0 and < {Count}");
-            }
+            CheckIndex(index);
 
             ListItem<T> currentItem = GetItem(index);
 
-            T previousData = currentItem.Data;
+            T oldData = currentItem.Data;
             currentItem.Data = data;
 
-            return previousData;
+            return oldData;
         }
 
         /// <summary>
@@ -99,10 +93,7 @@ namespace ListTask
         /// </summary>        
         public void Insert(int index, T data)
         {
-            if (IsIndexLtZeroOrGtCount(index))
-            {
-                throw new ArgumentOutOfRangeException(nameof(index), $"Item index = {index}, but it must be >= 0 and <= {Count}");
-            }
+            CheckIndexForInsert(index);
 
             if (index == 0)
             {
@@ -138,10 +129,7 @@ namespace ListTask
         /// </summary>        
         public T Delete(int index)
         {
-            if (IsIndexLtZeroOrGeCount(index))
-            {
-                throw new ArgumentOutOfRangeException(nameof(index), $"Item index = {index}, but it must be >= 0 and < {Count}");
-            }
+            CheckIndex(index);
 
             if (index == 0)
             {
@@ -166,7 +154,7 @@ namespace ListTask
                 return false;
             }
 
-            if (head.Data is null && data is null || head.Data is not null && head.Data.Equals(data))
+            if (Equals(head.Data, data))
             {
                 head = head.Next;
                 Count--;
@@ -230,9 +218,9 @@ namespace ListTask
             }
 
             StringBuilder sb = new StringBuilder();
-                        
+
             sb.Append("[");
-            
+
             for (ListItem<T> p = head; p != null; p = p.Next)
             {
                 sb.Append(p.Data is null ? "<null>" : p.Data).Append(", ");
@@ -240,7 +228,6 @@ namespace ListTask
 
             sb.Remove(sb.Length - 2, 2);
             sb.Append(']');
-            sb.Append($" Count = {Count}");
 
             return sb.ToString();
         }
@@ -260,14 +247,20 @@ namespace ListTask
             return null;
         }
 
-        private bool IsIndexLtZeroOrGeCount(int index)
+        private void CheckIndex(int index)
         {
-            return index < 0 || index >= Count;
+            if (index < 0 || index >= Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index), $"Item index = {index}, but it must be >= 0 and < {Count}");
+            }
         }
 
-        private bool IsIndexLtZeroOrGtCount(int index)
+        private void CheckIndexForInsert(int index)
         {
-            return index < 0 || index > Count;
+            if (index < 0 || index > Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index), $"Item index = {index}, but it must be >= 0 and <= {Count}");
+            }
         }
     }
 }

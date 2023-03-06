@@ -33,7 +33,7 @@ namespace ListTask
 
             list1.InsertFirst(15);
             list1.InsertFirst(10);
-            list1.InsertFirst(5);            
+            list1.InsertFirst(5);
             Console.WriteLine("Methods: list1.InsertFirst(15), list1.InsertFirst(10), list1.InsertFirst(5)");
             Console.WriteLine($"Name: {nameof(list1)}, {list1}");
             Console.WriteLine();
