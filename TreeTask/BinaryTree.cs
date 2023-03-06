@@ -8,12 +8,7 @@ namespace TreeTask
     {
         private TreeNode<T> root;
 
-        private int count;
-
-        public int Count
-        {
-            get { return count; }
-        }
+        public int Count { get; private set; }
 
         public BinaryTree()
         {
@@ -22,7 +17,7 @@ namespace TreeTask
         public BinaryTree(T data)
         {
             root = new TreeNode<T>(data);
-            count = 1;
+            Count = 1;
         }
 
         /// <summary>
@@ -59,7 +54,7 @@ namespace TreeTask
                 }
             }
 
-            count++;
+            Count++;
         }
 
         /// <summary>
@@ -110,8 +105,7 @@ namespace TreeTask
         }
 
         /// <summary>
-        /// Deletes a node with first occurrence of given "data" value from the tree
-        /// First occurrence is determined by ???
+        /// Deletes a node with first occurrence of given "data" value from the tree.        
         /// </summary>
         /// <returns> true if a node was deleted from the tree</returns>
         public bool DeleteFirstOccurrence(T data)
@@ -126,21 +120,21 @@ namespace TreeTask
             if (nodeToDelete.left is null && nodeToDelete.right is null) // a leaf (including only root)
             {
                 SetNewChild(nodeToDeleteParent, nodeToDelete, default);
-                count--;
+                Count--;
                 return true;
             }
 
             if (nodeToDelete.right is null) // node with left subtree
             {
                 SetNewChild(nodeToDeleteParent, nodeToDelete, nodeToDelete.left);
-                count--;
+                Count--;
                 return true;
             }
 
             if (nodeToDelete.left is null) // node with right subtree
             {
                 SetNewChild(nodeToDeleteParent, nodeToDelete, nodeToDelete.right);
-                count--;
+                Count--;
                 return true;
             }
 
@@ -156,9 +150,9 @@ namespace TreeTask
                 var mostLeftNodeRightChild = mostLeftNode.right;
                 mostLeftNode.right = nodeToDelete.right;
                 SetNewChild(mostLeftNodeParent, mostLeftNode, mostLeftNodeRightChild);
-            }                       
+            }
 
-            count--;
+            Count--;
             return true;
         }
 
@@ -210,7 +204,7 @@ namespace TreeTask
             return false;
         }
 
-        private TreeNode<T> GetMostLeftNodeAndParentFromRightSubtree(TreeNode<T> node, out TreeNode<T> mostLeftNodeParent)
+        private static TreeNode<T> GetMostLeftNodeAndParentFromRightSubtree(TreeNode<T> node, out TreeNode<T> mostLeftNodeParent)
         {
             mostLeftNodeParent = null;
 
@@ -305,7 +299,7 @@ namespace TreeTask
         /// Returns an enumerator that iterates through binary tree nodes using breadth-first recursive traversal
         /// </summary>
         /// <returns>tree node data field value</returns>
-        public IEnumerator<T> GetDepthFirstTraversalRecursiveEnumerator(TreeNode<T> node)
+        private IEnumerator<T> GetDepthFirstTraversalRecursiveEnumerator(TreeNode<T> node)
         {
             yield return node.data;
 
@@ -336,148 +330,17 @@ namespace TreeTask
         }
 
         /// <summary>
-        /// Returns an array containing binary tree nodes using breadth-first traversal
-        /// </summary>
-        /// <returns>tree node data field values array</returns>
-        [Obsolete]
-        public T[] BreadthFirstTraversal()
-        {
-            if (count == 0)
-            {
-                return Array.Empty<T>();
-            }
-
-            if (count == 1)
-            {
-                return new T[] { root.data };
-            }
-
-            T[] treeNodes = new T[count];
-            int index = 0;
-
-            Queue<TreeNode<T>> queue = new();
-
-            queue.Enqueue(root);
-
-            while (queue.Count > 0)
-            {
-                TreeNode<T> currentNode = queue.Dequeue();
-
-                treeNodes[index] = currentNode.data;
-                index++;
-
-                if (currentNode.left is not null)
-                {
-                    queue.Enqueue(currentNode.left);
-                }
-
-                if (currentNode.right is not null)
-                {
-                    queue.Enqueue(currentNode.right);
-                }
-            }
-
-            return treeNodes;
-        }
-
-        /// <summary>
-        /// Returns an array containing binary tree nodes using depth-first traversal
-        /// </summary>
-        /// <returns>tree node data field values array</returns>
-        [Obsolete]
-        public T[] DepthFirstTraversal()
-        {
-            if (count == 0)
-            {
-                return Array.Empty<T>();
-            }
-
-            if (count == 1)
-            {
-                return new T[] { root.data };
-            }
-
-            T[] treeNodes = new T[count];
-            int index = 0;
-
-            Stack<TreeNode<T>> stack = new();
-
-            stack.Push(root);
-
-            while (stack.Count > 0)
-            {
-                TreeNode<T> currentNode = stack.Pop();
-
-                treeNodes[index] = currentNode.data;
-                index++;
-
-                if (currentNode.right is not null)
-                {
-                    stack.Push(currentNode.right);
-                }
-
-                if (currentNode.left is not null)
-                {
-                    stack.Push(currentNode.left);
-                }
-            }
-
-            return treeNodes;
-        }
-
-        /// <summary>
-        /// Returns an array containing binary tree nodes using depth-first recursive traversal
-        /// </summary>
-        /// <returns>tree node data field values array</returns>
-        [Obsolete]
-        public T[] DepthFirstTraversalRecursive()
-        {
-            if (count == 0)
-            {
-                return Array.Empty<T>();
-            }
-
-            if (count == 1)
-            {
-                return new T[] { root.data };
-            }
-
-            T[] treeNodes = new T[count];
-            int index = 0;
-
-            DepthFirstTraversalRecursive(treeNodes, root, ref index);
-
-            return treeNodes;
-        }
-
-        private void DepthFirstTraversalRecursive(T[] treeNodes, TreeNode<T> node, ref int index)
-        {
-            treeNodes[index] = node.data;
-            index++;
-
-            if (node.left is not null)
-            {
-                DepthFirstTraversalRecursive(treeNodes, node.left, ref index);
-            }
-
-            if (node.right is not null)
-            {
-                DepthFirstTraversalRecursive(treeNodes, node.right, ref index);
-            }
-        }
-
-        /// <summary>
         /// Returns a binary tree structure
         /// </summary>
         /// <returns>a string with line separators</returns>
         public override string ToString()
         {
-            if (count == 0)
+            if (Count == 0)
             {
                 return "<empty>";
             }
 
-            if (count == 1)
+            if (Count == 1)
             {
                 return root.data.ToString();
             }
@@ -510,7 +373,7 @@ namespace TreeTask
             return GetTreeLevelPrintout(treePrintout, root, 0, out int centralSymbolIndex);
         }
 
-        private string GetTreeLevelPrintout(List<string> treePrintout, TreeNode<T> node, int nodeLevel, out int centralSymbolIndex)
+        private static string GetTreeLevelPrintout(List<string> treePrintout, TreeNode<T> node, int nodeLevel, out int centralSymbolIndex)
         {
             if (node is null)
             {
@@ -584,7 +447,7 @@ namespace TreeTask
             return GetTreeHeight(root, 0) + 1;
         }
 
-        private int GetTreeHeight(TreeNode<T> node, int nodeLevel)
+        private static int GetTreeHeight(TreeNode<T> node, int nodeLevel)
         {
             if (node is null)
             {
