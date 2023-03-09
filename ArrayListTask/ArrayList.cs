@@ -15,7 +15,6 @@ namespace ArrayListTask
 
         private int modificationsCount;
 
-
         public T this[int index]
         {
             get
@@ -208,7 +207,7 @@ namespace ArrayListTask
 
             if (index < Count - 1)
             {
-                Array.Copy(items, index + 1, items, index, Count - index);
+                Array.Copy(items, index + 1, items, index, Count - index - 1);
             }
 
             Count--;
@@ -237,7 +236,8 @@ namespace ArrayListTask
 
             for (int i = 0; i < Count; i++)
             {
-                sb.Append(items[i]).Append(", ");
+                //sb.Append(items[i]).Append(", ");
+                sb.Append(items[i] is null ? "<null>" : items[i]).Append(", ");
             }
 
             sb.Remove(sb.Length - 2, 2);

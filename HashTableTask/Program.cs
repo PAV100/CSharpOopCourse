@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-
-using ArrayListTask;
 
 namespace HashTableTask
 {
@@ -14,7 +11,7 @@ namespace HashTableTask
 
             Console.WriteLine("1. Constructor without arguments creates empty hashtable");
             HashTable<double> ht = new();
-            Console.WriteLine(ht.ToString());
+            Console.WriteLine(ht);
 
             Console.WriteLine("2. Add to the hashtable some items with Add() method");
             ht.Add(0);
@@ -32,7 +29,7 @@ namespace HashTableTask
             ht.Add(12);
             ht.Add(13);
             ht.Add(14);
-            Console.WriteLine(ht.ToString());
+            Console.WriteLine(ht);
 
             Console.WriteLine("3. Method Contains() checkes if the hashtable has a given value");
             double value = 10;
@@ -43,52 +40,47 @@ namespace HashTableTask
 
             Console.WriteLine("4. Method Clear() deletes all lists in the hashtable");
             ht.Clear();
-            Console.WriteLine(ht.ToString());
+            Console.WriteLine(ht);
 
             Console.WriteLine("5. Constructor creates a hashtable with given length");
             HashTable<string> ht2 = new(8);
-            Console.WriteLine(ht2.ToString());
+            Console.WriteLine(ht2);
             Console.WriteLine("Lets fill it with some elements");
-            ht2.Add("qw1a");
-            ht2.Add("we2bb");
-            ht2.Add("er3ccc");
-            ht2.Add("rt4dddd");
-            ht2.Add("ty5eeeee");
-            ht2.Add("yu6ffffff");
-            ht2.Add("ui7iiiiiii");
-            ht2.Add("io8jjjjjjjj");
-            ht2.Add("io9kkkkkkkkk");
-            ht2.Add("op0pppppppppp");
-            Console.WriteLine(ht2.ToString());
+            ht2.Add("a");
+            ht2.Add(null);
+            ht2.Add(null);
+            ht2.Add("bb");
+            ht2.Add("ccc");
+            ht2.Add("dddd");
+            ht2.Add("eeeee");
+            ht2.Add("ffffff");
+            ht2.Add("iiiiiii");
+            ht2.Add("jjjjjjjj");
+            ht2.Add("kkkkkkkkk");
+            ht2.Add("pppppppppp");
+            Console.WriteLine(ht2);
 
             Console.WriteLine("6. Lets create an empty array and use CopyTo() method to fill it with the hashtable items");
-            string[] array = new string[10];
+            string[] array = new string[12];
             Console.WriteLine("array = [{0}]", string.Join(", ", array));
             ht2.CopyTo(array, 0);
             Console.WriteLine("array = [{0}]", string.Join(", ", array));
             Console.WriteLine();
 
             Console.WriteLine("7. A hashtable is enumerated by an enumerator");
-            IEnumerator<string> hte = ht2.GetEnumerator();
-            while (hte.MoveNext())
+            foreach (var e in ht2)
             {
-                Console.WriteLine(hte.Current);
+                Console.WriteLine(e);
             }
             Console.WriteLine();
 
             Console.WriteLine("8. Method Remove() deletes an item from the hashtable");
-            string s = "qw1a";
-            Console.WriteLine(ht2.ToString());
+            string s = "bb";
+            Console.WriteLine(ht2);
             Console.WriteLine("Remove({0}) = {1}", s, ht2.Remove(s));
-            Console.WriteLine(ht2.ToString());
+            Console.WriteLine(ht2);
             Console.WriteLine("Remove({0}) = {1}", s, ht2.Remove(s));
-            Console.WriteLine(ht2.ToString());
-
-            Console.WriteLine("9. Changing hashtable IsReadOnly property");
-            ht2.IsReadOnly = true;
-            Console.WriteLine(ht2.ToString());
-            //ht2.Clear();
-            //Console.WriteLine(ht2.ToString());
+            Console.WriteLine(ht2);
         }
     }
 }

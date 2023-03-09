@@ -10,156 +10,125 @@ namespace HashTableTask
     internal class HashTable<T> : ICollection<T>
     {
         private const int DefaultHashTableLength = 5;
-        private const int MaxHashTableLength = int.MaxValue;
 
-        private ArrayList<T>[] hashTable;
-
-        private int count;
+        private readonly ArrayList<T>[] lists;
 
         private int modificationsCount;
 
-        private bool isReadOnly;
+        public int Count { get; private set; }
 
-        private ArrayList<T> this[int index]
-        {
-            get { return hashTable[index]; }
-            set { hashTable[index] = value; }
-        }
-
-        public int Count
-        {
-            get { return count; }
-        }
-
-        public bool IsReadOnly
-        {
-            get { return isReadOnly; }
-            set { isReadOnly = value; }
-        }
+        public bool IsReadOnly { get; }
 
         public HashTable()
         {
-            hashTable = new ArrayList<T>[DefaultHashTableLength];
+            lists = new ArrayList<T>[DefaultHashTableLength];
         }
 
         public HashTable(int hashTableLength)
         {
-            if (hashTableLength <= 0 || hashTableLength > MaxHashTableLength)
+            if (hashTableLength <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(hashTableLength), $"Hashtable length = {hashTableLength}, but it must be > 0 and <= {MaxHashTableLength}");
+                throw new ArgumentOutOfRangeException(nameof(hashTableLength), $"Hashtable length = {hashTableLength}, but it must be > 0");
             }
 
-            hashTable = new ArrayList<T>[hashTableLength];
+            lists = new ArrayList<T>[hashTableLength];
         }
 
         public void Add(T item)
         {
-            if (isReadOnly)
-            {
-                throw new InvalidOperationException("Hashtable is read only. It is impossible to make changes");
-            }
-
-            if (item is null)
-            {
-                throw new ArgumentNullException(nameof(item), "It is impossible to add null");
-            }
-
             int index = GetIndexViaHashCode(item);
 
-            if (hashTable[index] is null)
+            if (lists[index] is null)
             {
-                hashTable[index] = new(item);
-                count++;
-                modificationsCount++;
-                return;
+                lists[index] = new ArrayList<T>(new[] { item });
+            }
+            else
+            {
+                lists[index].Add(item);
             }
 
-            if (!hashTable[index].Contains(item))
-            {
-                hashTable[index].Add(item);
-                count++;
-                modificationsCount++;
-            }
+            Count++;
+            modificationsCount++;
         }
 
         public void Clear()
         {
-            if (isReadOnly)
+            if (Count == 0)
             {
-                throw new InvalidOperationException("Hashtable is read only. It is impossible to make changes");
+                return;
             }
 
-            for (int i = 0; i < hashTable.Length; i++)
-            {
-                hashTable[i] = default;
-            }
+            Array.Clear(lists, 0, lists.Length);
 
-            count = 0;
+            Count = 0;
             modificationsCount++;
         }
 
         public bool Contains(T item)
         {
-            for (int i = 0; i < hashTable.Length; i++)
-            {
-                if (hashTable[i] is null)
-                {
-                    continue;
-                }
+            int index = GetIndexViaHashCode(item);
 
-                if (hashTable[i].Contains(item))
-                {
-                    return true;
-                }
+            if (lists[index] is null)
+            {
+                return false;
             }
 
-            return false;
+            return lists[index].Contains(item);
         }
 
         public void CopyTo(T[] array, int arrayIndex)
         {
-            if (count > array.Length - arrayIndex)
+            if (array is null)
             {
-                throw new ArgumentException($"Destination array is too short to place {count} hashtable item(s). It must be {count + arrayIndex} element(s) length.", nameof(array) + ", " + nameof(arrayIndex));
+                throw new ArgumentNullException(nameof(array), "Array must not be null");
+            }
+
+            if (Count > array.Length)
+            {
+
+                throw new ArgumentException($"Array length = {array.Length}. It must be >= {Count}", nameof(array));
+            }
+
+            if (Count > array.Length - arrayIndex)
+            {
+                throw new ArgumentOutOfRangeException(nameof(array) + ", " + nameof(arrayIndex), $"Incorrect index. It is impossible to copy {Count} list item(s) to an array starting from index {arrayIndex}.");
             }
 
             int previousListsLength = 0;
 
-            foreach (ArrayList<T> e in hashTable)
+            foreach (ArrayList<T> list in lists)
             {
-                if (e is null)
+                if (list is null)
                 {
                     continue;
                 }
 
-                e.CopyTo(array, arrayIndex + previousListsLength);
-                previousListsLength = previousListsLength + e.Count;
+                list.CopyTo(array, arrayIndex + previousListsLength);
+                previousListsLength += list.Count;
             }
         }
 
         public IEnumerator<T> GetEnumerator()
         {
-            int modificationsCountCopy = modificationsCount;
+            int modificationsCountInitialValue = modificationsCount;
 
-            foreach (ArrayList<T> e in hashTable)
+            foreach (ArrayList<T> list in lists)
             {
-                if (e is null)
+                if (list is null)
                 {
                     continue;
                 }
 
-                if (modificationsCountCopy != modificationsCount)
+                foreach (T item in list)
                 {
-                    throw new InvalidOperationException("Item(s) were added/deleted to/from a hashtable during iteration");
-                }
+                    if (modificationsCountInitialValue != modificationsCount)
+                    {
+                        throw new InvalidOperationException("Item(s) were added/deleted to/from a hashtable during iteration");
+                    }
 
-                IEnumerator<T> listEnumerator = e.GetEnumerator();
-                
-                while (listEnumerator.MoveNext())
-                {
-                    yield return listEnumerator.Current;
+                    yield return item;
                 }
-            }            
+            }
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -169,25 +138,18 @@ namespace HashTableTask
 
         public bool Remove(T item)
         {
-            if (isReadOnly)
+            int index = GetIndexViaHashCode(item);
+
+            if (lists[index] is null)
             {
-                throw new InvalidOperationException("Hashtable is read only. It is impossible to make changes");
+                return false;
             }
 
-            for (int i = 0; i < hashTable.Length; i++)
+            if (lists[index].Remove(item))
             {
-                if (hashTable[i] is null)
-                {
-                    continue;
-                }
-
-                if (hashTable[i].Contains(item))
-                {
-                    hashTable[i].Remove(item);
-                    count--;
-                    modificationsCount++;
-                    return true;
-                }
+                Count--;
+                modificationsCount++;
+                return true;
             }
 
             return false;
@@ -197,19 +159,14 @@ namespace HashTableTask
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.Append("hashTableLength = ").Append(hashTable.Length);
-            sb.Append(", count = ").Append(count);
-            sb.Append(", isReadOnly = ").Append(isReadOnly).Append(Environment.NewLine);
+            sb.Append("hashTableLength = ").Append(lists.Length);
+            sb.Append(", count = ").Append(Count);
+            sb.Append(", isReadOnly = ").Append(IsReadOnly).Append(Environment.NewLine);
 
-            if (hashTable.Length == 0)
-            {
-                return "";
-            }
-
-            for (int i = 0; i < hashTable.Length; i++)
+            for (int i = 0; i < lists.Length; i++)
             {
                 sb.Append($"{i,3}").Append(": [");
-                sb.Append((hashTable[i] is null ? "null" : hashTable[i].ToString())).Append("]").Append(Environment.NewLine);
+                sb.Append(lists[i] is null ? "<null>" : lists[i]).Append(']').Append(Environment.NewLine);
             }
 
             return sb.ToString();
@@ -217,7 +174,9 @@ namespace HashTableTask
 
         private int GetIndexViaHashCode(T item)
         {
-            return Math.Abs(item.GetHashCode() % hashTable.Length);
+            int itemHashCode = item is null ? 0 : item.GetHashCode();
+
+            return Math.Abs(itemHashCode % lists.Length);
         }
     }
 }
