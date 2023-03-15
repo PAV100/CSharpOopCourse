@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CsvTask": {
+      "commandName": "Project",
+      "commandLineArgs": "..\\\\..\\\\..\\\\input2empty.csv ..\\\\..\\\\..\\\\input2.html"
+    }
+  }
+}
