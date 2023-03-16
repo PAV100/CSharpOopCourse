@@ -163,7 +163,7 @@ namespace ListTask
 
             for (ListItem<T> previousItem = head; previousItem.Next != null; previousItem = previousItem.Next)
             {
-                if (previousItem.Next.Data is null && data is null || previousItem.Next.Data is not null && previousItem.Next.Data.Equals(data))
+                if (Equals(previousItem.Next.Data, data))
                 {
                     previousItem.Next = previousItem.Next.Next;
                     Count--;
@@ -219,7 +219,7 @@ namespace ListTask
 
             StringBuilder sb = new StringBuilder();
 
-            sb.Append("[");
+            sb.Append('[');
 
             for (ListItem<T> p = head; p != null; p = p.Next)
             {
