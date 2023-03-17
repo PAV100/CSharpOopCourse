@@ -1,25 +1,16 @@
-﻿using System;
-
-namespace TreeTask
+﻿namespace TreeTask
 {
-    public class TreeNode<T> where T : IComparable<T>
+    internal class TreeNode<T>
     {
-        public TreeNode<T> left;
+        public TreeNode<T> Left { get; set; }
 
-        public TreeNode<T> right;
+        public TreeNode<T> Right { get; set; }
 
-        public T data;
+        public T Data { get; set; }
 
         public TreeNode(T data)
         {
-            this.data = data;
-        }
-
-        public TreeNode(TreeNode<T> left, TreeNode<T> right, T data)
-        {
-            this.left = left;
-            this.right = right;
-            this.data = data;
+            this.Data = data;
         }
     }
 }

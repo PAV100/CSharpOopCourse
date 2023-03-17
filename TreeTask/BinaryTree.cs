@@ -4,20 +4,57 @@ using System.Text;
 
 namespace TreeTask
 {
-    public class BinaryTree<T> where T : IComparable<T>
+    public class BinaryTree<T>
     {
         private TreeNode<T> root;
 
         public int Count { get; private set; }
 
-        public BinaryTree()
-        {
-        }
+        public IComparer<T> Comparer { get; }
 
         public BinaryTree(T data)
         {
             root = new TreeNode<T>(data);
             Count = 1;
+        }
+
+        public BinaryTree(IComparer<T> comparer, T data)
+        {
+            root = new TreeNode<T>(data);
+            Count = 1;
+            Comparer = comparer;
+        }
+
+        private int Compare(T data1, T data2)
+        {
+            if (Comparer is not null)
+            {
+                return Comparer.Compare(data1, data2);
+            }
+
+            if (data1 is null && data2 is null)
+            {
+                return 0;
+            }
+
+            if (data1 is null)
+            {
+                return -1;
+            }
+
+            if (data2 is null)
+            {
+                return 1;
+            }
+
+            IComparable<T> comparableData1 = data1 as IComparable<T>;
+
+            if (comparableData1 is null) // casting and comparing is impossible
+            {
+                throw new ArgumentException($"The values: {data1} {data2} can not be compared. Use comparable types or constructor with comparator.", nameof(data1) + ", " + nameof(data2));
+            }
+
+            return comparableData1.CompareTo(data2);
         }
 
         /// <summary>
@@ -30,26 +67,26 @@ namespace TreeTask
 
             while (true)
             {
-                if (currentNode.data.CompareTo(data) > 0)
+                if (Compare(currentNode.Data, data) > 0)
                 {
-                    if (currentNode.left is not null)
+                    if (currentNode.Left is not null)
                     {
-                        currentNode = currentNode.left;
+                        currentNode = currentNode.Left;
                         continue;
                     }
 
-                    currentNode.left = new TreeNode<T>(data);
+                    currentNode.Left = new TreeNode<T>(data);
                     break;
                 }
                 else
                 {
-                    if (currentNode.right is not null)
+                    if (currentNode.Right is not null)
                     {
-                        currentNode = currentNode.right;
+                        currentNode = currentNode.Right;
                         continue;
                     }
 
-                    currentNode.right = new TreeNode<T>(data);
+                    currentNode.Right = new TreeNode<T>(data);
                     break;
                 }
             }
@@ -64,44 +101,44 @@ namespace TreeTask
         /// 
         public bool Contains(T data)
         {
-            return GetNodeAndParentByData(data, out var parent) is not null;
+            return GetNodeAndParentByData(data).node is not null;
         }
 
-        private TreeNode<T> GetNodeAndParentByData(T data, out TreeNode<T> parent)
+        // private TreeNode<T> GetNodeAndParentByData(T data, out TreeNode<T> parent)
+        private (TreeNode<T> node, TreeNode<T> parentNode) GetNodeAndParentByData(T data)
         {
-            parent = null;
-            var currentNode = root;
+            (TreeNode<T> node, TreeNode<T> parentNode) nodeAndParent = (root, null);
 
-            while (currentNode is not null)
+            while (nodeAndParent.node is not null)
             {
-                if (currentNode.data.Equals(data))
+                int compareResult = Compare(nodeAndParent.node.Data, data);
+
+                if (compareResult == 0)
                 {
-                    return currentNode;
+                    return nodeAndParent;
                 }
 
-                if (currentNode.data.CompareTo(data) > 0)
+                if (compareResult > 0)
                 {
-                    if (currentNode.left is not null)
+                    if (nodeAndParent.node.Left is not null)
                     {
-                        parent = currentNode;
-                        currentNode = currentNode.left;
+                        nodeAndParent = (nodeAndParent.node.Left, nodeAndParent.node);
                         continue;
                     }
 
-                    return default;
+                    return (null, null);
                 }
 
-                if (currentNode.right is not null)
+                if (nodeAndParent.node.Right is not null)
                 {
-                    parent = currentNode;
-                    currentNode = currentNode.right;
+                    nodeAndParent = (nodeAndParent.node.Right, nodeAndParent.node);
                     continue;
                 }
 
-                return default;
+                return (null, null);
             }
 
-            return default;
+            return (null, null);
         }
 
         /// <summary>
@@ -110,80 +147,75 @@ namespace TreeTask
         /// <returns> true if a node was deleted from the tree</returns>
         public bool DeleteFirstOccurrence(T data)
         {
-            var nodeToDelete = GetNodeAndParentByData(data, out var nodeToDeleteParent);
+            var nodeAndParentToDelete = GetNodeAndParentByData(data);
 
-            if (nodeToDelete is null) // no occurrence
+            if (nodeAndParentToDelete.node is null) // no occurrence
             {
                 return false;
             }
 
-            if (nodeToDelete.left is null && nodeToDelete.right is null) // a leaf (including only root)
+            if (nodeAndParentToDelete.node.Left is null && nodeAndParentToDelete.node.Right is null) // a leaf (including only root)
             {
-                SetNewChild(nodeToDeleteParent, nodeToDelete, default);
+                SetNewChild(nodeAndParentToDelete.parentNode, nodeAndParentToDelete.node, default);
                 Count--;
                 return true;
             }
 
-            if (nodeToDelete.right is null) // node with left subtree
+            if (nodeAndParentToDelete.node.Right is null) // node with left subtree
             {
-                SetNewChild(nodeToDeleteParent, nodeToDelete, nodeToDelete.left);
+                SetNewChild(nodeAndParentToDelete.parentNode, nodeAndParentToDelete.node, nodeAndParentToDelete.node.Left);
                 Count--;
                 return true;
             }
 
-            if (nodeToDelete.left is null) // node with right subtree
+            if (nodeAndParentToDelete.node.Left is null) // node with right subtree
             {
-                SetNewChild(nodeToDeleteParent, nodeToDelete, nodeToDelete.right);
+                SetNewChild(nodeAndParentToDelete.parentNode, nodeAndParentToDelete.node, nodeAndParentToDelete.node.Right);
                 Count--;
                 return true;
             }
 
             // both children
-            var mostLeftNode = GetMostLeftNodeAndParentFromRightSubtree(nodeToDelete, out var mostLeftNodeParent);
+            var mostLeftNodeAndParent = GetMostLeftNodeAndParentFromRightSubtree(nodeAndParentToDelete.node);
 
-            mostLeftNode.left = nodeToDelete.left;
+            mostLeftNodeAndParent.node.Left = nodeAndParentToDelete.node.Left;
 
-            SetNewChild(nodeToDeleteParent, nodeToDelete, mostLeftNode);
+            SetNewChild(nodeAndParentToDelete.parentNode, nodeAndParentToDelete.node, mostLeftNodeAndParent.node);
 
-            if (!nodeToDelete.right.Equals(mostLeftNode)) // If most left node is not right child of node to delete
+            if (nodeAndParentToDelete.node.Right != mostLeftNodeAndParent.node) // If most left node is not right child of node to delete
             {
-                var mostLeftNodeRightChild = mostLeftNode.right;
-                mostLeftNode.right = nodeToDelete.right;
-                SetNewChild(mostLeftNodeParent, mostLeftNode, mostLeftNodeRightChild);
+                var mostLeftNodeRightChild = mostLeftNodeAndParent.node.Right;
+                mostLeftNodeAndParent.node.Right = nodeAndParentToDelete.node.Right;
+                SetNewChild(mostLeftNodeAndParent.parentNode, mostLeftNodeAndParent.node, mostLeftNodeRightChild);
             }
 
             Count--;
             return true;
         }
 
-        private static bool IsLeftChild(TreeNode<T> nodeParent, TreeNode<T> node)
+        private static bool IsLeftChild(TreeNode<T> parentNode, TreeNode<T> node)
         {
-            if (node is null || nodeParent is null)
+            if (node is null || parentNode is null)
             {
                 return false;
             }
 
-            return node.Equals(nodeParent.left);
+            return node == parentNode.Left;
         }
 
-        private static bool IsRightChild(TreeNode<T> nodeParent, TreeNode<T> node)
+        private static bool IsRightChild(TreeNode<T> parentNode, TreeNode<T> node)
         {
-            if (node is null || nodeParent is null)
+            if (node is null || parentNode is null)
             {
                 return false;
             }
 
-            return node.Equals(nodeParent.right);
+            return node == parentNode.Right;
         }
 
         private bool SetNewChild(TreeNode<T> parent, TreeNode<T> currentChild, TreeNode<T> newChild)
         {
-            if (root is null)
-            {
-                return false;
-            }
-
-            if (parent is null && root.Equals(currentChild))
+            if (parent is null && root == currentChild)
             {
                 root = newChild;
                 return true;
@@ -191,43 +223,36 @@ namespace TreeTask
 
             if (IsLeftChild(parent, currentChild))
             {
-                parent.left = newChild;
+                parent.Left = newChild;
                 return true;
             }
 
             if (IsRightChild(parent, currentChild))
             {
-                parent.right = newChild;
+                parent.Right = newChild;
                 return true;
             }
 
             return false;
         }
 
-        private static TreeNode<T> GetMostLeftNodeAndParentFromRightSubtree(TreeNode<T> node, out TreeNode<T> mostLeftNodeParent)
+        private static (TreeNode<T> node, TreeNode<T> parentNode) GetMostLeftNodeAndParentFromRightSubtree(TreeNode<T> node)
         {
-            mostLeftNodeParent = null;
+            (TreeNode<T> node, TreeNode<T> parentNode) mostLeftNodeAndParent = (null, null);
 
-            if (node is null)
+            if (node is null || node.Right is null)
             {
-                return null;
+                return mostLeftNodeAndParent;
             }
 
-            if (node.right is null)
+            mostLeftNodeAndParent = (node.Right, node);
+
+            while (mostLeftNodeAndParent.node.Left is not null)
             {
-                return null;
+                mostLeftNodeAndParent = (mostLeftNodeAndParent.node.Left, mostLeftNodeAndParent.node);
             }
 
-            var currentNode = node.right;
-            mostLeftNodeParent = node;
-
-            while (currentNode.left is not null)
-            {
-                mostLeftNodeParent = currentNode;
-                currentNode = currentNode.left;
-            }
-
-            return currentNode;
+            return mostLeftNodeAndParent;
         }
 
         /// <summary>
@@ -236,6 +261,11 @@ namespace TreeTask
         /// <returns>tree node data field value</returns>
         public IEnumerator<T> GetBreadthFirstTraversalEnumerator()
         {
+            if (root is null)
+            {
+                yield break;
+            }
+
             Queue<TreeNode<T>> queue = new();
 
             queue.Enqueue(root);
@@ -244,17 +274,17 @@ namespace TreeTask
             {
                 TreeNode<T> currentNode = queue.Dequeue();
 
-                if (currentNode.left is not null)
+                if (currentNode.Left is not null)
                 {
-                    queue.Enqueue(currentNode.left);
+                    queue.Enqueue(currentNode.Left);
                 }
 
-                if (currentNode.right is not null)
+                if (currentNode.Right is not null)
                 {
-                    queue.Enqueue(currentNode.right);
+                    queue.Enqueue(currentNode.Right);
                 }
 
-                yield return currentNode.data;
+                yield return currentNode.Data;
             }
         }
 
@@ -264,6 +294,11 @@ namespace TreeTask
         /// <returns>tree node data field value</returns>
         public IEnumerator<T> GetDepthFirstTraversalEnumerator()
         {
+            if (root is null)
+            {
+                yield break;
+            }
+
             Stack<TreeNode<T>> stack = new();
 
             stack.Push(root);
@@ -272,17 +307,17 @@ namespace TreeTask
             {
                 TreeNode<T> currentNode = stack.Pop();
 
-                if (currentNode.right is not null)
+                if (currentNode.Right is not null)
                 {
-                    stack.Push(currentNode.right);
+                    stack.Push(currentNode.Right);
                 }
 
-                if (currentNode.left is not null)
+                if (currentNode.Left is not null)
                 {
-                    stack.Push(currentNode.left);
+                    stack.Push(currentNode.Left);
                 }
 
-                yield return currentNode.data;
+                yield return currentNode.Data;
             }
         }
 
@@ -299,13 +334,18 @@ namespace TreeTask
         /// Returns an enumerator that iterates through binary tree nodes using breadth-first recursive traversal
         /// </summary>
         /// <returns>tree node data field value</returns>
-        private IEnumerator<T> GetDepthFirstTraversalRecursiveEnumerator(TreeNode<T> node)
+        private static IEnumerator<T> GetDepthFirstTraversalRecursiveEnumerator(TreeNode<T> node)
         {
-            yield return node.data;
-
-            if (node.left is not null)
+            if (node is null)
             {
-                var leftChildEnumerator = GetDepthFirstTraversalRecursiveEnumerator(node.left);
+                yield break;
+            }
+
+            yield return node.Data;
+
+            if (node.Left is not null)
+            {
+                var leftChildEnumerator = GetDepthFirstTraversalRecursiveEnumerator(node.Left);
 
                 //foreach (var e in leftChildEnumerator) // does not work
                 //{
@@ -318,9 +358,9 @@ namespace TreeTask
                 }
             }
 
-            if (node.right is not null)
+            if (node.Right is not null)
             {
-                var rightChildEnumerator = GetDepthFirstTraversalRecursiveEnumerator(node.right);
+                var rightChildEnumerator = GetDepthFirstTraversalRecursiveEnumerator(node.Right);
 
                 while (rightChildEnumerator.MoveNext())
                 {
@@ -342,7 +382,7 @@ namespace TreeTask
 
             if (Count == 1)
             {
-                return root.data.ToString();
+                return root.Data.ToString();
             }
 
             List<string> treePrintout = new(GetTreeHeight() + 1);
@@ -358,12 +398,7 @@ namespace TreeTask
 
             StringBuilder sb = new StringBuilder();
 
-            foreach (string s in treePrintout)
-            {
-                sb.Append(s).Append(Environment.NewLine);
-            }
-
-            sb.Remove(sb.Length - Environment.NewLine.Length, Environment.NewLine.Length);
+            sb.Append(string.Join(Environment.NewLine, treePrintout));
 
             return sb.ToString();
         }
@@ -382,13 +417,13 @@ namespace TreeTask
             }
 
             string leftChildData = null;
-            int leftChildCenteralSymbolIndex = 0;
+            int leftChildCentralSymbolIndex = 0;
 
-            if (node.left is not null)
+            if (node.Left is not null)
             {
-                leftChildData = GetTreeLevelPrintout(treePrintout, node.left, nodeLevel + 1, out leftChildCenteralSymbolIndex);
+                leftChildData = GetTreeLevelPrintout(treePrintout, node.Left, nodeLevel + 1, out leftChildCentralSymbolIndex);
 
-                if (node.right is not null)
+                if (node.Right is not null)
                 {
                     AppendSpacesToLowerLevelLines(treePrintout, nodeLevel + 2);
                 }
@@ -397,40 +432,40 @@ namespace TreeTask
             string rightChildData = null;
             int rightChildCentralSymbolIndex = 0;
 
-            if (node.right is not null)
+            if (node.Right is not null)
             {
-                rightChildData = GetTreeLevelPrintout(treePrintout, node.right, nodeLevel + 1, out rightChildCentralSymbolIndex);
+                rightChildData = GetTreeLevelPrintout(treePrintout, node.Right, nodeLevel + 1, out rightChildCentralSymbolIndex);
             }
 
             string thisLine;
             string childrenLine;
             string thisNodeData;
 
-            if (node.data is null)
+            if (node.Data is null)
             {
                 thisNodeData = "<null>";
             }
-            else if (node.data.ToString().Equals(""))
+            else if (node.Data.ToString().Equals(""))
             {
                 thisNodeData = "<empty>";
             }
             else
             {
-                thisNodeData = node.data.ToString();
+                thisNodeData = node.Data.ToString();
             }
 
-            FormThisAndChildrenLines(thisNodeData, leftChildData, leftChildCenteralSymbolIndex, rightChildData, rightChildCentralSymbolIndex, out thisLine, out centralSymbolIndex, out childrenLine);
+            FormThisAndChildrenLines(thisNodeData, leftChildData, leftChildCentralSymbolIndex, rightChildData, rightChildCentralSymbolIndex, out thisLine, out centralSymbolIndex, out childrenLine);
 
             if (nodeLevel == 0)
             {
                 treePrintout[0] = thisLine;
             }
 
-            treePrintout[nodeLevel + 1] = treePrintout[nodeLevel + 1] + childrenLine;
+            treePrintout[nodeLevel + 1] += childrenLine;
 
             int emptySymbolsCount = rightChildData is null ? 0 : childrenLine.IndexOf(rightChildData);
 
-            if (node.left is null && rightChildData is not null && emptySymbolsCount != 0)
+            if (node.Left is null && rightChildData is not null && emptySymbolsCount != 0)
             {
                 InsertSpacesToLowerLevelLines(treePrintout, nodeLevel + 1, rightChildData.Length + 1, emptySymbolsCount);
             }
@@ -456,16 +491,16 @@ namespace TreeTask
 
             int leftChildHeight = 0;
 
-            if (node.left is not null)
+            if (node.Left is not null)
             {
-                leftChildHeight = GetTreeHeight(node.left, nodeLevel + 1);
+                leftChildHeight = GetTreeHeight(node.Left, nodeLevel + 1);
             }
 
             int rightChildHeight = 0;
 
-            if (node.right is not null)
+            if (node.Right is not null)
             {
-                rightChildHeight = GetTreeHeight(node.right, nodeLevel + 1);
+                rightChildHeight = GetTreeHeight(node.Right, nodeLevel + 1);
             }
 
             return Math.Max(nodeLevel, Math.Max(leftChildHeight, rightChildHeight));
@@ -484,7 +519,7 @@ namespace TreeTask
             string rightChildCap = "┐";
             string childrenDelimiter = " ";
 
-            int childCapPlaceholdersCount;
+            //int childCapPlaceholdersCount;
             int childCapPlaceholdersCountToLeftFromThis = 0;
             int childCapPlaceholdersCountToRightFromThis;
             int childrenDelimitersCount;
@@ -522,7 +557,7 @@ namespace TreeTask
                 }
                 else // thisNodeData.Length < [sum of children]
                 {
-                    childCapPlaceholdersCount = childrenInternalSymbolsCount - thisNodeData.Length;
+                    int childCapPlaceholdersCount = childrenInternalSymbolsCount - thisNodeData.Length;
                     childCapPlaceholdersCountToRightFromThis = childCapPlaceholdersCount / 2;
                     childCapPlaceholdersCountToLeftFromThis = childCapPlaceholdersCount - childCapPlaceholdersCountToRightFromThis;
                     thisNodeLine = new string(' ', leftChildSymbolsCountToLeftFromCentralSymbol)
@@ -614,7 +649,7 @@ namespace TreeTask
             {
                 if (treePrintout[i].Length < treePrintout[nodeLevel].Length)
                 {
-                    treePrintout[i] = treePrintout[i] + new string(' ', treePrintout[nodeLevel].Length - treePrintout[i].Length);
+                    treePrintout[i] += new string(' ', treePrintout[nodeLevel].Length - treePrintout[i].Length);
                 }
             }
         }

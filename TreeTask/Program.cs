@@ -1,5 +1,7 @@
-﻿using System;
+﻿using ArrayListTask;
+using System;
 using System.Collections.Generic;
+using TreeTask.Comparers;
 
 namespace TreeTask
 {
@@ -54,7 +56,7 @@ namespace TreeTask
 
                     Console.WriteLine(messageString);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     break;
                 }
@@ -114,7 +116,7 @@ namespace TreeTask
                     Console.CursorLeft = 0;
                     Console.WriteLine($"The tree {messageString} a value {value}.");
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     break;
                 }
@@ -149,7 +151,7 @@ namespace TreeTask
 
                     Console.WriteLine($"A value {value} {messageString} the tree.");
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     break;
                 }
@@ -158,7 +160,35 @@ namespace TreeTask
             Console.WriteLine();
 
             Console.WriteLine($"5. The tree has {bt.Count} node(s), tree height is {bt.GetTreeHeight()} level(s).");
+            Console.WriteLine();
+
+            Console.WriteLine("6. Generate binary tree of tuple nodes using Insert() method");
+            BinaryTree<(int, int)> bt2 = new((10, 20));
+            bt2.Insert((5, 15));
+            bt2.Insert((10, 15));
+            bt2.Insert((15, 15));
+            bt2.Insert((5, 20));
+            bt2.Insert((10, 20));
+            bt2.Insert((15, 20));
+            bt2.Insert((5, 25));
+            bt2.Insert((10, 25));
+            bt2.Insert((15, 25));
+            Console.WriteLine(bt2.ToString());
+            Console.WriteLine();
+
+            Console.WriteLine("7. Generate binary tree of some only comparer comparable nodes using Insert() method");
+            BinaryTree<ArrayList<int>> bt3 = new(new ArrayListCountComparer<int>(), new ArrayList<int>(items: new[] { 0, 5, 10, 15, 20 }));
+            bt3.Insert(new ArrayList<int>(items: new[] { 10, 20, 30 }));
+            bt3.Insert(null);
+            bt3.Insert(new ArrayList<int>(items: new[] { 100, 200 }));
+            bt3.Insert(new ArrayList<int>(items: new[] { 5, 6, 7, 8, 9, 10 }));
+            bt3.Insert(new ArrayList<int>(items: new[] { 0, 0, 0 }));
+            bt3.Insert(new ArrayList<int>(capacity: 20));
+            bt3.Insert(new ArrayList<int>(items: new[] { 110 }));
+            bt3.Insert(new ArrayList<int>(items: new[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }));
+            bt3.Insert(null);
+            bt3.Insert(new ArrayList<int>(capacity: 7));
+            Console.WriteLine(bt3.ToString());
         }
     }
-
 }
