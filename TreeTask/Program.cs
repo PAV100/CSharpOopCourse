@@ -177,15 +177,15 @@ namespace TreeTask
             Console.WriteLine();
 
             Console.WriteLine("7. Generate binary tree of some only comparer comparable nodes using Insert() method");
-            BinaryTree<ArrayList<int>> bt3 = new(new ArrayListCountComparer<int>(), new ArrayList<int>(items: new[] { 0, 5, 10, 15, 20 }));
-            bt3.Insert(new ArrayList<int>(items: new[] { 10, 20, 30 }));
+            BinaryTree<ArrayList<int>> bt3 = new(new ArrayListCountComparer<int>(), new ArrayList<int>(collection: new[] { 0, 5, 10, 15, 20 }));
+            bt3.Insert(new ArrayList<int>(collection: new[] { 10, 20, 30 }));
             bt3.Insert(null);
-            bt3.Insert(new ArrayList<int>(items: new[] { 100, 200 }));
-            bt3.Insert(new ArrayList<int>(items: new[] { 5, 6, 7, 8, 9, 10 }));
-            bt3.Insert(new ArrayList<int>(items: new[] { 0, 0, 0 }));
+            bt3.Insert(new ArrayList<int>(collection: new[] { 100, 200 }));
+            bt3.Insert(new ArrayList<int>(collection: new[] { 5, 6, 7, 8, 9, 10 }));
+            bt3.Insert(new ArrayList<int>(collection: new[] { 0, 0, 0 }));
             bt3.Insert(new ArrayList<int>(capacity: 20));
-            bt3.Insert(new ArrayList<int>(items: new[] { 110 }));
-            bt3.Insert(new ArrayList<int>(items: new[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }));
+            bt3.Insert(new ArrayList<int>(collection: new[] { 110 }));
+            bt3.Insert(new ArrayList<int>(collection: new[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }));
             bt3.Insert(null);
             bt3.Insert(new ArrayList<int>(capacity: 7));
             Console.WriteLine(bt3.ToString());

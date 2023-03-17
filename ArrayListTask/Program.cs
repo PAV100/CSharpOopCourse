@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace ArrayListTask
 {
@@ -49,7 +47,7 @@ namespace ArrayListTask
             Console.WriteLine();
 
             Console.WriteLine("7. Constructor creates a list from a collection");
-            ArrayList<int> list2 = new ArrayList<int>(items: new[] { 90, 80, 70 });
+            ArrayList<int> list2 = new ArrayList<int>(collection: new[] { 90, 80, 70 });
             Console.WriteLine($"List: {list2}");
             Console.WriteLine();
 

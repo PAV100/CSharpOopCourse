@@ -9,7 +9,7 @@ namespace ArrayListTask
     {
         private const int DefaultCapacity = 4;
 
-        private const double listFillingLevel = 0.9;
+        private const double ListFillingLevel = 0.9;
 
         private T[] items;
 
@@ -19,13 +19,13 @@ namespace ArrayListTask
         {
             get
             {
-                CheckIndexForIndexer(index);
+                CheckIndex(index);
                 return items[index];
             }
 
             set
             {
-                CheckIndexForIndexer(index);
+                CheckIndex(index);
                 items[index] = value;
             }
         }
@@ -38,7 +38,7 @@ namespace ArrayListTask
             {
                 if (value < Count)
                 {
-                    throw new ArgumentException($"Capacity must be >= Count ({Count})", nameof(value));
+                    throw new ArgumentException($"Given capacity = {value}, but it must be >= Count ({Count})", nameof(value));
                 }
 
                 if (value != items.Length)
@@ -50,26 +50,18 @@ namespace ArrayListTask
 
         public int Count { get; private set; }
 
-        public bool IsReadOnly { get; }
+        public bool IsReadOnly => false;
 
         public ArrayList()
         {
             items = new T[DefaultCapacity];
         }
 
-        [Obsolete]
-        public ArrayList(T item)
+        public ArrayList(ICollection<T> collection)
         {
-            items = new T[DefaultCapacity];
-            items[0] = item;
-            Count = 1;
-        }
+            this.items = new T[collection.Count];
 
-        public ArrayList(ICollection<T> items)
-        {
-            this.items = new T[items.Count];
-
-            foreach (T e in items)
+            foreach (T e in collection)
             {
                 this.items[Count] = e;
                 Count++;
@@ -80,7 +72,6 @@ namespace ArrayListTask
         {
             if (capacity < 0)
             {
-
                 throw new ArgumentOutOfRangeException(nameof(capacity), $"Capacity = {capacity}, but it must be >= 0");
             }
 
@@ -99,7 +90,7 @@ namespace ArrayListTask
                 return;
             }
 
-            Array.Clear(items);
+            Array.Clear(items, 0, Count);
 
             Count = 0;
             modificationsCount++;
@@ -117,15 +108,19 @@ namespace ArrayListTask
                 throw new ArgumentNullException(nameof(array), "Array must not be null");
             }
 
-            if (Count > array.Length)
+            if (arrayIndex < 0)
             {
+                throw new ArgumentOutOfRangeException(nameof(arrayIndex), $"ArrayIndex = {arrayIndex}, but it must be >=0.");
+            }
 
-                throw new ArgumentException($"Array length = {array.Length}. It must be >= {Count}", nameof(array));
+            if (array.Rank != 1)
+            {
+                throw new ArgumentException($"Array has {array.Rank} dimension(s), but it must be one-dimensional.");
             }
 
             if (Count > array.Length - arrayIndex)
             {
-                throw new ArgumentOutOfRangeException(nameof(array) + ", " + nameof(arrayIndex), $"Incorrect index. It is impossible to copy {Count} list item(s) to an array starting from index {arrayIndex}.");
+                throw new ArgumentException($"{array.Length - arrayIndex} array item(s) available starting from index {arrayIndex}, but there must be at least {Count}.");
             }
 
             Array.Copy(items, 0, array, arrayIndex, Count);
@@ -133,11 +128,11 @@ namespace ArrayListTask
 
         public IEnumerator<T> GetEnumerator()
         {
-            int modificationsCountInitialValue = modificationsCount;
+            int initialModificationsCount = modificationsCount;
 
             for (int i = 0; i < Count; i++)
             {
-                if (modificationsCountInitialValue != modificationsCount)
+                if (initialModificationsCount != modificationsCount)
                 {
                     throw new InvalidOperationException("Item(s) were added/deleted to/from a list during iteration");
                 }
@@ -200,10 +195,7 @@ namespace ArrayListTask
 
         public void RemoveAt(int index)
         {
-            if (index < 0 || index >= Count)
-            {
-                throw new ArgumentOutOfRangeException(nameof(index), $"Item index = {index}, but it must be >= 0 and < {Count}");
-            }
+            CheckIndex(index);
 
             if (index < Count - 1)
             {
@@ -217,7 +209,7 @@ namespace ArrayListTask
 
         public void TrimExcess()
         {
-            if (Count < listFillingLevel * items.Length)
+            if (Count < ListFillingLevel * items.Length)
             {
                 Array.Resize(ref items, Count);
             }
@@ -225,26 +217,22 @@ namespace ArrayListTask
 
         public override string ToString()
         {
+            if (Count == 0)
+            {
+                return "[]";
+            }
+
             StringBuilder sb = new StringBuilder();
 
             sb.Append("[");
 
-            if (Count == 0)
-            {
-                sb.Append("  ");
-            }
-
             for (int i = 0; i < Count; i++)
             {
-                //sb.Append(items[i]).Append(", ");
-                sb.Append(items[i] is null ? "<null>" : items[i]).Append(", ");
+                sb.Append(items[i] is null ? "<null>  " : items[i]).Append(", ");
             }
 
             sb.Remove(sb.Length - 2, 2);
             sb.Append(']');
-            //sb.Append(", capacity = ").Append(items.Length);
-            //sb.Append(", count = ").Append(Count);
-            //sb.Append(", IsReadOnly = ").Append(IsReadOnly);
             return sb.ToString();
         }
 
@@ -254,11 +242,11 @@ namespace ArrayListTask
             Capacity = increasedLength;
         }
 
-        private void CheckIndexForIndexer(int index)
+        private void CheckIndex(int index)
         {
             if (Count == 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(index), $"Incorrect item index. It is impossible to indexate empty list");
+                throw new ArgumentOutOfRangeException(nameof(index), "Incorrect item index. It is impossible to indexate empty list");
             }
 
             if (index < 0 || index >= Count)
