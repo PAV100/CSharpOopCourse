@@ -17,7 +17,7 @@ namespace HashTableTask
 
         public int Count { get; private set; }
 
-        public bool IsReadOnly { get; }
+        public bool IsReadOnly => false;
 
         public HashTable()
         {
@@ -40,7 +40,7 @@ namespace HashTableTask
 
             if (lists[index] is null)
             {
-                lists[index] = new ArrayList<T>(new[] { item });
+                lists[index] = new ArrayList<T> { item };
             }
             else
             {
@@ -58,7 +58,7 @@ namespace HashTableTask
                 return;
             }
 
-            Array.Clear(lists, 0, lists.Length);
+            Array.Clear(lists);
 
             Count = 0;
             modificationsCount++;
@@ -67,13 +67,7 @@ namespace HashTableTask
         public bool Contains(T item)
         {
             int index = GetIndexViaHashCode(item);
-
-            if (lists[index] is null)
-            {
-                return false;
-            }
-
-            return lists[index].Contains(item);
+            return lists[index] is not null && lists[index].Contains(item);
         }
 
         public void CopyTo(T[] array, int arrayIndex)
@@ -83,15 +77,19 @@ namespace HashTableTask
                 throw new ArgumentNullException(nameof(array), "Array must not be null");
             }
 
-            if (Count > array.Length)
+            if (arrayIndex < 0)
             {
+                throw new ArgumentOutOfRangeException(nameof(arrayIndex), $"ArrayIndex = {arrayIndex}, but it must be >=0.");
+            }
 
-                throw new ArgumentException($"Array length = {array.Length}. It must be >= {Count}", nameof(array));
+            if (array.Rank != 1)
+            {
+                throw new ArgumentException($"Array has {array.Rank} dimension(s), but it must be one-dimensional.");
             }
 
             if (Count > array.Length - arrayIndex)
             {
-                throw new ArgumentOutOfRangeException(nameof(array) + ", " + nameof(arrayIndex), $"Incorrect index. It is impossible to copy {Count} list item(s) to an array starting from index {arrayIndex}.");
+                throw new ArgumentException($"{array.Length - arrayIndex} array item(s) available starting from index {arrayIndex}, but there must be at least {Count}.");
             }
 
             int previousListsLength = 0;
@@ -110,7 +108,7 @@ namespace HashTableTask
 
         public IEnumerator<T> GetEnumerator()
         {
-            int modificationsCountInitialValue = modificationsCount;
+            int initialModificationsCount = modificationsCount;
 
             foreach (ArrayList<T> list in lists)
             {
@@ -121,7 +119,7 @@ namespace HashTableTask
 
                 foreach (T item in list)
                 {
-                    if (modificationsCountInitialValue != modificationsCount)
+                    if (initialModificationsCount != modificationsCount)
                     {
                         throw new InvalidOperationException("Item(s) were added/deleted to/from a hashtable during iteration");
                     }
@@ -140,12 +138,7 @@ namespace HashTableTask
         {
             int index = GetIndexViaHashCode(item);
 
-            if (lists[index] is null)
-            {
-                return false;
-            }
-
-            if (lists[index].Remove(item))
+            if (lists[index] is not null && lists[index].Remove(item))
             {
                 Count--;
                 modificationsCount++;
@@ -165,8 +158,8 @@ namespace HashTableTask
 
             for (int i = 0; i < lists.Length; i++)
             {
-                sb.Append($"{i,3}").Append(": [");
-                sb.Append(lists[i] is null ? "<null>" : lists[i]).Append(']').Append(Environment.NewLine);
+                sb.Append($"{i,3}").Append(": ");
+                sb.Append(lists[i] is null ? "<null>" : lists[i]).Append(Environment.NewLine);
             }
 
             return sb.ToString();
@@ -174,9 +167,12 @@ namespace HashTableTask
 
         private int GetIndexViaHashCode(T item)
         {
-            int itemHashCode = item is null ? 0 : item.GetHashCode();
+            if (item is null)
+            {
+                return 0;
+            }
 
-            return Math.Abs(itemHashCode % lists.Length);
+            return Math.Abs(item.GetHashCode() % lists.Length);
         }
     }
 }
