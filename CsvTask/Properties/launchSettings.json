@@ -2,7 +2,7 @@
   "profiles": {
     "CsvTask": {
       "commandName": "Project",
-      "commandLineArgs": "..\\\\..\\\\..\\\\input2empty.csv ..\\\\..\\\\..\\\\input2.html"
+      "commandLineArgs": "..\\\\..\\\\..\\\\input2.csv ..\\\\..\\\\..\\\\input2.html"
     }
   }
 }
