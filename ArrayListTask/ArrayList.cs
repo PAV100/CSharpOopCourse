@@ -27,6 +27,7 @@ namespace ArrayListTask
             {
                 CheckIndex(index);
                 items[index] = value;
+                modificationsCount++;
             }
         }
 
@@ -59,13 +60,17 @@ namespace ArrayListTask
 
         public ArrayList(ICollection<T> collection)
         {
-            this.items = new T[collection.Count];
+            items = new T[collection.Count];
+
+            int i = 0;
 
             foreach (T e in collection)
             {
-                this.items[Count] = e;
-                Count++;
+                items[i] = e;
+                i++;
             }
+
+            Count = i;
         }
 
         public ArrayList(int capacity)
@@ -110,13 +115,13 @@ namespace ArrayListTask
 
             if (arrayIndex < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(arrayIndex), $"ArrayIndex = {arrayIndex}, but it must be >=0.");
+                throw new ArgumentOutOfRangeException(nameof(arrayIndex), $"ArrayIndex = {arrayIndex}, but it must be >= 0.");
             }
 
-            if (array.Rank != 1)
-            {
-                throw new ArgumentException($"Array has {array.Rank} dimension(s), but it must be one-dimensional.");
-            }
+            //if (array.Rank != 1)
+            //{
+            //    throw new ArgumentException($"Array has {array.Rank} dimension(s), but it must be one-dimensional.");
+            //}
 
             if (Count > array.Length - arrayIndex)
             {
@@ -134,7 +139,7 @@ namespace ArrayListTask
             {
                 if (initialModificationsCount != modificationsCount)
                 {
-                    throw new InvalidOperationException("Item(s) were added/deleted to/from a list during iteration");
+                    throw new InvalidOperationException("Item(s) were modified/added/deleted in/to/from a list during iteration");
                 }
 
                 yield return items[i];
@@ -224,11 +229,11 @@ namespace ArrayListTask
 
             StringBuilder sb = new StringBuilder();
 
-            sb.Append("[");
+            sb.Append('[');
 
             for (int i = 0; i < Count; i++)
             {
-                sb.Append(items[i] is null ? "<null>  " : items[i]).Append(", ");
+                sb.Append(items[i] is null ? "<null>" : items[i]).Append(", ");
             }
 
             sb.Remove(sb.Length - 2, 2);
