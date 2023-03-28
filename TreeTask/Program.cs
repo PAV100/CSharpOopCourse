@@ -25,7 +25,7 @@ namespace TreeTask
 
             var cursorPositiont = Console.GetCursorPosition();
 
-            Console.WriteLine(bt.ToString());
+            Console.WriteLine(bt);
             Console.WriteLine();
 
             int value;
@@ -65,33 +65,33 @@ namespace TreeTask
             Console.WriteLine();
 
             Console.WriteLine("2. Three IEnumerators created:");
-            IEnumerator<int> btDftrEnumerator = bt.GetDepthFirstTraversalRecursiveEnumerator();
-            IEnumerator<int> btDftEnumerator = bt.GetDepthFirstTraversalEnumerator();
-            IEnumerator<int> btBftEnumerator = bt.GetBreadthFirstTraversalEnumerator();
+            IEnumerable<int> btDftrEnumerator = bt.GetDepthFirstTraversalRecursiveEnumerator();
+            IEnumerable<int> btDftEnumerator = bt.GetDepthFirstTraversalEnumerator();
+            IEnumerable<int> btBftEnumerator = bt.GetBreadthFirstTraversalEnumerator();
 
             Console.WriteLine("DepthFirstTraversalRecursiveEnumerator():");
 
-            while (btDftrEnumerator.MoveNext())
+            foreach (int e in btDftrEnumerator)
             {
-                Console.Write($"{btDftrEnumerator.Current} ");
-            }
+                Console.Write($"{e} ");
+            }            
 
             Console.WriteLine();
 
             Console.WriteLine("DepthFirstTraversalEnumerator():");
 
-            while (btDftEnumerator.MoveNext())
+            foreach (int e in btDftEnumerator)
             {
-                Console.Write($"{btDftEnumerator.Current} ");
+                Console.Write($"{e} ");
             }
 
             Console.WriteLine();
 
             Console.WriteLine("BreadthFirstTraversalEnumerator():");
 
-            while (btBftEnumerator.MoveNext())
+            foreach (int e in btBftEnumerator)
             {
-                Console.Write($"{btBftEnumerator.Current} ");
+                Console.Write($"{e} ");
             }
 
             Console.WriteLine();
@@ -110,7 +110,7 @@ namespace TreeTask
                     Console.Write("3. Method Contains() checks the tree for given value. Enter a value or press Enter to continue: ");
                     value = Convert.ToInt32(Console.ReadLine());
 
-                    messageString = bt.Contains(value) == false ? "does not contain" : "contains";
+                    messageString = bt.Contains(value) ? "contains" : "does not contain";
 
                     Console.Write(new string(' ', 120));
                     Console.CursorLeft = 0;
@@ -127,7 +127,7 @@ namespace TreeTask
 
             Console.WriteLine("4. Method DeleteFirstOccurrence() checks the tree for given value and deletes it if finds.");
             cursorPositiont = Console.GetCursorPosition();
-            Console.WriteLine(bt.ToString());
+            Console.WriteLine(bt);
             treeHeight = bt.GetTreeHeight();
 
             while (true)
@@ -146,8 +146,8 @@ namespace TreeTask
 
                     Console.SetCursorPosition(cursorPositiont.Left, cursorPositiont.Top);
 
-                    messageString = bt.DeleteFirstOccurrence(value) == false ? "is not found in" : "was deleted from";
-                    Console.WriteLine(bt.ToString());
+                    messageString = bt.DeleteFirstOccurrence(value) ? "was deleted from" : "is not found in";
+                    Console.WriteLine(bt);
 
                     Console.WriteLine($"A value {value} {messageString} the tree.");
                 }
@@ -188,7 +188,7 @@ namespace TreeTask
             bt3.Insert(new ArrayList<int>(collection: new[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }));
             bt3.Insert(null);
             bt3.Insert(new ArrayList<int>(capacity: 7));
-            Console.WriteLine(bt3.ToString());
+            Console.WriteLine(bt3);
         }
     }
 }

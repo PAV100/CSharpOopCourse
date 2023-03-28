@@ -10,7 +10,7 @@
 
         public TreeNode(T data)
         {
-            this.Data = data;
+            Data = data;
         }
     }
 }
