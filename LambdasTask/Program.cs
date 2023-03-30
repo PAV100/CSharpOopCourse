@@ -22,7 +22,7 @@ namespace LambdasTask
                 new("Svetlana", 54),
                 new("Ivan", 32),
                 new("Oleg", 16),
-                new("Anna", 34),
+                new("Anna", 34)
             };
 
             Console.WriteLine("Initial names list state:");
@@ -30,43 +30,54 @@ namespace LambdasTask
             Console.WriteLine();
 
             Console.WriteLine("1. Unique names list");
-            var list1 = persons
-                .Select(x => x.Name)
-                .Distinct();
-            Console.WriteLine(string.Join(", ", list1));
+            var uniqueNamesList = persons
+                .Select(p => p.Name)
+                .Distinct()
+                .ToList();
+            Console.WriteLine(string.Join(", ", uniqueNamesList));
             Console.WriteLine();
 
             Console.WriteLine("2. Unique names list formatted output");
-            Console.WriteLine("Names: " + string.Join(", ", list1));
+            Console.WriteLine("Names: " + string.Join(", ", uniqueNamesList) + ".");
             Console.WriteLine();
 
             Console.WriteLine("3. List of people younger than 18, calculate their average age");
-            var list2 = persons
-                .Where(x => x.Age < 18)
-                .Select(x => x.Name);
-            Console.WriteLine(string.Join(", ", list2));
+            var personsYounger18List = persons
+                .Where(p => p.Age < 18)
+                .ToList();
+
+            var peopleYounger18List = personsYounger18List
+                .Select(p => p.Name)
+                .ToList();
+            Console.WriteLine(string.Join(", ", peopleYounger18List));
+
             Console.Write("Average age: ");
-            var age = persons
-                .Where(x => x.Age < 18)
-                .Select(x => x.Age)
-                .Average();
-            Console.WriteLine(age);
+            var peopleYounger18AverageAge = personsYounger18List
+                .Average(p => p?.Age);
+            Console.WriteLine(peopleYounger18AverageAge);
             Console.WriteLine();
 
             Console.WriteLine("4. Getting dictionary[key: name, value: average age]");
-            var dict2 = persons
-                .GroupBy(x => x.Name, x => x.Age)
-                .ToDictionary(x => x.Key, x => x.Average());
-            Console.WriteLine(string.Join(", ", dict2));
+            var keyNameValueAverageAgeDictionary = persons
+                .GroupBy(p => p.Name, p => p.Age)
+                .ToDictionary(g => g.Key, g => g.Average());
+            Console.WriteLine(string.Join(", ", keyNameValueAverageAgeDictionary));
             Console.WriteLine();
 
             Console.WriteLine("5. Getting people between 20 and 45, printing their names to console in the age descending order");
-            var list3 = persons
-                .Where(x => (x.Age >= 20 && x.Age <= 45))
-                .OrderByDescending(x => x.Age)
-                .Select(x=>x.Name);
-            Console.WriteLine(string.Join(", ", list3));
-            Console.WriteLine();
+            var ageFilteredPeopleInAgeDescendingOrderCollection = persons
+                .Where(p => p.Age >= 20 && p.Age <= 45)
+                .OrderByDescending(p => p.Age)
+                .Select(p => p.Name);
+            Console.WriteLine(string.Join(", ", ageFilteredPeopleInAgeDescendingOrderCollection));
+
+            //var ageFilteredPeopleInAgeDescendingOrderList = persons
+            //    .Where(p => p.Age >= 20 && p.Age <= 45)
+            //    .OrderByDescending(p => p.Age)
+            //    .Select(p => p.Name)
+            //    .ToList();
+            //Console.WriteLine(string.Join(", ", ageFilteredPeopleInAgeDescendingOrderList));
+            //Console.WriteLine();
         }
     }
 }
