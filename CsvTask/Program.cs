@@ -40,27 +40,26 @@ namespace CsvTask
         /// <returns> FALSE if conversion was successful, TRUE if an error occured</returns>
         public static bool ConvertCsvFileToHtmlFile(string csvFileName, string htmlFileName)
         {
-            const string TableOpenTag = "<table>";
-            const string TableCloseTag = "</table>";
-            const string TableRowOpenTag = "<tr>";
-            const string TableRowCloseTag = "</tr>";
-            const string TableRowDetailOpenTag = "<td>";
-            const string TableRowDetailCloseTag = "</td>";
-            const string LineBreakTag = "<br/>";
-
-            bool isTableProcessing = false;
-            bool isTableRowProcessing = false;
-            bool isTableRowDetailProcessing = false;
-            bool isTableRowSpecialDetailProcessing = false;
-            bool isConvertingError = false;
-
             try
             {
+                bool isTableProcessing = false;
+                bool isTableRowProcessing = false;
+                bool isTableRowDetailProcessing = false;
+                bool isTableRowSpecialDetailProcessing = false;
+                bool isConvertingError = false;
+
                 using StreamReader reader = new(csvFileName);
 
                 string temporaryFileName = htmlFileName + ".tmp";
                 using (StreamWriter writer = new(temporaryFileName))
                 {
+                    const string tableOpenTag = "<table>";
+                    const string tableCloseTag = "</table>";
+                    const string tableRowOpenTag = "<tr>";
+                    const string tableRowCloseTag = "</tr>";
+                    const string tableRowDetailOpenTag = "<td>";
+                    const string tableRowDetailCloseTag = "</td>";
+                    const string lineBreakTag = "<br/>";
 
                     writer.WriteLine("<!DOCTYPE html>");
                     writer.WriteLine("<html class=\"no-js\">");
@@ -84,7 +83,7 @@ namespace CsvTask
 
                             if (isTableRowSpecialDetailProcessing)
                             {
-                                writer.Write(LineBreakTag);
+                                writer.Write(lineBreakTag);
                             }
                             else // !isTableRowSpecialDetailProcessing
                             {
@@ -92,8 +91,8 @@ namespace CsvTask
                                 {
                                     isTableRowDetailProcessing = false;
                                     isTableRowProcessing = false;
-                                    writer.Write(TableRowDetailCloseTag);
-                                    writer.Write(TableRowCloseTag);
+                                    writer.Write(tableRowDetailCloseTag);
+                                    writer.Write(tableRowCloseTag);
                                     writer.Write(Environment.NewLine);
                                 }
                                 else // !isTableRowDetailProcessing && !isTableRowSpecialDetailProcessing
@@ -101,22 +100,22 @@ namespace CsvTask
                                     if (!isTableProcessing)
                                     {
                                         isTableProcessing = true;
-                                        writer.Write(TableOpenTag);
+                                        writer.Write(tableOpenTag);
                                         writer.Write(Environment.NewLine);
                                     }
 
                                     if (!isTableRowProcessing)
                                     {
-                                        writer.Write(TableRowOpenTag);
-                                        writer.Write(TableRowCloseTag);
+                                        writer.Write(tableRowOpenTag);
+                                        writer.Write(tableRowCloseTag);
                                         writer.Write(Environment.NewLine);
                                     }
                                     else
                                     {
                                         isTableRowProcessing = false;
-                                        writer.Write(TableRowDetailOpenTag);
-                                        writer.Write(TableRowDetailCloseTag);
-                                        writer.Write(TableRowCloseTag);
+                                        writer.Write(tableRowDetailOpenTag);
+                                        writer.Write(tableRowDetailCloseTag);
+                                        writer.Write(tableRowCloseTag);
                                         writer.Write(Environment.NewLine);
                                     }
                                 }
@@ -135,14 +134,14 @@ namespace CsvTask
                                 else if (nextCharacter == ',') // ",
                                 {
                                     isTableRowSpecialDetailProcessing = false;
-                                    writer.Write(TableRowDetailCloseTag);
+                                    writer.Write(tableRowDetailCloseTag);
                                 }
                                 else if (nextCharacter == -1) // "EOF
                                 {
-                                    writer.Write(TableRowDetailCloseTag);
-                                    writer.Write(TableRowCloseTag);
+                                    writer.Write(tableRowDetailCloseTag);
+                                    writer.Write(tableRowCloseTag);
                                     writer.Write(Environment.NewLine);
-                                    writer.Write(TableCloseTag);
+                                    writer.Write(tableCloseTag);
                                     writer.Write(Environment.NewLine);
                                 }
                                 else // any other case
@@ -162,18 +161,18 @@ namespace CsvTask
                                 if (!isTableProcessing)
                                 {
                                     isTableProcessing = true;
-                                    writer.Write(TableOpenTag);
+                                    writer.Write(tableOpenTag);
                                     writer.Write(Environment.NewLine);
                                 }
 
                                 if (!isTableRowProcessing)
                                 {
                                     isTableRowProcessing = true;
-                                    writer.Write(TableRowOpenTag);
+                                    writer.Write(tableRowOpenTag);
                                 }
 
                                 isTableRowSpecialDetailProcessing = true;
-                                writer.Write(TableRowDetailOpenTag);
+                                writer.Write(tableRowDetailOpenTag);
                             }
                         }
                         else if (currentCharacter == ',') // ,
@@ -187,26 +186,26 @@ namespace CsvTask
                                 if (!isTableProcessing)
                                 {
                                     isTableProcessing = true;
-                                    writer.Write(TableOpenTag);
+                                    writer.Write(tableOpenTag);
                                     writer.Write(Environment.NewLine);
                                 }
 
                                 if (!isTableRowProcessing)
                                 {
                                     isTableRowProcessing = true;
-                                    writer.Write(TableRowOpenTag);
+                                    writer.Write(tableRowOpenTag);
                                 }
 
                                 if (isTableRowDetailProcessing)
                                 {
-                                    writer.Write(TableRowDetailCloseTag);
-                                    writer.Write(TableRowDetailOpenTag);
+                                    writer.Write(tableRowDetailCloseTag);
+                                    writer.Write(tableRowDetailOpenTag);
                                 }
                                 else // !isTableRowSpecialDetailProcessing && !isTableRowDetailProcessing
                                 {
-                                    writer.Write(TableRowDetailOpenTag);
-                                    writer.Write(TableRowDetailCloseTag);
-                                    writer.Write(TableRowDetailOpenTag);
+                                    writer.Write(tableRowDetailOpenTag);
+                                    writer.Write(tableRowDetailCloseTag);
+                                    writer.Write(tableRowDetailOpenTag);
                                 }
 
                                 if (nextCharacter == '"')
@@ -228,34 +227,33 @@ namespace CsvTask
                                 isConvertingError = true;
                                 break;
                             }
-                            else // !isTableRowSpecialDetailProcessing
+
+                            // !isTableRowSpecialDetailProcessing
+                            if (isTableRowDetailProcessing)
                             {
-                                if (isTableRowDetailProcessing)
+                                isTableProcessing = false;
+                                isTableRowProcessing = false;
+                                isTableRowDetailProcessing = false;
+                                writer.Write(tableRowDetailCloseTag);
+                                writer.Write(tableRowCloseTag);
+                                writer.Write(Environment.NewLine);
+                                writer.Write(tableCloseTag);
+                                writer.Write(Environment.NewLine);
+                            }
+                            else // !isTableRowSpecialDetailProcessing && !isTableRowDetailProcessing
+                            {
+                                if (isTableRowProcessing)
                                 {
-                                    isTableProcessing = false;
                                     isTableRowProcessing = false;
-                                    isTableRowDetailProcessing = false;
-                                    writer.Write(TableRowDetailCloseTag);
-                                    writer.Write(TableRowCloseTag);
-                                    writer.Write(Environment.NewLine);
-                                    writer.Write(TableCloseTag);
+                                    writer.Write(tableRowCloseTag);
                                     writer.Write(Environment.NewLine);
                                 }
-                                else // !isTableRowSpecialDetailProcessing && !isTableRowDetailProcessing
-                                {
-                                    if (isTableRowProcessing)
-                                    {
-                                        isTableRowProcessing = false;
-                                        writer.Write(TableRowCloseTag);
-                                        writer.Write(Environment.NewLine);
-                                    }
 
-                                    if (isTableProcessing)
-                                    {
-                                        isTableProcessing = false;
-                                        writer.Write(TableCloseTag);
-                                        writer.Write(Environment.NewLine);
-                                    }
+                                if (isTableProcessing)
+                                {
+                                    isTableProcessing = false;
+                                    writer.Write(tableCloseTag);
+                                    writer.Write(Environment.NewLine);
                                 }
                             }
                         }
@@ -264,20 +262,20 @@ namespace CsvTask
                             if (!isTableProcessing)
                             {
                                 isTableProcessing = true;
-                                writer.Write(TableOpenTag);
+                                writer.Write(tableOpenTag);
                                 writer.Write(Environment.NewLine);
                             }
 
                             if (!isTableRowProcessing)
                             {
                                 isTableRowProcessing = true;
-                                writer.Write(TableRowOpenTag);
+                                writer.Write(tableRowOpenTag);
                             }
 
                             if (!isTableRowDetailProcessing && !isTableRowSpecialDetailProcessing)
                             {
                                 isTableRowDetailProcessing = true;
-                                writer.Write(TableRowDetailOpenTag);
+                                writer.Write(tableRowDetailOpenTag);
                             }
 
                             if (currentCharacter == '<')
@@ -314,9 +312,11 @@ namespace CsvTask
                     {
                         File.Copy(temporaryFileName, htmlFileName, true);
                     }
-                    catch (Exception ex)
+                    catch (Exception e)
                     {
                         Console.WriteLine($"Temporary {temporaryFileName} to output {htmlFileName} file coping error");
+                        Console.WriteLine("Error details:");
+                        Console.WriteLine(e);
 
                         return true;
                     }
@@ -326,18 +326,22 @@ namespace CsvTask
                 {
                     File.Delete(temporaryFileName);
                 }
-                catch (Exception ex)
+                catch (Exception e)
                 {
                     Console.WriteLine($"Temporary file {temporaryFileName} deleting error");
+                    Console.WriteLine("Error details:");
+                    Console.WriteLine(e);
 
                     return true;
                 }
 
                 return isConvertingError;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
                 Console.WriteLine($"Input {csvFileName} or output {htmlFileName} file error");
+                Console.WriteLine("Error details:");
+                Console.WriteLine(e);
 
                 return true;
             }
