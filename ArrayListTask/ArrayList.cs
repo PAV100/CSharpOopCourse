@@ -70,7 +70,7 @@ namespace ArrayListTask
                 i++;
             }
 
-            Count = i;
+            Count = collection.Count;
         }
 
         public ArrayList(int capacity)
@@ -117,11 +117,6 @@ namespace ArrayListTask
             {
                 throw new ArgumentOutOfRangeException(nameof(arrayIndex), $"ArrayIndex = {arrayIndex}, but it must be >= 0.");
             }
-
-            //if (array.Rank != 1)
-            //{
-            //    throw new ArgumentException($"Array has {array.Rank} dimension(s), but it must be one-dimensional.");
-            //}
 
             if (Count > array.Length - arrayIndex)
             {
