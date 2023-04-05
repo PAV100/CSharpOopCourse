@@ -25,9 +25,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvTask", "CsvTask\CsvTask.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TreeTask", "TreeTask\TreeTask.csproj", "{0C00E227-7298-4F3C-9F45-DEEAE41B7EC3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LambdasTask", "LambdasTask\LambdasTask.csproj", "{F6CCB291-E120-4CB4-BF51-EF5B2A92CEB3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LambdasTask", "LambdasTask\LambdasTask.csproj", "{F6CCB291-E120-4CB4-BF51-EF5B2A92CEB3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphTask", "GraphTask\GraphTask.csproj", "{9F7A1B74-679B-48FC-83EC-F29A0C43DC2E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphTask", "GraphTask\GraphTask.csproj", "{9F7A1B74-679B-48FC-83EC-F29A0C43DC2E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TemperatureTask", "TemperatureTask\TemperatureTask.csproj", "{B440A6D1-B962-4A0C-B32F-F42760968340}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -87,6 +89,10 @@ Global
 		{9F7A1B74-679B-48FC-83EC-F29A0C43DC2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F7A1B74-679B-48FC-83EC-F29A0C43DC2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F7A1B74-679B-48FC-83EC-F29A0C43DC2E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B440A6D1-B962-4A0C-B32F-F42760968340}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B440A6D1-B962-4A0C-B32F-F42760968340}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B440A6D1-B962-4A0C-B32F-F42760968340}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B440A6D1-B962-4A0C-B32F-F42760968340}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

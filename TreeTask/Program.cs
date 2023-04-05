@@ -23,7 +23,7 @@ namespace TreeTask
                 bt.Insert(randomNumber);
             }
 
-            var cursorPositiont = Console.GetCursorPosition();
+            var cursorPosition = Console.GetCursorPosition();
 
             Console.WriteLine(bt);
             Console.WriteLine();
@@ -42,17 +42,17 @@ namespace TreeTask
                     bt.Insert(value);
                     treeHeight = bt.GetTreeHeight();
 
-                    Console.SetCursorPosition(cursorPositiont.Left, cursorPositiont.Top);
+                    Console.SetCursorPosition(cursorPosition.Left, cursorPosition.Top);
 
                     for (int i = 0; i < treeHeight + 2; i++)
                     {
                         Console.WriteLine(new string(' ', 120));
                     }
 
-                    Console.SetCursorPosition(cursorPositiont.Left, cursorPositiont.Top);
+                    Console.SetCursorPosition(cursorPosition.Left, cursorPosition.Top);
 
                     messageString = $"A value {value} was inserted into the tree";
-                    Console.WriteLine(bt.ToString());
+                    Console.WriteLine(bt);
 
                     Console.WriteLine(messageString);
                 }
@@ -97,15 +97,15 @@ namespace TreeTask
             Console.WriteLine();
             Console.WriteLine();
 
-            cursorPositiont = Console.GetCursorPosition();
+            cursorPosition = Console.GetCursorPosition();
 
             while (true)
             {
                 try
                 {
-                    Console.SetCursorPosition(cursorPositiont.Left, cursorPositiont.Top);
+                    Console.SetCursorPosition(cursorPosition.Left, cursorPosition.Top);
                     Console.WriteLine(new string(' ', 120));
-                    Console.SetCursorPosition(cursorPositiont.Left, cursorPositiont.Top);
+                    Console.SetCursorPosition(cursorPosition.Left, cursorPosition.Top);
 
                     Console.Write("3. Method Contains() checks the tree for given value. Enter a value or press Enter to continue: ");
                     value = Convert.ToInt32(Console.ReadLine());
@@ -126,7 +126,7 @@ namespace TreeTask
             Console.WriteLine();
 
             Console.WriteLine("4. Method DeleteFirstOccurrence() checks the tree for given value and deletes it if finds.");
-            cursorPositiont = Console.GetCursorPosition();
+            cursorPosition = Console.GetCursorPosition();
             Console.WriteLine(bt);
             treeHeight = bt.GetTreeHeight();
 
@@ -137,14 +137,14 @@ namespace TreeTask
                     Console.Write("Enter a value to delete or press Enter to continue: ");
                     value = Convert.ToInt32(Console.ReadLine());
 
-                    Console.SetCursorPosition(cursorPositiont.Left, cursorPositiont.Top);
+                    Console.SetCursorPosition(cursorPosition.Left, cursorPosition.Top);
 
                     for (int i = 0; i < treeHeight + 2; i++)
                     {
                         Console.WriteLine(new string(' ', 80));
                     }
 
-                    Console.SetCursorPosition(cursorPositiont.Left, cursorPositiont.Top);
+                    Console.SetCursorPosition(cursorPosition.Left, cursorPosition.Top);
 
                     messageString = bt.DeleteFirstOccurrence(value) ? "was deleted from" : "is not found in";
                     Console.WriteLine(bt);
@@ -173,7 +173,7 @@ namespace TreeTask
             bt2.Insert((5, 25));
             bt2.Insert((10, 25));
             bt2.Insert((15, 25));
-            Console.WriteLine(bt2.ToString());
+            Console.WriteLine(bt2);
             Console.WriteLine();
 
             Console.WriteLine("7. Generate binary tree of some only comparer comparable nodes using Insert() method");

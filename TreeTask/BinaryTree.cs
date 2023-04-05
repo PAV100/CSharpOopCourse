@@ -58,7 +58,7 @@ namespace TreeTask
 
             IComparable<T> comparableData1 = data1 as IComparable<T>;
 
-            if (comparableData1 is null) // casting and comparing is impossible
+            if (comparableData1 is null) // Casting and comparing is impossible
             {
                 throw new ArgumentException($"The values: {data1} {data2} can not be compared. Use comparable types or constructor with comparator.", nameof(data1) + ", " + nameof(data2));
             }
@@ -69,7 +69,7 @@ namespace TreeTask
         /// <summary>
         /// Inserts new node into the tree and fills it with "data" value
         /// </summary>
-        /// <returns>nothing</returns>
+        /// <returns>Nothing</returns>
         public void Insert(T data)
         {
             if (root is null)
@@ -111,7 +111,7 @@ namespace TreeTask
         /// <summary>
         /// Checks if the tree contains a given "data" value
         /// </summary>
-        /// <returns> true if contains</returns>
+        /// <returns> True if contains</returns>
         /// 
         public bool Contains(T data)
         {
@@ -160,7 +160,7 @@ namespace TreeTask
         /// <summary>
         /// Deletes a node with first occurrence of given "data" value from the tree.        
         /// </summary>
-        /// <returns> true if a node was deleted from the tree</returns>
+        /// <returns> True if a node was deleted from the tree</returns>
         public bool DeleteFirstOccurrence(T data)
         {
             TreeNode<T> nodeToDelete;
@@ -168,33 +168,33 @@ namespace TreeTask
 
             (nodeToDelete, parentNodeToDelete) = GetNodeAndParentByData(data);
 
-            if (nodeToDelete is null) // no occurrence
+            if (nodeToDelete is null) // No occurrence
             {
                 return false;
             }
 
-            if (nodeToDelete.Left is null && nodeToDelete.Right is null) // a leaf (including only root)
+            if (nodeToDelete.Left is null && nodeToDelete.Right is null) // A leaf (including only root)
             {
                 SetNewChild(parentNodeToDelete, nodeToDelete, null);
                 Count--;
                 return true;
             }
 
-            if (nodeToDelete.Right is null) // node with left subtree
+            if (nodeToDelete.Right is null) // Node with left subtree
             {
                 SetNewChild(parentNodeToDelete, nodeToDelete, nodeToDelete.Left);
                 Count--;
                 return true;
             }
 
-            if (nodeToDelete.Left is null) // node with right subtree
+            if (nodeToDelete.Left is null) // Node with right subtree
             {
                 SetNewChild(parentNodeToDelete, nodeToDelete, nodeToDelete.Right);
                 Count--;
                 return true;
             }
 
-            // both children
+            // Both children
             TreeNode<T> mostLeftNode;
             TreeNode<T> mostLeftParentNode;
 
@@ -275,7 +275,7 @@ namespace TreeTask
         /// <summary>
         /// Returns an enumerator that iterates through binary tree nodes using breadth-first traversal
         /// </summary>
-        /// <returns>tree node data field value</returns>
+        /// <returns>Tree node data field value</returns>
 
         public IEnumerable<T> GetBreadthFirstTraversalEnumerator()
         {
@@ -309,7 +309,7 @@ namespace TreeTask
         /// <summary>
         /// Returns an enumerator that iterates through binary tree nodes using depth-first traversal
         /// </summary>
-        /// <returns>tree node data field value</returns>
+        /// <returns>Tree node data field value</returns>
         public IEnumerable<T> GetDepthFirstTraversalEnumerator()
         {
             if (root is null)
@@ -342,7 +342,7 @@ namespace TreeTask
         /// <summary>
         /// Returns an enumerator that iterates through binary tree nodes using breadth-first recursive traversal
         /// </summary>
-        /// <returns>tree node data field value</returns>
+        /// <returns>Tree node data field value</returns>
         public IEnumerable<T> GetDepthFirstTraversalRecursiveEnumerator()
         {
             return GetDepthFirstTraversalRecursiveEnumerator(root);
@@ -351,7 +351,7 @@ namespace TreeTask
         /// <summary>
         /// Returns an enumerator that iterates through binary tree nodes using breadth-first recursive traversal
         /// </summary>
-        /// <returns>tree node data field value</returns>
+        /// <returns>Tree node data field value</returns>
         private static IEnumerable<T> GetDepthFirstTraversalRecursiveEnumerator(TreeNode<T> node)
         {
             if (node is null)
@@ -385,7 +385,7 @@ namespace TreeTask
         /// <summary>
         /// Returns a binary tree structure
         /// </summary>
-        /// <returns>a string with line separators</returns>
+        /// <returns>A string with line separators</returns>
         public override string ToString()
         {
             if (Count == 0)
@@ -418,7 +418,7 @@ namespace TreeTask
 
         private string GetTreeLevelPrintout(List<string> treePrintout)
         {
-            return GetTreeLevelPrintout(treePrintout, root, 0, out int centralSymbolIndex);
+            return GetTreeLevelPrintout(treePrintout, root, 0, out _);
         }
 
         private static string GetTreeLevelPrintout(List<string> treePrintout, TreeNode<T> node, int nodeLevel, out int centralSymbolIndex)
@@ -489,7 +489,7 @@ namespace TreeTask
         /// <summary>
         /// Returns a number of tree levels (tree height)
         /// </summary>
-        /// <returns>an integer number of tree levels </returns>
+        /// <returns>An integer number of tree levels </returns>
         public int GetTreeHeight()
         {
             return GetTreeHeight(root, 0) + 1;
@@ -532,7 +532,6 @@ namespace TreeTask
             string rightChildCap = "┐";
             string childrenDelimiter = " ";
 
-            //int childCapPlaceholdersCount;
             int childCapPlaceholdersCountToLeftFromThis = 0;
             int childCapPlaceholdersCountToRightFromThis;
             int childrenDelimitersCount;
@@ -686,11 +685,6 @@ namespace TreeTask
             int dataLength = data.Length;
             return dataLength < 1 ? 0 : (dataLength - 1) / 2;
         }
-
-        //private static int GetSymbolsCountToLeftFromIndex(string data, int index)
-        //{
-        //    return index;
-        //}
 
         private static int GetSymbolsCountToRightFromIndex(string data, int index)
         {
