@@ -17,11 +17,11 @@ namespace LambdasTask
                 new("Sergey", 35),
                 new("Petr", 45),
                 new("Ilya", 45),
-                new("Anna", 17),
+                new("Anna", 117),
                 new("Olga", 30),
                 new("Svetlana", 54),
                 new("Ivan", 32),
-                new("Oleg", 16),
+                new("Oleg", 116),
                 new("Anna", 34)
             };
 
@@ -52,24 +52,23 @@ namespace LambdasTask
             Console.WriteLine(string.Join(", ", peopleYounger18List));
 
             Console.Write("Average age: ");
-            var peopleYounger18AverageAge = personsYounger18List
-                .Average(p => p?.Age);
+            var peopleYounger18AverageAge = personsYounger18List.Average(p => (int?)p.Age);
             Console.WriteLine(peopleYounger18AverageAge);
             Console.WriteLine();
 
             Console.WriteLine("4. Getting dictionary[key: name, value: average age]");
-            var keyNameValueAverageAgeDictionary = persons
+            var AverageAgesByNames = persons
                 .GroupBy(p => p.Name, p => p.Age)
                 .ToDictionary(g => g.Key, g => g.Average());
-            Console.WriteLine(string.Join(", ", keyNameValueAverageAgeDictionary));
+            Console.WriteLine(string.Join(", ", AverageAgesByNames));
             Console.WriteLine();
 
             Console.WriteLine("5. Getting people between 20 and 45, printing their names to console in the age descending order");
-            var ageFilteredPeopleInAgeDescendingOrderCollection = persons
+            var ageFilteredPeopleInAgeDescendingOrder = persons
                 .Where(p => p.Age >= 20 && p.Age <= 45)
                 .OrderByDescending(p => p.Age)
                 .Select(p => p.Name);
-            Console.WriteLine(string.Join(", ", ageFilteredPeopleInAgeDescendingOrderCollection));
+            Console.WriteLine(string.Join(", ", ageFilteredPeopleInAgeDescendingOrder));
 
             //var ageFilteredPeopleInAgeDescendingOrderList = persons
             //    .Where(p => p.Age >= 20 && p.Age <= 45)
