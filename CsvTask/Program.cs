@@ -26,18 +26,18 @@ namespace CsvTask
 
             if (ConvertCsvFileToHtmlFile(inputFileName, outputFileName))
             {
-                Console.WriteLine("Converting Error!");
+                Console.WriteLine($"Converting successful. File {outputFileName} written!");
             }
             else
             {
-                Console.WriteLine($"Converting successful. File {outputFileName} written!");
+                Console.WriteLine("Converting Error!");
             }
         }
 
         /// <summary>
         /// Method tries to covert input csv-formatted file to HTML table and to write it to HTML-formatted file
         /// </summary>
-        /// <returns> FALSE if conversion was successful, TRUE if an error occured</returns>
+        /// <returns> TRUE if conversion was successful, FALSE if an error occurred</returns>
         public static bool ConvertCsvFileToHtmlFile(string csvFileName, string htmlFileName)
         {
             try
@@ -316,9 +316,9 @@ namespace CsvTask
                     {
                         Console.WriteLine($"Temporary {temporaryFileName} to output {htmlFileName} file coping error");
                         Console.WriteLine("Error details:");
-                        Console.WriteLine(e);
+                        Console.WriteLine(e.Message);
 
-                        return true;
+                        return false;
                     }
                 }
 
@@ -330,20 +330,20 @@ namespace CsvTask
                 {
                     Console.WriteLine($"Temporary file {temporaryFileName} deleting error");
                     Console.WriteLine("Error details:");
-                    Console.WriteLine(e);
+                    Console.WriteLine(e.Message);
 
-                    return true;
+                    return false;
                 }
 
-                return isConvertingError;
+                return !isConvertingError;
             }
             catch (Exception e)
             {
                 Console.WriteLine($"Input {csvFileName} or output {htmlFileName} file error");
                 Console.WriteLine("Error details:");
-                Console.WriteLine(e);
+                Console.WriteLine(e.Message);
 
-                return true;
+                return false;
             }
         }
     }
