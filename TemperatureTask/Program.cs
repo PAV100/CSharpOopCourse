@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TemperatureTask.Model;
+using TemperatureTask.View;
+using TemperatureTask.Controller;
 
 namespace TemperatureTask
 {
@@ -14,10 +17,13 @@ namespace TemperatureTask
         [STAThread]
         static void Main()
         {
-            Application.SetHighDpiMode(HighDpiMode.SystemAware);
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainWindow());
+            TemperatureModel model = new();
+
+            TemperatureController controller = new(model);
+            GuiView view = new(controller);
+            controller.SetView(view);
+
+            view.Start();
         }
     }
 }
