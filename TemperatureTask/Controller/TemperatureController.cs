@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using TemperatureTask.Model;
 using TemperatureTask.View;
 
@@ -24,17 +25,23 @@ namespace TemperatureTask.Controller
             this.view = view;
         }
 
-        public void ConvertTemperature(double celsiusTemperature)
+        public void ConvertTemperature(string sourceTemperatureText, string sourceTemperatureUnit, string targetTemperatureUnit)
         {
-            try
+            if (sourceTemperatureUnit is null || !temperatureModel.temperatureScales.ContainsKey(sourceTemperatureUnit))
             {
-                double kelvinTemperature = temperatureModel.ConvertToKelvin(celsiusTemperature);
-                view.UpdateTargetTemperature(kelvinTemperature);
+                throw new ArgumentNullException();
             }
-            catch (ArgumentException e)
+
+            if (targetTemperatureUnit is null || !temperatureModel.temperatureScales.ContainsKey(targetTemperatureUnit))
             {
-                //TODO messagebox(e.message);
+                throw new ArgumentNullException();
             }
-        }
+
+            double sourceTemperature = Convert.ToDouble(sourceTemperatureText); // Trows Format Exception           
+
+            double targetTemperature = temperatureModel.ConvertTemperature(sourceTemperature, sourceTemperatureUnit, targetTemperatureUnit);             // Trows ArgumentOutOfRangeException Exception           
+
+            view.UpdateTargetTemperature(targetTemperature);
+        }       
     }
 }

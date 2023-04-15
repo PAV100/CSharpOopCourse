@@ -20,10 +20,10 @@ namespace TemperatureTask
             TemperatureModel model = new();
 
             TemperatureController controller = new(model);
-            GuiView view = new(controller);
+            GuiView view = new(controller, model);
             controller.SetView(view);
 
-            view.Start();
+            view.Start();            
         }
     }
 }

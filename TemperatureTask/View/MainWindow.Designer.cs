@@ -33,11 +33,11 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.sourceTemperature = new System.Windows.Forms.TextBox();
-            this.sourceTemperatureUom = new System.Windows.Forms.ComboBox();
+            this.sourceTemperatureUnit = new System.Windows.Forms.ComboBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.targetTemperature = new System.Windows.Forms.TextBox();
-            this.targetTemperatureUom = new System.Windows.Forms.ComboBox();
+            this.targetTemperatureUnit = new System.Windows.Forms.ComboBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.convertButton = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
@@ -79,7 +79,7 @@
             // flowLayoutPanel1
             // 
             this.flowLayoutPanel1.Controls.Add(this.sourceTemperature);
-            this.flowLayoutPanel1.Controls.Add(this.sourceTemperatureUom);
+            this.flowLayoutPanel1.Controls.Add(this.sourceTemperatureUnit);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 19);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
@@ -96,11 +96,11 @@
             // 
             // sourceTemperatureUom
             // 
-            this.sourceTemperatureUom.FormattingEnabled = true;
-            this.sourceTemperatureUom.Location = new System.Drawing.Point(79, 3);
-            this.sourceTemperatureUom.Name = "sourceTemperatureUom";
-            this.sourceTemperatureUom.Size = new System.Drawing.Size(52, 23);
-            this.sourceTemperatureUom.TabIndex = 0;
+            this.sourceTemperatureUnit.FormattingEnabled = true;
+            this.sourceTemperatureUnit.Location = new System.Drawing.Point(79, 3);
+            this.sourceTemperatureUnit.Name = "sourceTemperatureUom";
+            this.sourceTemperatureUnit.Size = new System.Drawing.Size(52, 23);
+            this.sourceTemperatureUnit.TabIndex = 0;
             // 
             // groupBox2
             // 
@@ -116,7 +116,7 @@
             // flowLayoutPanel2
             // 
             this.flowLayoutPanel2.Controls.Add(this.targetTemperature);
-            this.flowLayoutPanel2.Controls.Add(this.targetTemperatureUom);
+            this.flowLayoutPanel2.Controls.Add(this.targetTemperatureUnit);
             this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel2.Location = new System.Drawing.Point(3, 19);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
@@ -133,11 +133,11 @@
             // 
             // targetTemperatureUom
             // 
-            this.targetTemperatureUom.FormattingEnabled = true;
-            this.targetTemperatureUom.Location = new System.Drawing.Point(79, 3);
-            this.targetTemperatureUom.Name = "targetTemperatureUom";
-            this.targetTemperatureUom.Size = new System.Drawing.Size(52, 23);
-            this.targetTemperatureUom.TabIndex = 0;
+            this.targetTemperatureUnit.FormattingEnabled = true;
+            this.targetTemperatureUnit.Location = new System.Drawing.Point(79, 3);
+            this.targetTemperatureUnit.Name = "targetTemperatureUom";
+            this.targetTemperatureUnit.Size = new System.Drawing.Size(52, 23);
+            this.targetTemperatureUnit.TabIndex = 0;
             // 
             // panel1
             // 
@@ -189,9 +189,9 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.TextBox sourceTemperature;
-        private System.Windows.Forms.ComboBox sourceTemperatureUom;
+        private System.Windows.Forms.ComboBox sourceTemperatureUnit;
         private System.Windows.Forms.TextBox targetTemperature;
-        private System.Windows.Forms.ComboBox targetTemperatureUom;
+        private System.Windows.Forms.ComboBox targetTemperatureUnit;
         private System.Windows.Forms.Button convertButton;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;

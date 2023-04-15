@@ -17,20 +17,32 @@ namespace TemperatureTask
     {
         private GuiView view;
 
-        public MainWindow()
+        private TemperatureController controller;
+
+        public MainWindow(TemperatureController controller)
         {
             InitializeComponent();
+            this.controller = controller;
+        }
+        public void UpdateTargetTemperature(double targetTenperature)
+        {
+            targetTemperature.Text = targetTenperature.ToString();
+        }
+
+        public void UpdateAllFields(double sourceTemperature, string sourceTemperatureUnit, double targetTemperature, string targetTemperatureUnit, string[] Units)
+        {
+            this.sourceTemperature.Text = sourceTemperature.ToString();
         }
 
         private void MainWindow_Load(object sender, EventArgs e)
         {
-            sourceTemperatureUom.Items.AddRange(new string[] { "°C", "°F", "°K" });
-            sourceTemperatureUom.Text = "°C";
+            //sourceTemperatureUnit.Items.AddRange(new string[] { "°C", "°F", "°K" });
+            //sourceTemperatureUnit.Text = "°C";
 
-            targetTemperatureUom.Items.AddRange(new string[] { "°C", "°F", "°K" });
-            targetTemperatureUom.Text = "°K";
+            //targetTemperatureUnit.Items.AddRange(new string[] { "°C", "°F", "°K" });
+            //targetTemperatureUnit.Text = "°K";
 
-            sourceTemperature.Text = "0.0";
+            //sourceTemperature.Text = "0";
 
             //targetTemperature.Text = sourceTemperature.Text;
         }
@@ -54,8 +66,24 @@ namespace TemperatureTask
             //    MessageBox.Show("Temperature must be a number!", "Error", MessageBoxButtons.OK);
             //}
 
+            //controller.ConvertTemperature(sourceTemperature.Text, sourceTemperatureUnit.Text, targetTemperatureUnit.Text);
 
-
+            try
+            {
+                controller.ConvertTemperature(sourceTemperature.Text, sourceTemperatureUnit.Text, targetTemperatureUnit.Text);
+            }
+            catch (ArgumentNullException)
+            {
+                MessageBox.Show("Not provided units of measure", "Error", MessageBoxButtons.OK);
+            }
+            catch (FormatException)
+            {
+                MessageBox.Show("Temperature must be a number", "Error", MessageBoxButtons.OK);
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                MessageBox.Show("Temperature must be > absolute zero", "Error", MessageBoxButtons.OK);
+            }
         }
 
         private void sourceTemperature_TextChanged(object sender, EventArgs e)

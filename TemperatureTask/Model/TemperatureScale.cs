@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace TemperatureTask.Model
 {
-    internal interface IModel
+    public record TemperatureScale(string Name, Func<double, double> ToKelvin, Func<double, double> FromKelvin)
     {
-        double ConvertTemperature(double sourceTemperature, string sourceTemperatureUnit, string targetTemperatureUnit);
     }
 }

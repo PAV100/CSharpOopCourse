@@ -8,34 +8,46 @@ namespace TemperatureTask.Model
 {
     public class TemperatureModel : IModel
     {
-        private const double InitialSourceTemperature = 0;
+        public SortedDictionary<string, TemperatureScale> temperatureScales;
 
-        private double sourceTemperature;
+        public double SourceTemperature { get; set; }
 
-        private double targetTemperature;
+        public string SourceTemperatureUnit { get; set; }
 
-        private string sourceTemperatureUnit;
+        public double TargetTemperature { get; set; }
 
-        private string targetTemperatureUnit;
+        public string TargetTemperatureUnit { get; set; }
 
         public TemperatureModel()
         {
-            sourceTemperature = InitialSourceTemperature;
-            sourceTemperatureUnit = "°C";
-            targetTemperature = ConvertToKelvin(InitialSourceTemperature);
-            targetTemperatureUnit = "°K";
+            temperatureScales = new();
+            temperatureScales.Add("°C", new("Celsius scale", d => d + 273.15, d => d - 273.15));
+            temperatureScales.Add("°K", new("Kelvin scale", d => d, d => d));
+            temperatureScales.Add("°F", new("Fahrenheit scale", d => 9.0 / 5 * d + 32 + 273.15, d => 5.0 / 9 * (d - 32) - 273.15));
+
+            int initialSourceTemperature = 0;
+            SourceTemperatureUnit = "°C";
+            TargetTemperatureUnit = "°K";
+
+            SourceTemperature = initialSourceTemperature;
+            TargetTemperature = temperatureScales[SourceTemperatureUnit].ToKelvin(initialSourceTemperature);
         }
 
-        public double ConvertToKelvin(double celsiusTemperature)
+        public double ConvertTemperature(double sourceTemperature, string sourceTemperatureUnit, string targetTemperatureUnit)
         {
-            double result = celsiusTemperature + 273.15;
+            double kelvinTemperature = temperatureScales[sourceTemperatureUnit].ToKelvin(sourceTemperature);
 
-            if (result < 0)
+            if (kelvinTemperature < 0)
             {
-                throw new ArgumentException("sssss");
+                throw new ArgumentOutOfRangeException();
             }
 
-            return result;
+            SourceTemperatureUnit = sourceTemperatureUnit;
+            TargetTemperatureUnit = targetTemperatureUnit;
+            SourceTemperature = sourceTemperature;
+            TargetTemperature = temperatureScales[targetTemperatureUnit].FromKelvin(kelvinTemperature);
+
+            return TargetTemperature;
         }
     }
 }
