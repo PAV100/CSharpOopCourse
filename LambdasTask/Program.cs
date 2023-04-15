@@ -57,10 +57,10 @@ namespace LambdasTask
             Console.WriteLine();
 
             Console.WriteLine("4. Getting dictionary[key: name, value: average age]");
-            var AverageAgesByNames = persons
+            var averageAgesByNames = persons
                 .GroupBy(p => p.Name, p => p.Age)
                 .ToDictionary(g => g.Key, g => g.Average());
-            Console.WriteLine(string.Join(", ", AverageAgesByNames));
+            Console.WriteLine(string.Join(", ", averageAgesByNames));
             Console.WriteLine();
 
             Console.WriteLine("5. Getting people between 20 and 45, printing their names to console in the age descending order");
