@@ -1,95 +1,68 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TemperatureTask.Controller;
-using TemperatureTask.Model;
-using TemperatureTask.View;
 
 namespace TemperatureTask
 {
     public partial class MainWindow : Form
     {
-        private GuiView view;
-
-        private TemperatureController controller;
+        private readonly TemperatureController controller;
 
         public MainWindow(TemperatureController controller)
         {
             InitializeComponent();
             this.controller = controller;
         }
-        public void UpdateTargetTemperature(double targetTenperature)
-        {
-            targetTemperature.Text = targetTenperature.ToString();
-        }
-
-        public void UpdateAllFields(double sourceTemperature, string sourceTemperatureUnit, double targetTemperature, string targetTemperatureUnit, string[] Units)
-        {
-            this.sourceTemperature.Text = sourceTemperature.ToString();
-        }
 
         private void MainWindow_Load(object sender, EventArgs e)
         {
-            //sourceTemperatureUnit.Items.AddRange(new string[] { "°C", "°F", "°K" });
-            //sourceTemperatureUnit.Text = "°C";
-
-            //targetTemperatureUnit.Items.AddRange(new string[] { "°C", "°F", "°K" });
-            //targetTemperatureUnit.Text = "°K";
-
-            //sourceTemperature.Text = "0";
-
-            //targetTemperature.Text = sourceTemperature.Text;
+            controller.LoadValuesToFields();
         }
 
         private void convertButton_Click(object sender, EventArgs e)
         {
-            //MessageBox.Show("Button clicked!", "Info", MessageBoxButtons.OK);
-            //targetTemperature.Text = "qwer";
-            //targetTemperature = sourceTemperature;            
-
-            //string sourceTemperatureText = sourceTemperature.Text;
-
-            //try
-            //{
-            //    double sourceTemperature = Convert.ToDouble(sourceTemperatureText);
-            //    targetTemperature.Text = TemperatureController.ConvertTemperature(sourceTemperature);                
-
-            //}
-            //catch (FormatException)
-            //{
-            //    MessageBox.Show("Temperature must be a number!", "Error", MessageBoxButtons.OK);
-            //}
-
-            //controller.ConvertTemperature(sourceTemperature.Text, sourceTemperatureUnit.Text, targetTemperatureUnit.Text);
-
             try
             {
                 controller.ConvertTemperature(sourceTemperature.Text, sourceTemperatureUnit.Text, targetTemperatureUnit.Text);
             }
             catch (ArgumentNullException)
             {
-                MessageBox.Show("Not provided units of measure", "Error", MessageBoxButtons.OK);
+                MessageBox.Show("Unit(s) of measure is not provided or incorrect", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             catch (FormatException)
             {
-                MessageBox.Show("Temperature must be a number", "Error", MessageBoxButtons.OK);
+                MessageBox.Show("Temperature value must be a number", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             catch (ArgumentOutOfRangeException)
             {
-                MessageBox.Show("Temperature must be > absolute zero", "Error", MessageBoxButtons.OK);
+                MessageBox.Show("Temperature must be greater than absolute zero", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+
+            sourceTemperature.Focus();
+            sourceTemperature.Select(0, sourceTemperature.Text.Length);
         }
 
-        private void sourceTemperature_TextChanged(object sender, EventArgs e)
+        public void UpdateTargetTemperature(double targetTenperature)
         {
-            //targetTemperature.Text = sourceTemperature.Text + "12";
+            targetTemperature.Text = targetTenperature.ToString();
 
+            targetTemperature.Select();
+            targetTemperature.Copy();
+        }
+
+        public void UpdateAllFields(double sourceTemperature, string sourceTemperatureUnit, double targetTemperature, string targetTemperatureUnit, string[] Units)
+        {
+            this.sourceTemperatureUnit.Items.AddRange(Units);
+            this.targetTemperatureUnit.Items.AddRange(Units);
+
+            this.sourceTemperature.Text = sourceTemperature.ToString();
+            this.sourceTemperatureUnit.Text = sourceTemperatureUnit;
+            this.targetTemperature.Text = targetTemperature.ToString();
+            this.targetTemperatureUnit.Text = targetTemperatureUnit;
+
+            this.targetTemperature.Select();
+            this.targetTemperature.Copy();
+            this.sourceTemperature.Select();
         }
     }
 }

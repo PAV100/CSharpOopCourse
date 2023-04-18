@@ -1,8 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using TemperatureTask.Model;
 using TemperatureTask.View;
 using TemperatureTask.Controller;
@@ -20,10 +16,10 @@ namespace TemperatureTask
             TemperatureModel model = new();
 
             TemperatureController controller = new(model);
-            GuiView view = new(controller, model);
+            GuiView view = new(controller);
             controller.SetView(view);
 
-            view.Start();            
+            view.Start();
         }
     }
 }

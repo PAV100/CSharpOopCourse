@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using TemperatureTask.Model;
 using TemperatureTask.View;
 
@@ -27,21 +22,28 @@ namespace TemperatureTask.Controller
 
         public void ConvertTemperature(string sourceTemperatureText, string sourceTemperatureUnit, string targetTemperatureUnit)
         {
-            if (sourceTemperatureUnit is null || !temperatureModel.temperatureScales.ContainsKey(sourceTemperatureUnit))
+            if (sourceTemperatureUnit is null || !temperatureModel.ContainsScale(sourceTemperatureUnit))
             {
                 throw new ArgumentNullException();
             }
 
-            if (targetTemperatureUnit is null || !temperatureModel.temperatureScales.ContainsKey(targetTemperatureUnit))
+            if (targetTemperatureUnit is null || !temperatureModel.ContainsScale(targetTemperatureUnit))
             {
                 throw new ArgumentNullException();
             }
 
             double sourceTemperature = Convert.ToDouble(sourceTemperatureText); // Trows Format Exception           
 
-            double targetTemperature = temperatureModel.ConvertTemperature(sourceTemperature, sourceTemperatureUnit, targetTemperatureUnit);             // Trows ArgumentOutOfRangeException Exception           
+            double targetTemperature = temperatureModel.ConvertTemperature(sourceTemperature, sourceTemperatureUnit, targetTemperatureUnit); // Trows ArgumentOutOfRangeException Exception           
 
             view.UpdateTargetTemperature(targetTemperature);
-        }       
+        }
+
+        public void LoadValuesToFields()
+        {
+            view.UpdateAllFields(temperatureModel.SourceTemperature, temperatureModel.SourceTemperatureUnit,
+                temperatureModel.TargetTemperature, temperatureModel.TargetTemperatureUnit,
+                temperatureModel.GetUnits());
+        }
     }
 }

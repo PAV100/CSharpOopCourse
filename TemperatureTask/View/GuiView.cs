@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TemperatureTask.Controller;
 using TemperatureTask.Model;
@@ -11,16 +7,13 @@ namespace TemperatureTask.View
 {
     public class GuiView : IView
     {
-        private readonly TemperatureController controller;
-
-        private TemperatureModel temperatureModel;
+        private readonly TemperatureController controller;        
 
         private MainWindow mainWindow;
 
-        public GuiView(TemperatureController controller, TemperatureModel temperatureModel)
+        public GuiView(TemperatureController controller)
         {
-            this.controller = controller;
-            this.temperatureModel = temperatureModel;
+            this.controller = controller;            
         }
 
         public void Start()
@@ -31,22 +24,11 @@ namespace TemperatureTask.View
 
             mainWindow = new MainWindow(controller);
             Application.Run(mainWindow);
-
-            UpdateAllFields(temperatureModel.SourceTemperature,
-                temperatureModel.SourceTemperatureUnit,
-                temperatureModel.TargetTemperature,
-                temperatureModel.TargetTemperatureUnit,
-                new[] { "°C", "°F", "°K" });
         }
 
         public void UpdateTargetTemperature(double targetTenperature)
         {
-            mainWindow.UpdateTargetTemperature(targetTenperature);
-        }
-
-        public void ShowError(string message)
-        {
-            throw new NotImplementedException();
+            mainWindow.UpdateTargetTemperature(Math.Round(targetTenperature, 2, MidpointRounding.AwayFromZero));
         }
 
         public void UpdateAllFields(double sourceTemperature, string sourceTemperatureUnit, double targetTemperature, string targetTemperatureUnit, string[] Units)

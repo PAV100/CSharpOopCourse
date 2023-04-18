@@ -92,13 +92,12 @@
             this.sourceTemperature.Name = "sourceTemperature";
             this.sourceTemperature.Size = new System.Drawing.Size(70, 23);
             this.sourceTemperature.TabIndex = 1;
-            this.sourceTemperature.TextChanged += new System.EventHandler(this.sourceTemperature_TextChanged);
             // 
-            // sourceTemperatureUom
+            // sourceTemperatureUnit
             // 
             this.sourceTemperatureUnit.FormattingEnabled = true;
             this.sourceTemperatureUnit.Location = new System.Drawing.Point(79, 3);
-            this.sourceTemperatureUnit.Name = "sourceTemperatureUom";
+            this.sourceTemperatureUnit.Name = "sourceTemperatureUnit";
             this.sourceTemperatureUnit.Size = new System.Drawing.Size(52, 23);
             this.sourceTemperatureUnit.TabIndex = 0;
             // 
@@ -131,11 +130,11 @@
             this.targetTemperature.Size = new System.Drawing.Size(70, 23);
             this.targetTemperature.TabIndex = 1;
             // 
-            // targetTemperatureUom
+            // targetTemperatureUnit
             // 
             this.targetTemperatureUnit.FormattingEnabled = true;
             this.targetTemperatureUnit.Location = new System.Drawing.Point(79, 3);
-            this.targetTemperatureUnit.Name = "targetTemperatureUom";
+            this.targetTemperatureUnit.Name = "targetTemperatureUnit";
             this.targetTemperatureUnit.Size = new System.Drawing.Size(52, 23);
             this.targetTemperatureUnit.TabIndex = 0;
             // 
