@@ -29,7 +29,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LambdasTask", "LambdasTask\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphTask", "GraphTask\GraphTask.csproj", "{9F7A1B74-679B-48FC-83EC-F29A0C43DC2E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TemperatureTask", "TemperatureTask\TemperatureTask.csproj", "{B440A6D1-B962-4A0C-B32F-F42760968340}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TemperatureTask", "TemperatureTask\TemperatureTask.csproj", "{B440A6D1-B962-4A0C-B32F-F42760968340}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinesweeperTask", "MineSweeperTask\MinesweeperTask.csproj", "{210E9844-C7FA-4931-BBAC-AA5015E6F1DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -93,6 +95,10 @@ Global
 		{B440A6D1-B962-4A0C-B32F-F42760968340}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B440A6D1-B962-4A0C-B32F-F42760968340}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B440A6D1-B962-4A0C-B32F-F42760968340}.Release|Any CPU.Build.0 = Release|Any CPU
+		{210E9844-C7FA-4931-BBAC-AA5015E6F1DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{210E9844-C7FA-4931-BBAC-AA5015E6F1DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{210E9844-C7FA-4931-BBAC-AA5015E6F1DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{210E9844-C7FA-4931-BBAC-AA5015E6F1DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
