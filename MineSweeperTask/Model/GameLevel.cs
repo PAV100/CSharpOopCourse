@@ -9,7 +9,13 @@
         private const int MaxRowsCount = 50;
 
         private const int MinMinesCount = 0;
-        private const int MaxMinesCount = MaxColumnsCount * MaxRowsCount;
+
+        public int CustomDefaultColumnsCount { get; set; }
+
+        public int CustomDefaultRowsCount { get; set; }
+
+        public int CustomDefaultMinsCount { get; set; }
+
 
         public GameLevelName Name { get; private set; }
 
@@ -19,7 +25,7 @@
 
         public int MinesCount { get; set; }
 
-        GameLevel(GameLevelName name, int columnsCount, int rowsCount, int minesCount)
+        public GameLevel(GameLevelName name, int columnsCount, int rowsCount, int minesCount)
         {
             Name = name;
 
@@ -42,8 +48,11 @@
                     break;
                 case GameLevelName.Custom:
                     ColumnsCount = GetLimitedValue(columnsCount, MinColumnsCount, MaxColumnsCount);
+                    CustomDefaultColumnsCount = ColumnsCount;
                     RowsCount = GetLimitedValue(rowsCount, MinRowsCount, MaxRowsCount);
-                    MinesCount = GetLimitedValue(minesCount, MinMinesCount, MaxMinesCount);
+                    CustomDefaultRowsCount = RowsCount;
+                    MinesCount = GetLimitedValue(minesCount, MinMinesCount, ColumnsCount * RowsCount);
+                    CustomDefaultMinsCount = MinesCount;
                     break;
             }
         }

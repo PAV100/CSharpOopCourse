@@ -26,14 +26,14 @@ namespace GraphTask
             graph.PrintToConsole();
 
             Console.Write("Breadth first traversal: ");
-            foreach (int e in graph.GetBreadthFirstTraversal())
+            foreach (int e in graph.BreadthFirstTraversal())
             {
                 Console.Write($"{e} ");
             }
             Console.WriteLine();
 
             Console.Write("Depth first traversal  : ");
-            foreach (int e in graph.GetDepthFirstTraversal())
+            foreach (int e in graph.DepthFirstTraversal())
             {
                 Console.Write($"{e} ");
             }

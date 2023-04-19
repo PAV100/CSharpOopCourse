@@ -5,7 +5,7 @@ namespace GraphTask
 {
     internal class Graph
     {
-        private int[,] AdjacencyMatrix { get; }
+        private readonly int[,] adjacencyMatrix;
 
         public Graph(int[,] adjacencyMatrix)
         {
@@ -15,19 +15,25 @@ namespace GraphTask
             }
 
             int verticesCount = adjacencyMatrix.GetLength(0);
+            int columnsCount = adjacencyMatrix.GetLength(1);
 
-            if (verticesCount != adjacencyMatrix.GetLength(1) || verticesCount == 0)
+            if (verticesCount != columnsCount)
             {
-                throw new ArgumentException("Graph must be specified as square array (adjacency matrix) and contain at least one vertex", nameof(adjacencyMatrix));
+                throw new ArgumentException($"Adjacency matrix size is {verticesCount} x {columnsCount}, but it must be square", nameof(adjacencyMatrix));
             }
 
-            AdjacencyMatrix = new int[verticesCount, verticesCount];
+            if (verticesCount == 0)
+            {
+                throw new ArgumentException("Adjacency matrix is empty, but it must contain at least one vertex", nameof(adjacencyMatrix));
+            }
+
+            this.adjacencyMatrix = new int[verticesCount, verticesCount];
 
             for (int i = 0; i < verticesCount; i++)
             {
                 for (int j = 0; j < verticesCount; j++)
                 {
-                    AdjacencyMatrix[i, j] = adjacencyMatrix[i, j];
+                    this.adjacencyMatrix[i, j] = adjacencyMatrix[i, j];
                 }
             }
         }
@@ -36,9 +42,11 @@ namespace GraphTask
         /// Returns an enumerator that iterates through graph vertices using breadth-first traversal
         /// </summary>
         /// <returns>The sequence of graph vertices number values</returns>
-        public IEnumerable<int> GetBreadthFirstTraversal()
+        public IEnumerable<int> BreadthFirstTraversal()
         {
-            bool[] visitedVertices = new bool[AdjacencyMatrix.GetLength(0)];
+            bool[] visitedVertices = new bool[adjacencyMatrix.GetLength(0)];
+
+            Queue<int> queue = new();
 
             for (int i = 0; i < visitedVertices.Length; i++)
             {
@@ -47,7 +55,6 @@ namespace GraphTask
                     continue;
                 }
 
-                Queue<int> queue = new();
                 queue.Enqueue(i);
 
                 while (queue.Count > 0)
@@ -61,9 +68,9 @@ namespace GraphTask
 
                     visitedVertices[currentVertex] = true;
 
-                    for (int j = 0; j < AdjacencyMatrix.GetLength(0); j++)
+                    for (int j = 0; j < adjacencyMatrix.GetLength(0); j++)
                     {
-                        if (!visitedVertices[j] && AdjacencyMatrix[currentVertex, j] != 0)
+                        if (!visitedVertices[j] && adjacencyMatrix[currentVertex, j] != 0)
                         {
                             queue.Enqueue(j);
                         }
@@ -78,9 +85,11 @@ namespace GraphTask
         /// Returns an enumerator that iterates through graph vertices using depth-first traversal
         /// </summary>
         /// <returns>The sequence of graph vertices number values</returns>
-        public IEnumerable<int> GetDepthFirstTraversal()
+        public IEnumerable<int> DepthFirstTraversal()
         {
-            bool[] visitedVertices = new bool[AdjacencyMatrix.GetLength(0)];
+            bool[] visitedVertices = new bool[adjacencyMatrix.GetLength(0)];
+
+            Stack<int> stack = new();
 
             for (int i = 0; i < visitedVertices.Length; i++)
             {
@@ -89,7 +98,6 @@ namespace GraphTask
                     continue;
                 }
 
-                Stack<int> stack = new();
                 stack.Push(i);
 
                 while (stack.Count > 0)
@@ -103,9 +111,9 @@ namespace GraphTask
 
                     visitedVertices[currentVertex] = true;
 
-                    for (int j = AdjacencyMatrix.GetLength(0) - 1; j >= 0; j--)
+                    for (int j = adjacencyMatrix.GetLength(0) - 1; j >= 0; j--)
                     {
-                        if (!visitedVertices[j] && AdjacencyMatrix[currentVertex, j] != 0)
+                        if (!visitedVertices[j] && adjacencyMatrix[currentVertex, j] != 0)
                         {
                             stack.Push(j);
                         }
@@ -120,7 +128,7 @@ namespace GraphTask
         {
             int maxEdgeWeightSymbolsCount = 1;
 
-            foreach (int e in AdjacencyMatrix)
+            foreach (int e in adjacencyMatrix)
             {
                 if (maxEdgeWeightSymbolsCount < e.ToString().Length)
                 {
@@ -128,28 +136,28 @@ namespace GraphTask
                 }
             }
 
-            int firstColumnSymbolsCount = (AdjacencyMatrix.GetLength(0) - 1).ToString().Length;
-            int otherColumnsSymbolsCount = Math.Max(maxEdgeWeightSymbolsCount, (AdjacencyMatrix.GetLength(1) - 1).ToString().Length);
+            int firstColumnSymbolsCount = (adjacencyMatrix.GetLength(0) - 1).ToString().Length;
+            int otherColumnsSymbolsCount = Math.Max(maxEdgeWeightSymbolsCount, (adjacencyMatrix.GetLength(1) - 1).ToString().Length);
 
             string firstColumnFormat = "{0," + firstColumnSymbolsCount + "} ";
             string otherColumnsFormat = "{0," + otherColumnsSymbolsCount + "} ";
 
             Console.Write($"{new string(' ', firstColumnSymbolsCount)} ");
 
-            for (int i = 0; i < AdjacencyMatrix.GetLength(0); i++)
+            for (int i = 0; i < adjacencyMatrix.GetLength(0); i++)
             {
                 Console.Write(otherColumnsFormat, i);
             }
 
             Console.WriteLine();
 
-            for (int i = 0; i < AdjacencyMatrix.GetLength(0); i++)
+            for (int i = 0; i < adjacencyMatrix.GetLength(0); i++)
             {
                 Console.Write(firstColumnFormat, i);
 
-                for (int j = 0; j < AdjacencyMatrix.GetLength(1); j++)
+                for (int j = 0; j < adjacencyMatrix.GetLength(1); j++)
                 {
-                    Console.Write(otherColumnsFormat, AdjacencyMatrix[i, j]);
+                    Console.Write(otherColumnsFormat, adjacencyMatrix[i, j]);
                 }
 
                 Console.WriteLine();
