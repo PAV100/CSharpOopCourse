@@ -6,29 +6,37 @@ namespace MinesweeperTask.Model
     {
         public GameStatus gameStatus;
 
-        public GameLevel gameLevel;
+        public Gamefield gamefield;
 
-        private Dictionary<(int ColunmIndex, int RowIndex), MinefieldCell> minefield;
+        private Settings settings;
 
-        private Dictionary<(int ColunmIndex, int RowIndex), MinefieldMapCell> minefieldMap;
+        private Statistics statistics;
 
-        public int unmarkedMinesCounter;
+        private HighScores highScores;
 
-        public int timeCounter;
-
-        Game()
+        public Game()
         {
             gameStatus = GameStatus.Ready;
 
-            gameLevel = new GameLevel(GameLevelName.Beginner, 0, 0, 0);
+            settings = new(GameLevelName.Beginner, 0, 0, 0);
 
-            minefield = new Dictionary<(int ColunmIndex, int RowIndex), MinefieldCell>();
+            gamefield = new Gamefield(settings.RowsCount, settings.ColumnsCount, settings.MinesCount);
 
-            minefieldMap = new Dictionary<(int ColunmIndex, int RowIndex), MinefieldMapCell>();
+            statistics = new();
 
-            unmarkedMinesCounter = gameLevel.MinesCount;
+            gamefield.SetSettings(settings);
+            gamefield.SetStatistics(statistics);
 
-            timeCounter = 0;
+            settings.SetGamel(this);
+        }
+
+        public void ResetGame()
+        {
+            gameStatus = GameStatus.Ready;
+
+            gamefield.ResetGameField();
+
+            statistics.ResetStatistics();
         }
     }
 }
