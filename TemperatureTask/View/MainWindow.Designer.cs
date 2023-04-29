@@ -91,7 +91,9 @@
             this.sourceTemperature.Location = new System.Drawing.Point(3, 3);
             this.sourceTemperature.Name = "sourceTemperature";
             this.sourceTemperature.Size = new System.Drawing.Size(70, 23);
-            this.sourceTemperature.TabIndex = 1;
+            this.sourceTemperature.TabIndex = 0;
+            this.sourceTemperature.TextChanged += new System.EventHandler(this.sourceTemperature_TextChanged);
+            this.sourceTemperature.KeyDown += new System.Windows.Forms.KeyEventHandler(this.sourceTemperature_KeyDown);
             // 
             // sourceTemperatureUnit
             // 
@@ -99,7 +101,8 @@
             this.sourceTemperatureUnit.Location = new System.Drawing.Point(79, 3);
             this.sourceTemperatureUnit.Name = "sourceTemperatureUnit";
             this.sourceTemperatureUnit.Size = new System.Drawing.Size(52, 23);
-            this.sourceTemperatureUnit.TabIndex = 0;
+            this.sourceTemperatureUnit.TabIndex = 1;
+            this.sourceTemperatureUnit.TextChanged += new System.EventHandler(this.sourceTemperatureUnit_TextChanged);
             // 
             // groupBox2
             // 
@@ -108,7 +111,7 @@
             this.groupBox2.Location = new System.Drawing.Point(221, 3);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(140, 49);
-            this.groupBox2.TabIndex = 1;
+            this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Target temperature";
             // 
@@ -128,7 +131,7 @@
             this.targetTemperature.Name = "targetTemperature";
             this.targetTemperature.ReadOnly = true;
             this.targetTemperature.Size = new System.Drawing.Size(70, 23);
-            this.targetTemperature.TabIndex = 1;
+            this.targetTemperature.TabIndex = 3;
             // 
             // targetTemperatureUnit
             // 
@@ -136,7 +139,8 @@
             this.targetTemperatureUnit.Location = new System.Drawing.Point(79, 3);
             this.targetTemperatureUnit.Name = "targetTemperatureUnit";
             this.targetTemperatureUnit.Size = new System.Drawing.Size(52, 23);
-            this.targetTemperatureUnit.TabIndex = 0;
+            this.targetTemperatureUnit.TabIndex = 4;
+            this.targetTemperatureUnit.TextChanged += new System.EventHandler(this.targetTemperatureUnit_TextChanged);
             // 
             // panel1
             // 
@@ -145,7 +149,7 @@
             this.panel1.Location = new System.Drawing.Point(149, 3);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(66, 49);
-            this.panel1.TabIndex = 2;
+            this.panel1.TabIndex = 1;
             // 
             // convertButton
             // 
@@ -155,7 +159,7 @@
             this.convertButton.TabIndex = 2;
             this.convertButton.Text = "Convert";
             this.convertButton.UseVisualStyleBackColor = true;
-            this.convertButton.Click += new System.EventHandler(this.convertButton_Click);
+            this.convertButton.Click += new System.EventHandler(this.ConvertButton_Click);
             // 
             // MainWindow
             // 

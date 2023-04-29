@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using TemperatureTask.Controller;
 using TemperatureTask.Model;
@@ -7,13 +8,13 @@ namespace TemperatureTask.View
 {
     public class GuiView : IView
     {
-        private readonly TemperatureController controller;        
+        private readonly IController controller;
 
         private MainWindow mainWindow;
 
-        public GuiView(TemperatureController controller)
+        public GuiView(IController controller)
         {
-            this.controller = controller;            
+            this.controller = controller;
         }
 
         public void Start()
@@ -26,14 +27,24 @@ namespace TemperatureTask.View
             Application.Run(mainWindow);
         }
 
-        public void UpdateTargetTemperature(double targetTenperature)
+        public void UpdateTargetTemperature(double targetTemperature)
         {
-            mainWindow.UpdateTargetTemperature(Math.Round(targetTenperature, 2, MidpointRounding.AwayFromZero));
+            mainWindow.UpdateTargetTemperature(Math.Round(targetTemperature, 2, MidpointRounding.AwayFromZero));
         }
 
-        public void UpdateAllFields(double sourceTemperature, string sourceTemperatureUnit, double targetTemperature, string targetTemperatureUnit, string[] Units)
+        public void UpdateAllFields(
+            double sourceTemperature,
+            TemperatureScale sourceScale,
+            double targetTemperature,
+            TemperatureScale targetScale,
+            List<TemperatureScale> scales)
         {
-            mainWindow.UpdateAllFields(sourceTemperature, sourceTemperatureUnit, targetTemperature, targetTemperatureUnit, Units);
+            mainWindow.UpdateAllFields(
+                sourceTemperature,
+                sourceScale,
+                targetTemperature,
+                targetScale,
+                scales);
         }
     }
 }

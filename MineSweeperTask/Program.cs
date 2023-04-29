@@ -12,17 +12,17 @@ namespace MinesweeperTask
         [STAThread]
         static void Main()
         {
-            Game game = new();
+            GameModel gameModel = new();
 
 
-            game.gamefield.OpenCell(0, 0);
+            gameModel.gamefield.OpenCell(0, 0);
 
-            game.gamefield.MarkCell(1, 0);
-            game.gamefield.MarkCell(1, 0);
-            game.gamefield.MarkCell(1, 0);
-            game.gamefield.MarkCell(1, 0);
-            game.gamefield.MarkCell(1, 0);
-            game.gamefield.MarkCell(1, 0);
+            gameModel.gamefield.MarkCell(1, 0);
+            gameModel.gamefield.MarkCell(1, 0);
+            gameModel.gamefield.MarkCell(1, 0);
+            gameModel.gamefield.MarkCell(1, 0);
+            gameModel.gamefield.MarkCell(1, 0);
+            gameModel.gamefield.MarkCell(1, 0);
 
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();

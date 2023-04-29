@@ -1,6 +1,6 @@
 ﻿namespace MinesweeperTask.Model
 {
-    internal enum MinefieldMapCellStatus
+    internal enum MinefieldCellStatus
     {
         Free = 0,
         OneMineNext = 1,
@@ -11,12 +11,6 @@
         SixMinesNext = 6,
         SevenMinesNext = 7,
         EightMinesNext = 8,
-        Mined = 9,
-        Hidden = 10,
-        Opened = 11,
-        FlagMarked = 10,
-        QuestionMarked = 11,        
-        MistakenlyFlagMarkedAsMined = 13,
-        Explosion = 14
+        Mined = 9
     }
 }

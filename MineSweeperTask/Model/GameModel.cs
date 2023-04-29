@@ -2,7 +2,7 @@
 
 namespace MinesweeperTask.Model
 {
-    internal class Game
+    internal class GameModel
     {
         public GameStatus gameStatus;
 
@@ -14,11 +14,11 @@ namespace MinesweeperTask.Model
 
         private HighScores highScores;
 
-        public Game()
+        public GameModel()
         {
             gameStatus = GameStatus.Ready;
 
-            settings = new(GameLevelName.Beginner, 0, 0, 0);
+            settings = new(GameLevelName.Beginner);
 
             gamefield = new Gamefield(settings.RowsCount, settings.ColumnsCount, settings.MinesCount);
 
@@ -27,16 +27,26 @@ namespace MinesweeperTask.Model
             gamefield.SetSettings(settings);
             gamefield.SetStatistics(statistics);
 
-            settings.SetGamel(this);
+            settings.SetGamelModel(this);
         }
 
         public void ResetGame()
         {
             gameStatus = GameStatus.Ready;
 
-            gamefield.ResetGameField();
+            gamefield.ResetGamefield();
 
             statistics.ResetStatistics();
+        }
+
+        public bool IsWin()
+        {
+            return false;
+        }
+        
+        public bool IsLoss()
+        {
+            return false;
         }
     }
 }

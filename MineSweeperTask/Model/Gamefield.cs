@@ -5,7 +5,7 @@ namespace MinesweeperTask.Model
 {
     internal class Gamefield
     {
-        private readonly Dictionary<(int RowIndex, int ColunmIndex), MinefieldMapCellStatus> minefield;
+        private readonly Dictionary<(int RowIndex, int ColunmIndex), MinefieldCellStatus> minefield;
 
         private readonly bool isMinefieldInverted;
 
@@ -31,48 +31,29 @@ namespace MinesweeperTask.Model
 
             isMinefieldInverted = minesCount > rowsCount * columnsCount / 2;
 
-            if (isMinefieldInverted)
-            {
-                minefield = new(rowsCount * columnsCount - minesCount);
-            }
-            else
-            {
-                minefield = new(minesCount);
-            }
-
-            //PlaceMines();
+            minefield = new(minesCount);
 
             minefieldMap = new();
         }
 
         /// <summary>
-        /// Returns an enumerator that iterates through ???
+        /// Method randomly places MinesCount mines in a class instance field minefield.
+        /// Mines can be placed in all cells of minefield, but prohibited cell (if special setting IsSafeFirstMove is true).
+        /// If the number of mines is greater than a half of the minefield method places "free cells" and all other cells considered mined.
+        /// Then method places information about number of mines in next to mines cells. 
         /// </summary>
-        /// <returns>The number of opened free cells</returns>
-        public void ResetGameField()
-        {
-            minefield.Clear();
-            minefieldMap.Clear();
-
-            isMinefieldPlaced = false;
-            //PlaceMines();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public void PlaceMineField()
+        /// <returns>Nothing</returns>
+        public void PlaceMinefieldExceptFreeCell(int freeCellRowIndex, int freeCellColumnIndex)
         {
             minefield.Clear();
 
             int minefieldItemsToPlaceCount = MinesCount;
-            MinefieldMapCellStatus minefieldItemToPlace = MinefieldMapCellStatus.Mined;
+            MinefieldCellStatus minefieldItemToPlace = MinefieldCellStatus.Mined;
 
             if (isMinefieldInverted)
             {
                 minefieldItemsToPlaceCount = RowsCount * ColumnsCount - MinesCount;
-                minefieldItemToPlace = MinefieldMapCellStatus.Free;
+                minefieldItemToPlace = MinefieldCellStatus.Free;
             }
 
             if (minefieldItemsToPlaceCount == 0)
@@ -84,23 +65,76 @@ namespace MinesweeperTask.Model
 
             for (int i = 0; i < minefieldItemsToPlaceCount; i++)
             {
-                minefield.Add(GenerateIndices(randomNumberGenerator), minefieldItemToPlace);
+                minefield.Add(GenerateIndices(randomNumberGenerator, freeCellRowIndex, freeCellColumnIndex), minefieldItemToPlace);
+            }
+
+            for (int i = 0; i < RowsCount; i++)
+            {
+                for (int j = 0; j < ColumnsCount; j++)
+                {
+                    if (IsMined(i, j))
+                    {
+                        continue;
+                    }
+
+                    var cellStatus = (MinefieldCellStatus)GetNeighborMinesCount(i, j);
+
+                    if (cellStatus != MinefieldCellStatus.Free)
+                    {
+                        if (isMinefieldInverted)
+                        {
+                            minefield[(i, j)] = cellStatus;
+                        }
+                        else
+                        {
+                            minefield.Add((i, j), cellStatus);
+                        }
+                    }
+                }
             }
         }
 
         /// <summary>
-        /// 
+        /// Method generates a pair of random indices, checks the pair was never returned before. Method guarantees that a cell[freeCellRowIndex, freeCellColumnIndex] is never mined.
         /// </summary>
-        /// <returns></returns>
-        public bool IsMined(int rowIndex, int columnIndex)
+        /// <returns>A pair of indices as a tuple (int RowIndex, int ColunmIndex)</returns>
+        private (int RowIndex, int ColunmIndex) GenerateIndices(Random randomNumberGenerator, int freeCellRowIndex, int freeCellColumnIndex)
         {
-            return isMinefieldInverted ^ minefield.ContainsKey((rowIndex, columnIndex));
+            if (settings.IsSafeFirstMove && isMinefieldInverted && !minefield.ContainsKey((freeCellRowIndex, freeCellColumnIndex)))
+            {
+                return (freeCellRowIndex, freeCellColumnIndex);
+            }
+
+            while (true)
+            {
+                int rowIndex = randomNumberGenerator.Next(0, RowsCount);
+                int columnIndex = randomNumberGenerator.Next(0, ColumnsCount);
+
+                if (minefield.ContainsKey((rowIndex, columnIndex)))
+                {
+                    continue;
+                }
+
+                if ((!settings.IsSafeFirstMove || (rowIndex != freeCellRowIndex && columnIndex != freeCellColumnIndex)))
+                {
+                    return (rowIndex, columnIndex);
+                }
+            }
         }
 
         /// <summary>
-        /// 
+        /// Cheks if a given cell contains a mine.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>True if a cell is mined, else otherwise</returns>
+        public bool IsMined(int rowIndex, int columnIndex)
+        {
+            return isMinefieldInverted && !minefield.ContainsKey((rowIndex, columnIndex)) || !isMinefieldInverted && (minefield.ContainsKey((rowIndex, columnIndex)) && minefield[(rowIndex, columnIndex)] == MinefieldCellStatus.Mined);
+        }
+
+        /// <summary>
+        /// Determines how many neighbor cells a given cell has: 3, 5 or 8. Then counts mines in neighbor cells.
+        /// </summary>
+        /// <returns>A number of mines in neighbor cells</returns>
         public int GetNeighborMinesCount(int rowIndex, int columnIndex)
         {
             int startRowIndex = rowIndex - 1 < 0 ? 0 : rowIndex - 1;
@@ -128,13 +162,25 @@ namespace MinesweeperTask.Model
             return minesCount;
         }
 
+
+
+
+
+
+
+
+
         /// <summary>
-        /// 
+        /// Returns an enumerator that iterates through ???
         /// </summary>
-        /// <returns></returns>
-        public bool AreAllNeighborCellsFree(int rowIndex, int columnIndex)
+        /// <returns>The number of opened free cells</returns>
+        public void ResetGamefield()
         {
-            return true;
+            minefield.Clear();
+            minefieldMap.Clear();
+
+            isMinefieldPlaced = false;
+            //PlaceMines();
         }
 
         /// <summary>
@@ -157,9 +203,8 @@ namespace MinesweeperTask.Model
                 {
                     if (i != rowIndex || j != columnIndex)
                     {
-                        if (IsMined(i, j))
+                        if (IsMined(i, j) || minefieldMap.GetValueOrDefault((i, j)) == MinefieldMapCellStatus.FlagMarked)
                         {
-                            //TODO if FlagMarked
                             list.Clear();
                             return list;
                         }
@@ -211,24 +256,6 @@ namespace MinesweeperTask.Model
         /// Returns an enumerator that iterates through ???
         /// </summary>
         /// <returns>The sequence of ???</returns>
-        private (int RowIndex, int ColunmIndex) GenerateIndices(Random randomNumberGenerator)
-        {
-            while (true)
-            {
-                int rowIndex = randomNumberGenerator.Next(0, RowsCount);
-                int columnIndex = randomNumberGenerator.Next(0, ColumnsCount);
-
-                if (!minefield.ContainsKey((rowIndex, columnIndex)))
-                {
-                    return (rowIndex, columnIndex);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Returns an enumerator that iterates through ???
-        /// </summary>
-        /// <returns>The sequence of ???</returns>
         public void SetSettings(Settings settings)
         {
             this.settings = settings;
@@ -251,7 +278,7 @@ namespace MinesweeperTask.Model
         {
             if (!isMinefieldPlaced)
             {
-                PlaceMineField();
+                PlaceMinefieldExceptFreeCell(rowIndex, columnIndex);
                 isMinefieldPlaced = true;
             }
 
@@ -267,6 +294,7 @@ namespace MinesweeperTask.Model
             {
                 cellStatus = MinefieldMapCellStatus.Explosion;
                 minefieldMap.Add((rowIndex, columnIndex), cellStatus);
+                //TODO call IsLoss() method
                 return 0;
             }
 

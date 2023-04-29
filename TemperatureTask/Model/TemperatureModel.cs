@@ -1,61 +1,87 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace TemperatureTask.Model
 {
     public class TemperatureModel : IModel
     {
-        private SortedDictionary<string, TemperatureScale> temperatureScales;
+        private readonly List<TemperatureScale> temperatureScales;
 
-        public double SourceTemperature { get; private set; }
+        public TemperatureScale SourceScale { get; set; }
 
-        public string SourceTemperatureUnit { get; private set; }
+        public TemperatureScale TargetScale { get; set; }
 
-        public double TargetTemperature { get; private set; }
+        public double SourceTemperature { get; set; }
 
-        public string TargetTemperatureUnit { get; private set; }
+        public double TargetTemperature { get; set; }
 
-        public TemperatureModel()
+        public TemperatureModel(List<TemperatureScale> temperatureScales, int initialSourceTemperature = 0)
         {
-            temperatureScales = new();
-            temperatureScales.Add("°C", new("Celsius scale", d => d + 273.15, d => d - 273.15));
-            temperatureScales.Add("°K", new("Kelvin scale", d => d, d => d));
-            temperatureScales.Add("°F", new("Fahrenheit scale", d => 5.0 / 9.0 * (d - 32) + 273.15, d => 9.0 / 5.0 * (d - 273.15) + 32.0));
+            if (temperatureScales is null)
+            {
+                throw new ArgumentNullException(nameof(temperatureScales), "TemperatureScales must not be null");
+            }
 
-            int initialSourceTemperature = 0;
-            SourceTemperatureUnit = "°C";
-            TargetTemperatureUnit = "°K";
+            if (temperatureScales.Count == 0)
+            {
+                throw new ArgumentException("TemperatureScales must contain at least one scale", nameof(temperatureScales));
+            }
+
+            this.temperatureScales = new(temperatureScales);
+
+            int sourceScaleIndex = 0;
+            int targetScaleIndex = this.temperatureScales.Count == 1 ? 0 : 1;
+
+            SourceScale = this.temperatureScales[sourceScaleIndex];
+            TargetScale = this.temperatureScales[targetScaleIndex];
 
             SourceTemperature = initialSourceTemperature;
-            TargetTemperature = temperatureScales[SourceTemperatureUnit].ToKelvin(initialSourceTemperature);
+            TargetTemperature = ConvertTemperature(initialSourceTemperature, SourceScale, TargetScale);
         }
 
-        public double ConvertTemperature(double sourceTemperature, string sourceTemperatureUnit, string targetTemperatureUnit)
+        public double ConvertTemperature(double sourceTemperature, TemperatureScale sourceScale, TemperatureScale targetScale)
         {
-            double kelvinTemperature = temperatureScales[sourceTemperatureUnit].ToKelvin(sourceTemperature);
+            if (sourceScale is null)
+            {
+                throw new ArgumentNullException(nameof(sourceScale), "SourceScale must not be null");
+            }
+
+            if (targetScale is null)
+            {
+                throw new ArgumentNullException(nameof(targetScale), "TargetScale must not be null");
+            }
+
+            if (!temperatureScales.Contains(sourceScale))
+            {
+                throw new ArgumentException("Scales not defined in the model are not allowed", nameof(sourceScale));
+            }
+
+            if (!temperatureScales.Contains(targetScale))
+            {
+                throw new ArgumentException("Scales not defined in the model are not allowed", nameof(targetScale));
+            }
+
+            double kelvinTemperature = sourceScale.ToKelvin(sourceTemperature);
 
             if (kelvinTemperature < 0)
             {
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException(
+                    nameof(sourceTemperature),
+                    $"Source temperature is {sourceTemperature} {sourceScale.Unit} = {kelvinTemperature} °K. It must be greater than absolute zero 0 °K");
             }
 
-            SourceTemperatureUnit = sourceTemperatureUnit;
-            TargetTemperatureUnit = targetTemperatureUnit;
+            SourceScale = sourceScale;
+            TargetScale = targetScale;
+
             SourceTemperature = sourceTemperature;
-            TargetTemperature = temperatureScales[targetTemperatureUnit].FromKelvin(kelvinTemperature);
+            TargetTemperature = TargetScale.FromKelvin(kelvinTemperature);
 
             return TargetTemperature;
         }
 
-        public bool ContainsScale(string scale)
+        public List<TemperatureScale> GetScales()
         {
-            return temperatureScales.ContainsKey(scale);
-        }
-
-        public string[] GetUnits()
-        {
-            return temperatureScales.Keys.ToArray();
+            return temperatureScales;
         }
     }
 }

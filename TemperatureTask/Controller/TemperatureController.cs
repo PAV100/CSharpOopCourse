@@ -4,46 +4,47 @@ using TemperatureTask.View;
 
 namespace TemperatureTask.Controller
 {
-    public class TemperatureController
+    public class TemperatureController : IController
     {
-        private readonly TemperatureModel temperatureModel;
+        private readonly IModel temperatureModel;
 
-        private GuiView view;
+        private IView view;
 
-        public TemperatureController(TemperatureModel temperatureModel)
+        public TemperatureController(IModel temperatureModel)
         {
             this.temperatureModel = temperatureModel;
         }
 
-        public void SetView(GuiView view)
+        public void SetView(IView view)
         {
             this.view = view;
         }
 
-        public void ConvertTemperature(string sourceTemperatureText, string sourceTemperatureUnit, string targetTemperatureUnit)
+        public void ConvertTemperature(double sourceTemperature, TemperatureScale sourceScale, TemperatureScale targetScale)
         {
-            if (sourceTemperatureUnit is null || !temperatureModel.ContainsScale(sourceTemperatureUnit))
+            if (sourceScale is null)
             {
                 throw new ArgumentNullException();
             }
 
-            if (targetTemperatureUnit is null || !temperatureModel.ContainsScale(targetTemperatureUnit))
+            if (targetScale is null)
             {
                 throw new ArgumentNullException();
             }
 
-            double sourceTemperature = Convert.ToDouble(sourceTemperatureText); // Trows Format Exception           
-
-            double targetTemperature = temperatureModel.ConvertTemperature(sourceTemperature, sourceTemperatureUnit, targetTemperatureUnit); // Trows ArgumentOutOfRangeException Exception           
+            double targetTemperature = temperatureModel.ConvertTemperature(sourceTemperature, sourceScale, targetScale); // Throws ArgumentOutOfRangeException Exception           
 
             view.UpdateTargetTemperature(targetTemperature);
         }
 
         public void LoadValuesToFields()
         {
-            view.UpdateAllFields(temperatureModel.SourceTemperature, temperatureModel.SourceTemperatureUnit,
-                temperatureModel.TargetTemperature, temperatureModel.TargetTemperatureUnit,
-                temperatureModel.GetUnits());
+            view.UpdateAllFields(
+                temperatureModel.SourceTemperature,
+                temperatureModel.SourceScale,
+                temperatureModel.TargetTemperature,
+                temperatureModel.TargetScale,
+                temperatureModel.GetScales());
         }
     }
 }

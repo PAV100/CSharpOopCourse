@@ -1,13 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace TemperatureTask.Model
 {
-    internal interface IModel
+    public interface IModel
     {
-        double ConvertTemperature(double sourceTemperature, string sourceTemperatureUnit, string targetTemperatureUnit);
+        TemperatureScale SourceScale { get; protected set; }
+
+        TemperatureScale TargetScale { get; protected set; }
+
+        double SourceTemperature { get; protected set; }
+
+        double TargetTemperature { get; protected set; }
+
+        double ConvertTemperature(double sourceTemperature, TemperatureScale sourceScale, TemperatureScale targetScale);
+
+        List<TemperatureScale> GetScales();
     }
 }

@@ -6,14 +6,14 @@
 
         public bool IsSafeFirstMove { get; set; }
 
-        public int MinColumnsCount { get; } = 1;
-        public int MaxColumnsCount { get; } = 50;
+        public int CustomMinColumnsCount { get; } = 1;
+        public int CustomMaxColumnsCount { get; } = 50;
 
-        public int MinRowsCount { get; } = 1;
-        public int MaxRowsCount { get; } = 50;
+        public int CustomMinRowsCount { get; } = 1;
+        public int CustomMaxRowsCount { get; } = 50;
 
-        public int MinMinesCount { get; } = 0;
-        public int MaxMinesCount { get; private set; }
+        public int CustomMinMinesCount { get; } = 0;
+        public int CustomMaxMinesCount { get; private set; }
 
         public int CustomDefaultColumnsCount { get; set; }
 
@@ -29,9 +29,9 @@
 
         public int MinesCount { get; set; }
 
-        public Game game;
+        public GameModel gameModel;
 
-        public Settings(GameLevelName name, int columnsCount, int rowsCount, int minesCount)
+        public Settings(GameLevelName name, int columnsCount = 0, int rowsCount = 0, int minesCount = 0)
         {
             IsQuestionMarkEnabled = true;
 
@@ -44,19 +44,19 @@
         /// Returns an enumerator that iterates through ???
         /// </summary>
         /// <returns>The number of opened free cells</returns>
-        public void SetGamel(Game game)
+        public void SetGamelModel(GameModel gameModel)
         {
-            this.game = game;
+            this.gameModel = gameModel;
         }
 
         /// <summary>
         /// Returns an enumerator that iterates through ???
         /// </summary>
         /// <returns>The number of opened free cells</returns>
-        public void SetGameLevel(GameLevelName name, int columnsCount, int rowsCount, int minesCount)
+        public void SetGameLevel(GameLevelName name, int columnsCount = 0, int rowsCount = 0, int minesCount = 0)
         {
             SetGameLevelParameters(name, columnsCount, rowsCount, minesCount);
-            game.ResetGame();
+            gameModel.ResetGame();
         }
 
         /// <summary>
@@ -85,17 +85,16 @@
                     MinesCount = 50;
                     break;
                 case GameLevelName.Custom:
-                    RowsCount = GetLimitedValue(rowsCount, MinRowsCount, MaxRowsCount);
-                    CustomDefaultRowsCount = RowsCount;
-
-                    ColumnsCount = GetLimitedValue(columnsCount, MinColumnsCount, MaxColumnsCount);
-                    CustomDefaultColumnsCount = ColumnsCount;
-
-                    MaxMinesCount = ColumnsCount * RowsCount - (IsSafeFirstMove ? 1 : 0);
-                    MinesCount = GetLimitedValue(minesCount, MinMinesCount, MaxMinesCount);
-                    CustomDefaultMinesCount = MinesCount;
+                    RowsCount = GetLimitedValue(rowsCount, CustomMinRowsCount, CustomMaxRowsCount);
+                    ColumnsCount = GetLimitedValue(columnsCount, CustomMinColumnsCount, CustomMaxColumnsCount);
+                    CustomMaxMinesCount = ColumnsCount * RowsCount - (IsSafeFirstMove ? 1 : 0);
+                    MinesCount = GetLimitedValue(minesCount, CustomMinMinesCount, CustomMaxMinesCount);
                     break;
             }
+
+            CustomDefaultRowsCount = RowsCount;
+            CustomDefaultColumnsCount = ColumnsCount;
+            CustomDefaultMinesCount = MinesCount;
         }
 
         /// <summary>
