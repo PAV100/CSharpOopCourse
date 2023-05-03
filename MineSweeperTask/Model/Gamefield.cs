@@ -5,13 +5,13 @@ namespace MinesweeperTask.Model
 {
     internal class Gamefield
     {
-        private readonly Dictionary<(int RowIndex, int ColunmIndex), MinefieldCellStatus> minefield;
+        private readonly Dictionary<(int RowIndex, int ColumnIndex), MinefieldCellStatus> minefield;
 
         private readonly bool isMinefieldInverted;
 
         private bool isMinefieldPlaced;
 
-        private readonly Dictionary<(int RowIndex, int ColunmIndex), MinefieldMapCellStatus> minefieldMap;
+        private readonly Dictionary<(int RowIndex, int ColumnIndex), MinefieldMapCellStatus> minefieldMap;
 
         private Settings settings;
 
@@ -97,8 +97,8 @@ namespace MinesweeperTask.Model
         /// <summary>
         /// Method generates a pair of random indices, checks the pair was never returned before. Method guarantees that a cell[freeCellRowIndex, freeCellColumnIndex] is never mined.
         /// </summary>
-        /// <returns>A pair of indices as a tuple (int RowIndex, int ColunmIndex)</returns>
-        private (int RowIndex, int ColunmIndex) GenerateIndices(Random randomNumberGenerator, int freeCellRowIndex, int freeCellColumnIndex)
+        /// <returns>A pair of indices as a tuple (int RowIndex, int ColumnIndex)</returns>
+        private (int RowIndex, int ColumnIndex) GenerateIndices(Random randomNumberGenerator, int freeCellRowIndex, int freeCellColumnIndex)
         {
             if (settings.IsSafeFirstMove && isMinefieldInverted && !minefield.ContainsKey((freeCellRowIndex, freeCellColumnIndex)))
             {
