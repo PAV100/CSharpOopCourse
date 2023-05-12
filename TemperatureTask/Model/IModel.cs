@@ -4,13 +4,13 @@ namespace TemperatureTask.Model
 {
     public interface IModel
     {
-        TemperatureScale SourceScale { get; protected set; }
+        TemperatureScale SourceScale { get; }
 
-        TemperatureScale TargetScale { get; protected set; }
+        TemperatureScale TargetScale { get; }
 
-        double SourceTemperature { get; protected set; }
+        double SourceTemperature { get; }
 
-        double TargetTemperature { get; protected set; }
+        double TargetTemperature { get; }
 
         double ConvertTemperature(double sourceTemperature, TemperatureScale sourceScale, TemperatureScale targetScale);
 

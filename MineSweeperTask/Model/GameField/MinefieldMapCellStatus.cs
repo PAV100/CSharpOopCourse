@@ -1,6 +1,6 @@
-﻿namespace MinesweeperTask.Model
+﻿namespace MinesweeperTask.Model.GameField
 {
-    internal enum MinefieldMapCellStatus
+    public enum MinefieldMapCellStatus
     {
         Free = 0,
         OneMineNext = 1,

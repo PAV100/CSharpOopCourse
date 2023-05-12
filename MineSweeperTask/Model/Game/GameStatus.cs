@@ -1,6 +1,6 @@
-﻿namespace MinesweeperTask.Model
+﻿namespace MinesweeperTask.Model.Game
 {
-    internal enum GameStatus
+    public enum GameStatus
     {
         Ready = 0,
         InProgress = 1,

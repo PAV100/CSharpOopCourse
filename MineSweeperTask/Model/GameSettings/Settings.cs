@@ -1,6 +1,8 @@
-﻿namespace MinesweeperTask.Model
+﻿using MinesweeperTask.Model.Game;
+
+namespace MinesweeperTask.Model.GameSettings
 {
-    internal class Settings
+    public class Settings : ISettings
     {
         public bool IsQuestionMarkEnabled { get; set; }
 
@@ -29,7 +31,7 @@
 
         public int MinesCount { get; set; }
 
-        public GameModel gameModel;
+        public IMinesweeperModel gameModel;
 
         public Settings(GameLevelName name, int columnsCount = 0, int rowsCount = 0, int minesCount = 0)
         {
@@ -44,7 +46,7 @@
         /// Returns an enumerator that iterates through ???
         /// </summary>
         /// <returns>The number of opened free cells</returns>
-        public void SetGamelModel(GameModel gameModel)
+        public void SetGamelModel(IMinesweeperModel gameModel)
         {
             this.gameModel = gameModel;
         }

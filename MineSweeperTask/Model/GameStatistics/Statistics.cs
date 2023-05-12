@@ -1,6 +1,6 @@
-﻿namespace MinesweeperTask.Model
+﻿namespace MinesweeperTask.Model.GameStatistics
 {
-    internal class Statistics
+    public class Statistics : IStatistics
     {
         private int gamerMovesCount;
 

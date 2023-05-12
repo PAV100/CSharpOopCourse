@@ -10,7 +10,7 @@ namespace TemperatureTask.View
     {
         private readonly IController controller;
 
-        private MainWindow mainWindow;
+        private MainWindow? mainWindow;
 
         public GuiView(IController controller)
         {
@@ -29,6 +29,12 @@ namespace TemperatureTask.View
 
         public void UpdateTargetTemperature(double targetTemperature)
         {
+            //CheckMainWindowForNull();
+            if (mainWindow is null)
+            {
+                throw new ArgumentNullException(nameof(mainWindow), "MainWindow must not be null");
+            }
+
             mainWindow.UpdateTargetTemperature(Math.Round(targetTemperature, 2, MidpointRounding.AwayFromZero));
         }
 
@@ -39,12 +45,26 @@ namespace TemperatureTask.View
             TemperatureScale targetScale,
             List<TemperatureScale> scales)
         {
+            //CheckMainWindowForNull();
+            if (mainWindow is null)
+            {
+                throw new ArgumentNullException(nameof(mainWindow), "MainWindow must not be null");
+            }
+
             mainWindow.UpdateAllFields(
                 sourceTemperature,
                 sourceScale,
                 targetTemperature,
                 targetScale,
                 scales);
+        }
+
+        private void CheckMainWindowForNull()
+        {
+            if (mainWindow is null)
+            {
+                throw new ArgumentNullException(nameof(mainWindow), "MainWindow must not be null");
+            }
         }
     }
 }

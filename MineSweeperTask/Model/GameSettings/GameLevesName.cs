@@ -1,6 +1,6 @@
-﻿namespace MinesweeperTask.Model
+﻿namespace MinesweeperTask.Model.GameSettings
 {
-    internal enum GameLevelName
+    public enum GameLevelName
     {
         Beginner = 0,
         Amateur = 1,

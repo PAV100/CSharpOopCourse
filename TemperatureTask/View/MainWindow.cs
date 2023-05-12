@@ -10,6 +10,9 @@ namespace TemperatureTask
     {
         private readonly IController controller;
 
+        private readonly ToolTip sourceScaleToolTip = new();
+        private readonly ToolTip targetScaleToolTip = new();
+
         public MainWindow(IController controller)
         {
             InitializeComponent();
@@ -36,17 +39,19 @@ namespace TemperatureTask
 
         private void sourceTemperature_TextChanged(object sender, EventArgs e)
         {
-            this.targetTemperature.Text = "";
+            targetTemperature.Text = "";
         }
 
         private void sourceTemperatureUnit_TextChanged(object sender, EventArgs e)
         {
-            this.targetTemperature.Text = "";
+            sourceScaleToolTip.SetToolTip(sourceTemperatureUnit, ((TemperatureScale)sourceTemperatureUnit.SelectedItem).Name);
+            targetTemperature.Text = "";
         }
 
         private void targetTemperatureUnit_TextChanged(object sender, EventArgs e)
         {
-            this.targetTemperature.Text = "";
+            targetScaleToolTip.SetToolTip(targetTemperatureUnit, ((TemperatureScale)targetTemperatureUnit.SelectedItem).Name);
+            targetTemperature.Text = "";
         }
 
         public void UpdateTargetTemperature(double targetTemperature)
@@ -65,17 +70,19 @@ namespace TemperatureTask
             List<TemperatureScale> scales)
         {
             List<TemperatureScale> scalesCopyForSourceTemperature = new(scales);
-            this.sourceTemperatureUnit.DataSource = scalesCopyForSourceTemperature;
-            this.sourceTemperatureUnit.DisplayMember = "Unit";
-            this.sourceTemperatureUnit.SelectedItem = sourceScale;
+            sourceTemperatureUnit.DataSource = scalesCopyForSourceTemperature;
+            sourceTemperatureUnit.DisplayMember = "Unit";
+            sourceTemperatureUnit.SelectedItem = sourceScale;
 
             List<TemperatureScale> scalesCopyForTargetTemperature = new(scales);
-            this.targetTemperatureUnit.DataSource = scalesCopyForTargetTemperature;
-            this.targetTemperatureUnit.DisplayMember = "Unit";
-            this.targetTemperatureUnit.SelectedItem = targetScale;
+            targetTemperatureUnit.DataSource = scalesCopyForTargetTemperature;
+            targetTemperatureUnit.DisplayMember = "Unit";
+            targetTemperatureUnit.SelectedItem = targetScale;
+
+            sourceScaleToolTip.SetToolTip(sourceTemperatureUnit, sourceScale.Name);
+            targetScaleToolTip.SetToolTip(targetTemperatureUnit, targetScale.Name);
 
             this.sourceTemperature.Text = sourceTemperature.ToString();
-
             this.targetTemperature.Text = targetTemperature.ToString();
 
             this.targetTemperature.Select();
@@ -88,7 +95,7 @@ namespace TemperatureTask
             try
             {
                 controller.ConvertTemperature(
-                    Convert.ToDouble(this.sourceTemperature.Text),
+                    Convert.ToDouble(sourceTemperature.Text),
                     (TemperatureScale)sourceTemperatureUnit.SelectedItem,
                     (TemperatureScale)targetTemperatureUnit.SelectedItem);
             }

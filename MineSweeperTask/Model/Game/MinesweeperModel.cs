@@ -1,33 +1,33 @@
-﻿using System.Collections.Generic;
+﻿using MinesweeperTask.Model.GameField;
+using MinesweeperTask.Model.GameSettings;
+using MinesweeperTask.Model.GameStatistics;
+using MinesweeperTask.Model.GameHighScores;
 
-namespace MinesweeperTask.Model
+namespace MinesweeperTask.Model.Game
 {
-    internal class GameModel
+    public class MinesweeperModel : IMinesweeperModel
     {
         public GameStatus gameStatus;
-
-        public Gamefield gamefield;
 
         private Settings settings;
 
         private Statistics statistics;
 
+        public Field gamefield;
+
         private HighScores highScores;
 
-        public GameModel()
+        public MinesweeperModel()
         {
             gameStatus = GameStatus.Ready;
 
             settings = new(GameLevelName.Beginner);
 
-            gamefield = new Gamefield(settings.RowsCount, settings.ColumnsCount, settings.MinesCount);
-
             statistics = new();
 
-            gamefield.SetSettings(settings);
-            gamefield.SetStatistics(statistics);
+            gamefield = new Field(settings, statistics);
 
-            settings.SetGamelModel(this);
+            highScores = new HighScores();
         }
 
         public void ResetGame()
@@ -43,7 +43,7 @@ namespace MinesweeperTask.Model
         {
             return false;
         }
-        
+
         public bool IsLoss()
         {
             return false;

@@ -97,6 +97,7 @@
             // 
             // sourceTemperatureUnit
             // 
+            this.sourceTemperatureUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.sourceTemperatureUnit.FormattingEnabled = true;
             this.sourceTemperatureUnit.Location = new System.Drawing.Point(79, 3);
             this.sourceTemperatureUnit.Name = "sourceTemperatureUnit";
@@ -135,6 +136,7 @@
             // 
             // targetTemperatureUnit
             // 
+            this.targetTemperatureUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.targetTemperatureUnit.FormattingEnabled = true;
             this.targetTemperatureUnit.Location = new System.Drawing.Point(79, 3);
             this.targetTemperatureUnit.Name = "targetTemperatureUnit";
