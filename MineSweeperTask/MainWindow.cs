@@ -27,7 +27,7 @@ namespace MinesweeperTask
 
             this.SuspendLayout();
 
-            this.minefield = new System.Windows.Forms.Button[20, 20];
+            this.minefield = new System.Windows.Forms.Button[this.model.gamefield.RowsCount, this.model.gamefield.ColumnsCount];
             //this.m1 = new System.Windows.Forms.Label[20, 20];
 
             //this.L = new System.Windows.Forms.Label();
@@ -41,9 +41,9 @@ namespace MinesweeperTask
             //this.L.Text = "label100";
             //this.Controls.Add(this.L);
 
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < this.model.gamefield.RowsCount; i++)
             {
-                for (int j = 0; j < 20; j++)
+                for (int j = 0; j < this.model.gamefield.ColumnsCount; j++)
                 {
                     this.minefield[i, j] = new Button();
                     this.minefield[i, j].Location = new System.Drawing.Point(j * 16, i * 16);
@@ -54,7 +54,7 @@ namespace MinesweeperTask
                     //this.minefield[i, j].UseVisualStyleBackColor = true;
                     this.minefield[i, j].FlatStyle = FlatStyle.Flat;
                     this.minefield[i, j].FlatAppearance.BorderSize = 1;
-                    if (this.model.gamefield.minefield[0, 0].isMined == true)
+                    if (this.model.gamefield.minefield[i, j].isMined == true)
                     {
                         this.minefield[i, j].BackColor = Color.Red;
                     }

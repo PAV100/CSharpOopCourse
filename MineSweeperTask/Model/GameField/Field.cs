@@ -141,15 +141,17 @@ namespace MinesweeperTask.Model.GameField
                 int rowIndex = randomNumberGenerator.Next(0, RowsCount);
                 int columnIndex = randomNumberGenerator.Next(0, ColumnsCount);
 
-                if (isMinesCountGreaterFreeCellsCount != minefield[freeCellRowIndex, freeCellColumnIndex].isMined)
+                if (isMinesCountGreaterFreeCellsCount != minefield[rowIndex, columnIndex].isMined)
                 {
                     continue;
                 }
 
-                if ((!settings.IsSafeFirstMove || (rowIndex != freeCellRowIndex && columnIndex != freeCellColumnIndex)))
+                if (settings.IsSafeFirstMove && (rowIndex == freeCellRowIndex && columnIndex == freeCellColumnIndex))
                 {
-                    return (rowIndex, columnIndex);
+                    continue;
                 }
+
+                return (rowIndex, columnIndex);
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using TemperatureTask.Model;
 using TemperatureTask.View;
 
@@ -22,6 +23,8 @@ namespace TemperatureTask.Controller
 
         public void ConvertTemperature(double sourceTemperature, TemperatureScale sourceScale, TemperatureScale targetScale)
         {
+            CheckViewForNull(view);
+
             if (sourceScale is null)
             {
                 throw new ArgumentNullException(nameof(sourceScale), "SourceScale must not be null");
@@ -32,24 +35,14 @@ namespace TemperatureTask.Controller
                 throw new ArgumentNullException(nameof(targetScale), "TargetScale must not be null");
             }
 
-            double targetTemperature = temperatureModel.ConvertTemperature(sourceTemperature, sourceScale, targetScale); // Throws ArgumentOutOfRangeException Exception           
-
-            //CheckViewForNull();
-            if (view is null)
-            {
-                throw new ArgumentNullException(nameof(view), "View must not be null");
-            }
+            double targetTemperature = temperatureModel.ConvertTemperature(sourceTemperature, sourceScale, targetScale); // Throws ArgumentOutOfRangeException Exception                       
 
             view.UpdateTargetTemperature(targetTemperature);
         }
 
         public void LoadValuesToFields()
         {
-            //CheckViewForNull();
-            if (view is null)
-            {
-                throw new ArgumentNullException(nameof(view), "View must not be null");
-            }
+            CheckViewForNull(view);
 
             view.UpdateAllFields(
                 temperatureModel.SourceTemperature,
@@ -59,11 +52,11 @@ namespace TemperatureTask.Controller
                 temperatureModel.GetScales());
         }
 
-        private void CheckViewForNull()
+        private static void CheckViewForNull([NotNull] IView? view)
         {
             if (view is null)
             {
-                throw new ArgumentNullException(nameof(view), "View must not be null");
+                throw new InvalidOperationException("View is null, but it must contain a not-null reference to created View object");
             }
         }
     }

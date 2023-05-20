@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace TemperatureTask.Model
 {
@@ -7,15 +8,15 @@ namespace TemperatureTask.Model
     {
         private readonly List<TemperatureScale> temperatureScales;
 
-        public TemperatureScale SourceScale { get; set; }
+        public TemperatureScale SourceScale { get; private set; }
 
-        public TemperatureScale TargetScale { get; set; }
+        public TemperatureScale TargetScale { get; private set; }
 
-        public double SourceTemperature { get; set; }
+        public double SourceTemperature { get; private set; }
 
-        public double TargetTemperature { get; set; }
+        public double TargetTemperature { get; private set; }
 
-        public TemperatureModel(List<TemperatureScale> temperatureScales, int initialSourceTemperature = 0)
+        public TemperatureModel(List<TemperatureScale> temperatureScales, double initialSourceTemperature = 0)
         {
             if (temperatureScales is null)
             {
@@ -32,13 +33,10 @@ namespace TemperatureTask.Model
             int sourceScaleIndex = 0;
             int targetScaleIndex = this.temperatureScales.Count == 1 ? 0 : 1;
 
-            SourceScale = this.temperatureScales[sourceScaleIndex];
-            TargetScale = this.temperatureScales[targetScaleIndex];
-
-            SourceTemperature = initialSourceTemperature;
-            TargetTemperature = ConvertTemperature(initialSourceTemperature, SourceScale, TargetScale);
+            ConvertTemperature(initialSourceTemperature, this.temperatureScales[sourceScaleIndex], this.temperatureScales[targetScaleIndex]);
         }
 
+        [MemberNotNull(nameof(SourceScale), nameof(TargetScale))]
         public double ConvertTemperature(double sourceTemperature, TemperatureScale sourceScale, TemperatureScale targetScale)
         {
             if (sourceScale is null)
